@@ -1,0 +1,25 @@
+{
+    "name": "nikolaposa/notify",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Nikola Poša",
+            "email": "posa.nikola@gmail.com",
+            "homepage": "http://www.nikolaposa.in.rs"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Notify\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Notify\\Tests\\": "tests/",
+            "Notify\\Example\\": "examples/"
+        }
+    }
+}
