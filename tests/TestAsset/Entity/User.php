@@ -85,11 +85,14 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
 
     public function getMessageRecipient($notificationId, $messageType)
     {
+        $name = sprintf('%s %s', $this->getFirstName(), $this->getLastName());
+
+        $contacts = $this->getContacts();
+
         if ($messageType == EmailMessage::class) {
-            return new Recipient(
-                sprintf('%s %s', $this->getFirstName(), $this->getLastName()),
-                $this->getContacts()->getOne(EmailContact::class)
-            );
+            if (false !== ($emailContact = $contacts->getOne(EmailContact::class))) {
+                return new Recipient($name, $emailContact);
+            }
         }
 
         return new EmptyRecipient();

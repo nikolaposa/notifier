@@ -39,7 +39,7 @@ abstract class BaseNotification implements NotificationInterface
     }
 
     /**
-     * @return MessageInterface[]
+     * @return array
      */
     abstract protected function getMessages();
 

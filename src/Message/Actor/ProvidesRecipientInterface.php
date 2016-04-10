@@ -16,5 +16,10 @@ namespace Notify\Message\Actor;
  */
 interface ProvidesRecipientInterface
 {
+    /**
+     * @param string $notificationId
+     * @param string $messageType
+     * @return RecipientInterface
+     */
     public function getMessageRecipient($notificationId, $messageType);
 }

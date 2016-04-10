@@ -19,23 +19,23 @@ use Notify\Message\MessageInterface;
 final class TestHandler implements HandlerInterface
 {
     /**
-     * @var MessageInterface
+     * @var MessageInterface[]
      */
-    private $message;
+    private $messages;
 
     /**
      * {@inheritDoc}
      */
     public function send(MessageInterface $message)
     {
-        $this->message = $message;
+        $this->messages[] = $message;
     }
 
     /**
-     * @return MessageInterface
+     * @return array
      */
-    public function getMessage()
+    public function getMessages()
     {
-        return $this->message;
+        return $this->messages;
     }
 }
