@@ -28,7 +28,7 @@ use Notify\Message\Options\EmailOptions;
 class HandlersStrategyTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var HandlersStrategy
+     * @var SendStrategy
      */
     private $strategy;
 
