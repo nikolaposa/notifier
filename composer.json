@@ -21,8 +21,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Notify\\Tests\\": "tests/",
-            "Notify\\Example\\": "examples/"
+            "Notify\\Tests\\": "tests/"
         }
     }
 }

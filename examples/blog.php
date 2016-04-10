@@ -9,7 +9,7 @@
  * located at the package root folder.
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+namespace Notify\Example;
 
 use Notify\Contact\HasContactsInterface;
 use Notify\Contact\Contacts;
@@ -25,6 +25,8 @@ use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\Handler\TestHandler;
+
+require_once __DIR__ . '/../vendor/autoload.php';
 
 final class User implements HasContactsInterface, ProvidesRecipientInterface
 {

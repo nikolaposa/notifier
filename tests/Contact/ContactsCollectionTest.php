@@ -14,7 +14,7 @@ namespace Notify\Tests\Contact;
 use PHPUnit_Framework_TestCase;
 use Notify\Contact\Contacts;
 use Notify\Contact\EmailContact;
-use Notify\Contact\PhoneContact;
+use Notify\Tests\TestAsset\Contact\TestContact;
 use Notify\Exception\InvalidArgumentException;
 
 /**
@@ -60,14 +60,14 @@ class ContactsCollectionTest extends PHPUnit_Framework_TestCase
         ]);
 
         $this->assertTrue($contacts->has(EmailContact::class));
-        $this->assertFalse($contacts->has(PhoneContact::class));
+        $this->assertFalse($contacts->has(TestContact::class));
     }
 
     public function testGettingContactsByType()
     {
         $contacts = new Contacts([
             new EmailContact('test1@example.com', 'home'),
-            new PhoneContact('123456', 'mobile'),
+            new TestContact('123456', 'mobile'),
             new EmailContact('test2@example.com', 'work'),
         ]);
 
@@ -81,7 +81,7 @@ class ContactsCollectionTest extends PHPUnit_Framework_TestCase
     {
         $contacts = new Contacts([
             new EmailContact('test1@example.com', 'home'),
-            new PhoneContact('123456', 'mobile'),
+            new TestContact('123456', 'mobile'),
             new EmailContact('test2@example.com', 'work'),
         ]);
 
@@ -93,7 +93,7 @@ class ContactsCollectionTest extends PHPUnit_Framework_TestCase
     public function testGettingContactOfTypeThatDoesNotExist()
     {
         $contacts = new Contacts([
-            new PhoneContact('123456'),
+            new TestContact('123456'),
         ]);
 
         $this->assertFalse($contacts->getOne(EmailContact::class));
