@@ -38,7 +38,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
         $this->sentParameters = [];
     }
 
-    public function mailer($to, $subject, $message, $additional_headers = null, $additional_parameters = null)
+    public function mailer()
     {
         $this->sentParameters[] = func_get_args();
     }

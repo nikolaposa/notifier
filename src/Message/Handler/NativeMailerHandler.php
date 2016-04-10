@@ -28,17 +28,20 @@ final class NativeMailerHandler implements HandlerInterface
     private $maxColumnWidth;
 
     /**
-     * @var string
+     * @var callable
      */
-    private $mailer;
+    private $mailer = 'mail';
 
     /**
      * @param int $maxColumnWidth
      */
-    public function __construct($maxColumnWidth = 70, $mailer = 'mail')
+    public function __construct($maxColumnWidth = 70, callable $mailer = null)
     {
         $this->maxColumnWidth = (int) $maxColumnWidth;
-        $this->mailer = $mailer;
+
+        if (null !== $mailer) {
+            $this->mailer = $mailer;
+        }
     }
 
     /**
