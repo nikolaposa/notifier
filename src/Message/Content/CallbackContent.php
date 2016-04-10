@@ -1,19 +1,33 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+namespace Notify\Message\Content;
+
+use Notify\Exception\InvalidArgumentException;
 
 /**
- *
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class CallbackContent
+final class CallbackContent implements ContentInterface
 {
+    /**
+     * @var callable
+     */
+    protected $callback;
 
+    /**
+     * @param callable $callback
+     */
+    public function __construct($callback)
+    {
+        if (! is_callable($callback)) {
+            throw new InvalidArgumentException('Invalid callback provided; not callable');
+        }
+
+        $this->callback = $callback;
+    }
+
+    public function get()
+    {
+        return call_user_func($this->callback);
+    }
 }
