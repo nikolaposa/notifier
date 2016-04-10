@@ -13,6 +13,7 @@ namespace Notify\Tests\Contact;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Contact\Contacts;
+use Notify\Contact\ContactInterface;
 use Notify\Contact\EmailContact;
 use Notify\Tests\TestAsset\Contact\TestContact;
 use Notify\Exception\InvalidArgumentException;
@@ -20,7 +21,7 @@ use Notify\Exception\InvalidArgumentException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class ContactsCollectionTest extends PHPUnit_Framework_TestCase
+class ContactsTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingEmptyContacts()
     {
@@ -38,6 +39,45 @@ class ContactsCollectionTest extends PHPUnit_Framework_TestCase
         ]);
 
         $this->assertCount(3, $contacts);
+    }
+
+    public function testTraversingContacts()
+    {
+        $contacts = new Contacts([
+            new EmailContact('test1@example.com', 'home1'),
+            new EmailContact('test2@example.com', 'home2'),
+            new EmailContact('test3@example.com', 'work'),
+        ]);
+
+        foreach ($contacts as $contact) {
+            $this->assertInstanceOf(ContactInterface::class, $contact);
+        }
+    }
+
+    public function testGettingFirstContact()
+    {
+        $contacts = new Contacts([
+            new EmailContact('test1@example.com', 'home1'),
+            new EmailContact('test2@example.com', 'home2'),
+            new EmailContact('test3@example.com', 'work'),
+        ]);
+
+        $contact = $contacts->first();
+        $this->assertInstanceOf(ContactInterface::class, $contact);
+        $this->assertEquals('test1@example.com', $contact->getValue());
+    }
+
+    public function testGettingLastContact()
+    {
+        $contacts = new Contacts([
+            new EmailContact('test1@example.com', 'home1'),
+            new EmailContact('test2@example.com', 'home2'),
+            new EmailContact('test3@example.com', 'work'),
+        ]);
+
+        $contact = $contacts->last();
+        $this->assertInstanceOf(ContactInterface::class, $contact);
+        $this->assertEquals('test3@example.com', $contact->getValue());
     }
 
     public function testAddingContact()
