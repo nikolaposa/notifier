@@ -7,7 +7,16 @@
 PHP library which provides abstractions for modeling and implementing notifications functionality in
 some application.
 
-## Usage
+## Installation
+
+The preferred method of installation is via [Composer](http://getcomposer.org/). Run the following
+command to install the latest version of a package and add it to your project's `composer.json`:
+
+```bash
+composer require nikolaposa/notify
+```
+
+## Theory of operation
 
 The essence of using this librarly is creation of notifications, whose task is to construct messages
 (for example email, SMS, push) and send them using a strategy.
