@@ -40,7 +40,9 @@ into a background job.
 
 ## Example
 
-```
+```php
+<?php
+
 use Notify\BaseNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
