@@ -21,6 +21,7 @@ use Notify\Message\Content\TextContent;
 use Notify\Contact\EmailContact;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
+use Notify\Tests\TestAsset\Message\DummyMessage;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -64,10 +65,26 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
             $message
         ]);
 
-        $sentMessage = current($this->testHandler->getMessages());
+        $sentMessages = $this->testHandler->getMessages();
+        $this->assertNotEmpty($sentMessages);
+        $sentMessage = current($sentMessages);
         $this->assertInstanceOf(EmailMessage::class, $sentMessage);
         $this->assertEquals('Test', $sentMessage->getSubject());
         $this->assertEquals('test test test', $sentMessage->getContent()->get());
         $this->assertCount(1, $sentMessage->getRecipients());
+    }
+
+    public function testSendingSkippedInCaseOfUnsupportedMessageType()
+    {
+        $message = new DummyMessage(
+            new Recipients([
+                new Recipient('John Doe', new EmailContact('test1@example.com'))
+            ]),
+            new TextContent('test test test')
+        );
+
+        $this->strategy->handle([$message]);
+
+        $this->assertEmpty($this->testHandler->getMessages());
     }
 }
