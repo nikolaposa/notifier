@@ -28,11 +28,17 @@ final class NativeMailerHandler implements HandlerInterface
     private $maxColumnWidth;
 
     /**
+     * @var string
+     */
+    private $mailer;
+
+    /**
      * @param int $maxColumnWidth
      */
-    public function __construct($maxColumnWidth = 70)
+    public function __construct($maxColumnWidth = 70, $mailer = 'mail')
     {
         $this->maxColumnWidth = (int) $maxColumnWidth;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -49,7 +55,7 @@ final class NativeMailerHandler implements HandlerInterface
 
     private function formatRecipients(Recipients $recipients)
     {
-        return array_map(function(RecipientInterface $recipient) {
+        $recipientsString = array_map(function(RecipientInterface $recipient) {
             $to = $recipient->getContact()->getValue();
 
             if ($recipient->getName() !== '') {
@@ -57,7 +63,11 @@ final class NativeMailerHandler implements HandlerInterface
             }
 
             return $to;
-        }, $recipients);
+        }, $recipients->toArray());
+
+        $recipientsString = implode(',', $recipientsString);
+
+        return $recipientsString;
     }
 
     private function doSend(EmailMessage $message)
@@ -78,6 +88,6 @@ final class NativeMailerHandler implements HandlerInterface
 
         $parameters = implode(' ', $options->getParameters());
 
-        mail($recipients, $subject, $content, $headers, $parameters);
+        call_user_func($this->mailer, $recipients, $subject, $content, $headers, $parameters);
     }
 }
