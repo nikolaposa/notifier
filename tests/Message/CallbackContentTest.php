@@ -13,7 +13,6 @@ namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Message\Content\CallbackContent;
-use Notify\Exception\InvalidArgumentException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -31,12 +30,5 @@ class CallbackContentTest extends PHPUnit_Framework_TestCase
         $content = new CallbackContent($renderer);
 
         $this->assertEquals('Hello test', $content->get());
-    }
-
-    public function testExceptionIsRaisedInCaseOfInvalidCallback()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new CallbackContent('invalid');
     }
 }
