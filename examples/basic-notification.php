@@ -28,7 +28,7 @@ final class TestNotification extends BaseNotification
 {
     public function getName()
     {
-        return 'New comment notification';
+        return 'Test notification';
     }
 
     protected function getMessages()
@@ -49,8 +49,8 @@ final class TestNotification extends BaseNotification
 
 $handler = new TestHandler();
 
-$newCommentNotification = new TestNotification($post, $comment);
-$newCommentNotification(new SendStrategy([
+$notification = new TestNotification($post, $comment);
+$notification(new SendStrategy([
     EmailMessage::class => $handler,
 ]));
 
