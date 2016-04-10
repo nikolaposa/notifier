@@ -55,10 +55,8 @@ class NotificationTest extends PHPUnit_Framework_TestCase
 
     public function testExceptionIsRaisedIfStrategyNotSupplied()
     {
-        $this->setExpectedException(
-            NotificationStrategyNotSuppliedException::class,
-            'Strategy for notification "Notify\Tests\TestAsset\Notification\NewCommentNotification" was not supplied'
-        );
+        $this->setExpectedException(NotificationStrategyNotSuppliedException::class);
+        $this->expectExceptionMessage('Strategy for notification "Notify\Tests\TestAsset\Notification\NewCommentNotification" was not supplied');
 
         $notification = $this->notification;
         $notification();

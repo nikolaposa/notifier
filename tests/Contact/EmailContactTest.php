@@ -22,10 +22,8 @@ class EmailContactTest extends PHPUnit_Framework_TestCase
 {
     public function testEmailValidation()
     {
-        $this->setExpectedException(
-            InvalidContactException::class,
-            '"invalid" is not a valid email address'
-        );
+        $this->expectException(InvalidContactException::class);
+        $this->expectExceptionMessage('"invalid" is not a valid email address');
 
         new EmailContact('invalid');
     }
