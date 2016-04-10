@@ -225,6 +225,6 @@ $newCommentNotification();
 
 foreach ($defaultHandler->getMessages() as $message) {
     echo get_class($message) . ': ';
-    echo $message->getContent()->getContent();
+    echo $message->getContent()->get();
     echo "\n\n";
 }

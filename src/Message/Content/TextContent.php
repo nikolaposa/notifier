@@ -29,7 +29,7 @@ final class TextContent implements ContentInterface
     /**
      * {@inheritDoc}
      */
-    public function getContent()
+    public function get()
     {
         return $this->content;
     }

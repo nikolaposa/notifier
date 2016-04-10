@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -9,15 +9,11 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\Content;
-
 /**
+ *
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface ContentInterface
+class CallbackContent
 {
-    /**
-     * @return mixed
-     */
-    public function get();
+
 }

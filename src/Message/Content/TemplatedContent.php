@@ -63,7 +63,7 @@ final class TemplatedContent implements ContentInterface
         return $this->templateRenderer;
     }
 
-    public function getContent()
+    public function get()
     {
         return $this->getTemplateRenderer()->render($this->name, $this->data);
     }

@@ -67,7 +67,7 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
         $sentMessage = current($this->testHandler->getMessages());
         $this->assertInstanceOf(EmailMessage::class, $sentMessage);
         $this->assertEquals('Test', $sentMessage->getSubject());
-        $this->assertEquals('test test test', $sentMessage->getContent()->getContent());
+        $this->assertEquals('test test test', $sentMessage->getContent()->get());
         $this->assertCount(1, $sentMessage->getRecipients());
     }
 }

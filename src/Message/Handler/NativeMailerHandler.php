@@ -65,7 +65,7 @@ final class NativeMailerHandler implements HandlerInterface
 
         $subject = $message->getSubject();
 
-        $content = wordwrap($message->getContent()->getContent(), $this->maxColumnWidth);
+        $content = wordwrap($message->getContent()->get(), $this->maxColumnWidth);
 
         $options = $message->getOptions();
 

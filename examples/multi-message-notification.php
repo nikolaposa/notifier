@@ -63,7 +63,7 @@ $newCommentNotification(new SendStrategy([
 
 foreach ($handler->getMessages() as $message) {
     echo get_class($message) . ': ';
-    echo htmlentities($message->getContent()->getContent());
+    echo htmlentities($message->getContent()->get());
     echo "\n\n";
 }
 
