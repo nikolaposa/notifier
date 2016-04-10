@@ -14,6 +14,7 @@ namespace Notify\Message\Handler;
 use Notify\Message\MessageInterface;
 use Notify\Message\EmailMessage;
 use Notify\Exception\UnsupportedMessageException;
+use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\RecipientInterface;
 
 /**
@@ -46,7 +47,7 @@ final class NativeMailerHandler implements HandlerInterface
         $this->doSend($message);
     }
 
-    private function formatRecipients(array $recipients)
+    private function formatRecipients(Recipients $recipients)
     {
         return array_map(function(RecipientInterface $recipient) {
             $to = $recipient->getContact()->getValue();

@@ -59,4 +59,15 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
 
         $this->assertCount(3, $recipients);
     }
+
+    public function testRecipientsToArrayConversion()
+    {
+        $recipients = new Recipients([
+            new Recipient('Test1', new TestContact('test1')),
+            new Recipient('Test2', new TestContact('test2')),
+            new Recipient('Test3', new TestContact('test3')),
+        ]);
+
+        $this->assertInternalType('array', $recipients->toArray());
+    }
 }

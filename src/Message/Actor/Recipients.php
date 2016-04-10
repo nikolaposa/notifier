@@ -50,4 +50,12 @@ class Recipients implements Countable, IteratorAggregate
     {
         return new ArrayIterator($this->recipients);
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->recipients;
+    }
 }
