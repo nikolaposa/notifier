@@ -86,7 +86,7 @@ final class NativeMailerHandler implements HandlerInterface
         $headers = ltrim(implode("\r\n", $options->getHeaders()) . "\r\n", "\r\n");
         $headers .= 'Content-type: ' . $options->getContentType() . '; charset=' . $options->getEncoding() . "\r\n";
         if ($options->getContentType() == 'text/html' && false === strpos($headers, 'MIME-Version:')) {
-            $headers .= 'MIME-Version: 1.0' . "\r\n";
+            $headers .= "MIME-Version: 1.0\r\n";
         }
 
         $parameters = implode(' ', $options->getParameters());
