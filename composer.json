@@ -1,6 +1,8 @@
 {
     "name": "nikolaposa/notify",
+    "description": "Abstractions for modeling and implementing application notifications functionality",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Nikola Poša",
