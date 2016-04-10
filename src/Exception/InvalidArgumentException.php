@@ -14,10 +14,6 @@ namespace Notify\Exception;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class InvalidContactException extends InvalidArgumentException implements ExceptionInterface
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
-    public static function fromInvalidValue($value, $type)
-    {
-        return new self(sprintf('"%s" is not a valid %s', $value, $type));
-    }
 }

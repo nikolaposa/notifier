@@ -15,7 +15,7 @@ use PHPUnit_Framework_TestCase;
 use Notify\Contact\Contacts;
 use Notify\Contact\EmailContact;
 use Notify\Contact\PhoneContact;
-use Notify\Exception\InvalidContactsItemException;
+use Notify\Exception\InvalidArgumentException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -101,10 +101,7 @@ class ContactsCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testContactsCreationFailsInCaseOfInvalidContact()
     {
-        $this->setExpectedException(
-            InvalidContactsItemException::class,
-            'Contact must be ContactInterface instance, string given'
-        );
+        $this->expectException(InvalidArgumentException::class);
 
         new Contacts(['invalid']);
     }
