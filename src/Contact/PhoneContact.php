@@ -14,12 +14,12 @@ namespace Notify\Contact;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class PhoneContact extends BaseContact
+class PhoneContact extends BaseContact
 {
     protected function filter($phoneNumber)
     {
         $phoneNumber = trim($phoneNumber);
-        
+
         return $phoneNumber;
     }
 }

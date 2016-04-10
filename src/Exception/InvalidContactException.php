@@ -20,6 +20,6 @@ class InvalidContactException extends InvalidArgumentException implements Except
 {
     public static function fromInvalidValue($value, $type)
     {
-        return new self(sprintf('%s is not a valid %s', $value, $type));
+        return new self(sprintf('"%s" is not a valid %s', $value, $type));
     }
 }

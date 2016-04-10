@@ -16,13 +16,13 @@ use Notify\Exception\InvalidContactException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class EmailContact extends BaseContact
+class EmailContact extends BaseContact
 {
     protected function filter($email)
     {
         $email = trim($email);
-        
-        if (false === filter_var($email, FILTER_SANITIZE_EMAIL)) {
+
+        if (false === filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw InvalidContactException::fromInvalidValue($email, 'email address');
         }
 
