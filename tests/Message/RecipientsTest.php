@@ -73,7 +73,7 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
             new User('jd', 'John', 'Doe', 'jd@example.com'),
         ], EmailMessage::class);
 
-        $this->count(1, $recipients);
+        $this->assertCount(1, $recipients);
     }
 
     public function testRecipientsCreationFailsInCaseOfInvalidRecipient()
