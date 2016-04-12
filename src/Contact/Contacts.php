@@ -40,7 +40,7 @@ class Contacts implements Countable, IteratorAggregate
         foreach ($contacts as $contact) {
             if (! $contact instanceof ContactInterface) {
                 throw new InvalidArgumentException(sprintf(
-                    '%s expects %s instances, %s given',
+                    '%s expects array of %s instances, %s given',
                     __METHOD__,
                     ContactInterface::class,
                     is_object($contact) ? get_class($contact) : gettype($contact)

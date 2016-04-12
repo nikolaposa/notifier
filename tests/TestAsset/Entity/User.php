@@ -83,7 +83,7 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
         ]);
     }
 
-    public function getMessageRecipient($notificationId, $messageType)
+    public function getMessageRecipient($messageType, $notificationId = null)
     {
         $name = sprintf('%s %s', $this->getFirstName(), $this->getLastName());
 

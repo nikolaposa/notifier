@@ -17,9 +17,9 @@ namespace Notify\Message\Actor;
 interface ProvidesRecipientInterface
 {
     /**
-     * @param string $notificationId
      * @param string $messageType
+     * @param string $notificationId OPTIONAL
      * @return RecipientInterface
      */
-    public function getMessageRecipient($notificationId, $messageType);
+    public function getMessageRecipient($messageType, $notificationId = null);
 }

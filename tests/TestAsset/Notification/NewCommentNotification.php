@@ -52,9 +52,9 @@ final class NewCommentNotification extends BaseNotification
     {
         return [
             new EmailMessage(
-                new Recipients([
-                    $this->post->getAuthor()->getMessageRecipient(self::ID, EmailMessage::class)
-                ]),
+                Recipients::fromRecipientProviders([
+                    $this->post->getAuthor()
+                ], EmailMessage::class, self::ID),
                 'New comment',
                 new TextContent(sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())),
                 new EmptySender(),

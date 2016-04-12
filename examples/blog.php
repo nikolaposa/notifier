@@ -77,7 +77,7 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
         ]);
     }
 
-    public function getMessageRecipient($notificationId, $messageType)
+    public function getMessageRecipient($messageType, $notificationId = null)
     {
         $name = sprintf('%s %s', $this->getFirstName(), $this->getLastName());
 
@@ -199,7 +199,7 @@ final class NewCommentNotification extends BaseNotification
         return [
             new EmailMessage(
                 new Recipients([
-                    $this->post->getAuthor()->getMessageRecipient(self::ID, EmailMessage::class)
+                    $this->post->getAuthor()->getMessageRecipient(EmailMessage::class, self::ID)
                 ]),
                 'New comment',
                 new TextContent(sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())),
