@@ -12,10 +12,7 @@
 namespace Notify\Tests\Notification;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Tests\TestAsset\Notification\NewCommentNotification;
-use Notify\Tests\TestAsset\Entity\User;
-use Notify\Tests\TestAsset\Entity\Post;
-use Notify\Tests\TestAsset\Entity\Comment;
+use Notify\Tests\TestAsset\Notification\TestNotification;
 use Notify\Strategy\TestStrategy;
 use Notify\Message\MessageInterface;
 use Notify\Exception\NotificationStrategyNotSuppliedException;
@@ -32,12 +29,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $user = new User('admin', 'John', 'Doe', 'jd@example.com');
-        $post = new Post('Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $user);
-        $comment = new Comment('Jane', 'jane@example.com', 'Nice article!');
-        $post->comment($comment);
-
-        $this->notification = new NewCommentNotification($post, $comment);
+        $this->notification = new TestNotification();
     }
 
     public function testMessagesHandledByStrategy()
@@ -56,7 +48,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     public function testExceptionIsRaisedIfStrategyNotSupplied()
     {
         $this->expectException(NotificationStrategyNotSuppliedException::class);
-        $this->expectExceptionMessage('Strategy for notification "Notify\Tests\TestAsset\Notification\NewCommentNotification" was not supplied');
+        $this->expectExceptionMessage('Strategy for notification "' . TestNotification::class . '" was not supplied');
 
         $notification = $this->notification;
         $notification();

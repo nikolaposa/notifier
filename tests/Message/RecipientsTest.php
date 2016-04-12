@@ -15,10 +15,9 @@ use PHPUnit_Framework_TestCase;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
 use Notify\Message\Actor\RecipientInterface;
+use Notify\Message\Actor\ProvidesRecipientInterface;
 use Notify\Tests\TestAsset\Contact\TestContact;
-use Notify\Tests\TestAsset\Entity\User;
 use Notify\Message\EmailMessage;
-use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Exception\InvalidArgumentException;
 
 /**
@@ -26,6 +25,16 @@ use Notify\Exception\InvalidArgumentException;
  */
 class RecipientsTest extends PHPUnit_Framework_TestCase
 {
+    private function mockRecipientProvider($recipient = null)
+    {
+        $provider = $this->getMock(ProvidesRecipientInterface::class);
+        $provider->expects($this->once())
+            ->method('getMessageRecipient')
+            ->will($this->returnValue($recipient));
+
+        return $provider;
+    }
+
     public function testCreatingEmptyRecipients()
     {
         $recipients = new Recipients([]);
@@ -78,7 +87,7 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testCreatingRecipientsFromRecipientProviders()
     {
         $recipients = Recipients::fromRecipientProviders([
-            new User('jd', 'John', 'Doe', 'jd@example.com'),
+            $this->mockRecipientProvider(new Recipient('Test1', new TestContact('test1'))),
         ], EmailMessage::class);
 
         $this->assertCount(1, $recipients);
@@ -96,8 +105,8 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testCreatingRecipientsFromRecipientProvidersSkippedIfRecipientNotResolved()
     {
         $recipients = Recipients::fromRecipientProviders([
-            new User('jd', 'John', 'Doe', 'jd@example.com'),
-        ], DummyMessage::class);
+            $this->mockRecipientProvider(null),
+        ], EmailMessage::class);
 
         $this->assertTrue($recipients->isEmpty());
     }
