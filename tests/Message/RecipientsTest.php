@@ -25,6 +25,13 @@ use Notify\Exception\InvalidArgumentException;
  */
 class RecipientsTest extends PHPUnit_Framework_TestCase
 {
+    public function testCreatingEmptyRecipients()
+    {
+        $recipients = new Recipients([]);
+
+        $this->assertTrue($recipients->isEmpty());
+    }
+
     public function testCountingRecipients()
     {
         $recipients = new Recipients([

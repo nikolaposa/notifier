@@ -30,6 +30,13 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($contacts->isEmpty());
     }
 
+    public function testContactsCreationFailsInCaseOfInvalidContact()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Contacts(['invalid']);
+    }
+
     public function testCountingContacts()
     {
         $contacts = new Contacts([
@@ -139,10 +146,24 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($contacts->getOne(EmailContact::class));
     }
 
-    public function testContactsCreationFailsInCaseOfInvalidContact()
+    public function testFindingContact()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $contacts = new Contacts([
+            new EmailContact('test1@example.com', 'default'),
+        ]);
 
-        new Contacts(['invalid']);
+        $contact = $contacts->find(EmailContact::class, 'default');
+
+        $this->assertInstanceOf(EmailContact::class, $contact);
+        $this->assertEquals('test1@example.com', $contact->getValue());
+    }
+
+    public function testFindContactReturnsFalseIfContactNotFound()
+    {
+        $contacts = new Contacts([
+            new TestContact('123456'),
+        ]);
+
+        $this->assertFalse($contacts->find(EmailContact::class, 'default'));
     }
 }
