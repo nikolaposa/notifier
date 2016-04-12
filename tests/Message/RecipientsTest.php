@@ -18,6 +18,7 @@ use Notify\Message\Actor\RecipientInterface;
 use Notify\Tests\TestAsset\Contact\TestContact;
 use Notify\Tests\TestAsset\Entity\User;
 use Notify\Message\EmailMessage;
+use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Exception\InvalidArgumentException;
 
 /**
@@ -30,6 +31,13 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
         $recipients = new Recipients([]);
 
         $this->assertTrue($recipients->isEmpty());
+    }
+
+    public function testRecipientsCreationFailsInCaseOfInvalidRecipient()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Recipients(['invalid']);
     }
 
     public function testCountingRecipients()
@@ -76,10 +84,21 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
         $this->assertCount(1, $recipients);
     }
 
-    public function testRecipientsCreationFailsInCaseOfInvalidRecipient()
+    public function testCreatingRecipientsFromRecipientProvidersFailsInCaseOfInvalidProvider()
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Recipients(['invalid']);
+        Recipients::fromRecipientProviders([
+            'invalid',
+        ], EmailMessage::class);
+    }
+
+    public function testCreatingRecipientsFromRecipientProvidersSkippedIfRecipientNotResolved()
+    {
+        $recipients = Recipients::fromRecipientProviders([
+            new User('jd', 'John', 'Doe', 'jd@example.com'),
+        ], DummyMessage::class);
+
+        $this->assertTrue($recipients->isEmpty());
     }
 }
