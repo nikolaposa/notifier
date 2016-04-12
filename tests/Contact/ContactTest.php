@@ -12,6 +12,7 @@
 namespace Notify\Tests\Contact;
 
 use PHPUnit_Framework_TestCase;
+use Notify\Contact\BaseContact;
 use Notify\Tests\TestAsset\Contact\TestContact;
 
 /**
@@ -21,21 +22,21 @@ class ContactTest extends PHPUnit_Framework_TestCase
 {
     public function testGettingContactValue()
     {
-        $contact = new TestContact('test');
+        $contact = $this->getMockForAbstractClass(BaseContact::class, ['test']);
 
         $this->assertEquals('test', $contact->getValue());
     }
 
     public function testContactNameIsEmptyByDefault()
     {
-        $contact = new TestContact('test');
+        $contact = $this->getMockForAbstractClass(BaseContact::class, ['test']);
 
         $this->assertEquals('', $contact->getName());
     }
 
     public function testSupplyingContactName()
     {
-        $contact = new TestContact('test', 'John Doe');
+        $contact = $this->getMockForAbstractClass(BaseContact::class, ['test', 'John Doe']);
 
         $this->assertEquals('John Doe', $contact->getName());
     }
