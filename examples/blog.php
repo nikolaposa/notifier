@@ -32,9 +32,9 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
 {
     private $username;
 
-	private $firstName;
+    private $firstName;
 
-	private $lastName;
+    private $lastName;
 
     private $email;
 

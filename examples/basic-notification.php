@@ -59,4 +59,3 @@ foreach ($handler->getMessages() as $message) {
     echo htmlentities($message->getContent()->get());
     echo "\n\n";
 }
-

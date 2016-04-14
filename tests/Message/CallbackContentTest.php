@@ -23,7 +23,7 @@ class CallbackContentTest extends PHPUnit_Framework_TestCase
     {
         $template = 'Hello %s';
         $data = ['test'];
-        $renderer = function() use ($template, $data) {
+        $renderer = function () use ($template, $data) {
             return vsprintf($template, $data);
         };
 

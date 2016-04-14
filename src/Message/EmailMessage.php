@@ -11,9 +11,6 @@
 
 namespace Notify\Message;
 
-use Notify\Message\MessageInterface;
-use Notify\Message\HasSubjectInterface;
-use Notify\Message\HasSenderInterface;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Content\ContentInterface;
 use Notify\Message\Actor\SenderInterface;

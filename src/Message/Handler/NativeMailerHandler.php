@@ -58,7 +58,7 @@ final class NativeMailerHandler implements HandlerInterface
 
     private function formatRecipients(Recipients $recipients)
     {
-        $recipientsString = array_map(function(RecipientInterface $recipient) {
+        $recipientsString = array_map(function (RecipientInterface $recipient) {
             $to = $recipient->getContact()->getValue();
 
             if ($recipient->getName() !== '') {
