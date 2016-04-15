@@ -22,11 +22,11 @@ abstract class BaseContact implements ContactInterface
     private $value;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
-    public function __construct($value, $name = '')
+    public function __construct($value, $name = null)
     {
         $this->value = $this->filter($value);
         $this->name = $name;
@@ -37,11 +37,17 @@ abstract class BaseContact implements ContactInterface
         return $value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getName()
     {
         return $this->name;

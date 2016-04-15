@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -14,15 +14,6 @@ namespace Notify\Contact;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface ContactInterface
+final class GenericContact extends BaseContact
 {
-    /**
-     * @return string
-     */
-    public function getValue();
-
-    /**
-     * @return string|null
-     */
-    public function getName();
 }

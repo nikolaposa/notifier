@@ -27,11 +27,11 @@ class ContactTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('test', $contact->getValue());
     }
 
-    public function testContactNameIsEmptyByDefault()
+    public function testNoContactNameByDefault()
     {
         $contact = $this->getMockForAbstractClass(BaseContact::class, ['test']);
 
-        $this->assertEquals('', $contact->getName());
+        $this->assertNull($contact->getName());
     }
 
     public function testSupplyingContactName()
