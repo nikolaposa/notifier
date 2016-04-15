@@ -22,9 +22,9 @@ class RecipientTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingRecipient()
     {
-        $recipient = new Recipient('Test', new TestContact('test'));
+        $recipient = new Recipient(new TestContact('test'), 'Test');
 
-        $this->assertEquals('Test', $recipient->getName());
         $this->assertEquals('test', $recipient->getContact()->getValue());
+        $this->assertEquals('Test', $recipient->getName());
     }
 }

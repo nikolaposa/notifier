@@ -35,7 +35,7 @@ class TestNotification extends BaseNotification
         return [
             new EmailMessage(
                 new Recipients([
-                    new Recipient('John Doe', new EmailContact('john@example.com')),
+                    new Recipient(new EmailContact('john@example.com'), 'John Doe'),
                 ]),
                 'Notification exercise',
                 new TextContent('Some <strong>HTML</strong> notification content'),

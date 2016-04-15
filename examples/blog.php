@@ -85,7 +85,7 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
 
         if ($messageType == EmailMessage::class) {
             if (false !== ($emailContact = $contacts->getOne(EmailContact::class))) {
-                return new Recipient($name, $emailContact);
+                return new Recipient($emailContact, $name);
             }
         }
 

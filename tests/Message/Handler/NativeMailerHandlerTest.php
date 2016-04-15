@@ -49,8 +49,8 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient('Test1', new EmailContact('test1@example.com')),
-                new Recipient('Test2', new EmailContact('test2@example.com')),
+                new Recipient(new EmailContact('test1@example.com'), 'Test1'),
+                new Recipient(new EmailContact('test2@example.com'), 'Test2'),
             ]),
             'Test',
             new TextContent('test test test'),
@@ -77,7 +77,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
 
         $message = new DummyMessage(
             new Recipients([
-                new Recipient('John Doe', new EmailContact('test1@example.com'))
+                new Recipient(new EmailContact('test1@example.com'))
             ]),
             new TextContent('test test test')
         );
@@ -90,8 +90,8 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient('Test1', new EmailContact('test1@example.com')),
-                new Recipient('Test2', new EmailContact('test2@example.com')),
+                new Recipient(new EmailContact('test1@example.com')),
+                new Recipient(new EmailContact('test2@example.com')),
             ]),
             'Test',
             new TextContent('test test test'),
@@ -112,8 +112,8 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient('Test1', new EmailContact('test1@example.com')),
-                new Recipient('Test2', new EmailContact('test2@example.com')),
+                new Recipient(new EmailContact('test1@example.com')),
+                new Recipient(new EmailContact('test2@example.com')),
             ]),
             'Test',
             new TextContent('test test test'),

@@ -22,9 +22,17 @@ class GenericActorTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingActor()
     {
-        $actor = new GenericActor('Test', new TestContact('test'));
+        $actor = new GenericActor(new TestContact('test'), 'Test');
 
-        $this->assertEquals('Test', $actor->getName());
         $this->assertEquals('test', $actor->getContact()->getValue());
+        $this->assertEquals('Test', $actor->getName());
+    }
+
+    public function testNoActorNameByDefault()
+    {
+        $actor = new GenericActor(new TestContact('test'));
+
+        $this->assertEquals('test', $actor->getContact()->getValue());
+        $this->assertNull($actor->getName());
     }
 }

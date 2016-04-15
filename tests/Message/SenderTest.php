@@ -22,9 +22,9 @@ class SenderTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingSender()
     {
-        $sender = new Sender('Test', new TestContact('test'));
+        $sender = new Sender(new TestContact('test'), 'Test');
 
-        $this->assertEquals('Test', $sender->getName());
         $this->assertEquals('test', $sender->getContact()->getValue());
+        $this->assertEquals('Test', $sender->getName());
     }
 }

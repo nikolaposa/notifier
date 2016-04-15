@@ -16,31 +16,31 @@ use Notify\Contact\ContactInterface;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class GenericActor implements ActorInterface
+class GenericActor implements ActorInterface, HasNameInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
-
     /**
      * @var ContactInterface
      */
     private $contact;
 
-    public function __construct($name, ContactInterface $contact)
-    {
-        $this->name = $name;
-        $this->contact = $contact;
-    }
+    /**
+     * @var string|null
+     */
+    private $name;
 
-    public function getName()
+    public function __construct(ContactInterface $contact, $name = null)
     {
-        return $this->name;
+        $this->contact = $contact;
+        $this->name = $name;
     }
 
     public function getContact()
     {
         return $this->contact;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }

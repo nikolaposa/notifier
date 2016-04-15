@@ -34,7 +34,7 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient('Test', new TestContact('test'))
+                new Recipient(new TestContact('test'), 'Test')
             ]),
             'Test',
             new TextContent('test test test'),

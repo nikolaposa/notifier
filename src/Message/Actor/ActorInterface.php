@@ -19,11 +19,6 @@ use Notify\Contact\ContactInterface;
 interface ActorInterface
 {
     /**
-     * @return string
-     */
-    public function getName();
-
-    /**
      * @return ContactInterface
      */
     public function getContact();

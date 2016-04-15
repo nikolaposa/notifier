@@ -53,7 +53,7 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient('John Doe', new EmailContact('test1@example.com'))
+                new Recipient(new EmailContact('test1@example.com'), 'John Doe')
             ]),
             'Test',
             new TextContent('test test test'),
@@ -78,7 +78,7 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
     {
         $message = new DummyMessage(
             new Recipients([
-                new Recipient('John Doe', new EmailContact('test1@example.com'))
+                new Recipient(new EmailContact('test1@example.com'), 'John Doe')
             ]),
             new TextContent('test test test')
         );

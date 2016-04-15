@@ -14,21 +14,10 @@ namespace Notify\Message\Actor;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class EmptyRecipient implements RecipientInterface
+interface HasNameInterface
 {
     /**
-     * {@inheritDoc}
+     * @return string
      */
-    public function getContact()
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getName()
-    {
-        return null;
-    }
+    public function getName();
 }

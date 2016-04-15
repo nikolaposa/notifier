@@ -52,9 +52,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testCountingRecipients()
     {
         $recipients = new Recipients([
-            new Recipient('Test1', new TestContact('test1')),
-            new Recipient('Test2', new TestContact('test2')),
-            new Recipient('Test3', new TestContact('test3')),
+            new Recipient(new TestContact('test1')),
+            new Recipient(new TestContact('test2')),
+            new Recipient(new TestContact('test3')),
         ]);
 
         $this->assertCount(3, $recipients);
@@ -63,9 +63,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testTraversingRecipients()
     {
         $recipients = new Recipients([
-            new Recipient('Test1', new TestContact('test1')),
-            new Recipient('Test2', new TestContact('test2')),
-            new Recipient('Test3', new TestContact('test3')),
+            new Recipient(new TestContact('test1')),
+            new Recipient(new TestContact('test2')),
+            new Recipient(new TestContact('test3')),
         ]);
 
         foreach ($recipients as $recipient) {
@@ -76,9 +76,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testRecipientsToArrayConversion()
     {
         $recipients = new Recipients([
-            new Recipient('Test1', new TestContact('test1')),
-            new Recipient('Test2', new TestContact('test2')),
-            new Recipient('Test3', new TestContact('test3')),
+            new Recipient(new TestContact('test1')),
+            new Recipient(new TestContact('test2')),
+            new Recipient(new TestContact('test3')),
         ]);
 
         $this->assertInternalType('array', $recipients->toArray());
@@ -87,7 +87,7 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testCreatingRecipientsFromRecipientProviders()
     {
         $recipients = Recipients::fromRecipientProviders([
-            $this->mockRecipientProvider(new Recipient('Test1', new TestContact('test1'))),
+            $this->mockRecipientProvider(new Recipient(new TestContact('test1'))),
         ], EmailMessage::class);
 
         $this->assertCount(1, $recipients);
