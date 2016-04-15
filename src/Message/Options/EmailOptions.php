@@ -67,4 +67,12 @@ class EmailOptions
     {
         return $this->parameters;
     }
+
+    /**
+     * @return bool
+     */
+    public function isHtml()
+    {
+        return $this->getContentType() == 'text/html';
+    }
 }
