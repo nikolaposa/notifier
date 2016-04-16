@@ -12,12 +12,12 @@
 namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Message\Content\CallbackContent;
+use Notify\Message\Content\CallbackContentProvider;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class CallbackContentTest extends PHPUnit_Framework_TestCase
+class CallbackContentProviderTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingContentViaCallback()
     {
@@ -27,8 +27,8 @@ class CallbackContentTest extends PHPUnit_Framework_TestCase
             return vsprintf($template, $data);
         };
 
-        $content = new CallbackContent($renderer);
+        $content = new CallbackContentProvider($renderer);
 
-        $this->assertEquals('Hello test', $content->get());
+        $this->assertEquals('Hello test', $content->getContent());
     }
 }

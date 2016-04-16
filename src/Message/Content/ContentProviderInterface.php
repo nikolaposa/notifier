@@ -14,10 +14,10 @@ namespace Notify\Message\Content;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface ContentInterface
+interface ContentProviderInterface
 {
     /**
-     * @return mixed
+     * @return string
      */
-    public function get();
+    public function getContent();
 }

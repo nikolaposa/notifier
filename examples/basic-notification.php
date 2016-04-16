@@ -16,7 +16,6 @@ use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
 use Notify\Contact\EmailContact;
-use Notify\Message\Content\TextContent;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
@@ -39,7 +38,7 @@ final class TestNotification extends BaseNotification
                     new Recipient(new EmailContact('john@example.com', 'John Doe')),
                 ]),
                 'Notification exercise',
-                new TextContent('Some <strong>HTML</strong> notification content'),
+                'Some <strong>HTML</strong> notification content',
                 new EmptySender(),
                 new EmailOptions('text/html')
             ),
@@ -56,6 +55,6 @@ $notification(new SendStrategy([
 
 foreach ($handler->getMessages() as $message) {
     echo get_class($message) . ': ';
-    echo htmlentities($message->getContent()->get());
+    echo htmlentities($message->getContent());
     echo "\n\n";
 }

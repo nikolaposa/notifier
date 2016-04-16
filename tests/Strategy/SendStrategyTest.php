@@ -17,7 +17,6 @@ use Notify\Message\Handler\TestHandler;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
-use Notify\Message\Content\TextContent;
 use Notify\Contact\EmailContact;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
@@ -56,7 +55,7 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
                 new Recipient(new EmailContact('test1@example.com'), 'John Doe')
             ]),
             'Test',
-            new TextContent('test test test'),
+            'test test test',
             new EmptySender(),
             new EmailOptions()
         );
@@ -70,7 +69,7 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
         $sentMessage = current($sentMessages);
         $this->assertInstanceOf(EmailMessage::class, $sentMessage);
         $this->assertEquals('Test', $sentMessage->getSubject());
-        $this->assertEquals('test test test', $sentMessage->getContent()->get());
+        $this->assertEquals('test test test', $sentMessage->getContent());
         $this->assertCount(1, $sentMessage->getRecipients());
     }
 
@@ -80,7 +79,7 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
             new Recipients([
                 new Recipient(new EmailContact('test1@example.com'), 'John Doe')
             ]),
-            new TextContent('test test test')
+            'test test test'
         );
 
         $this->strategy->handle([$message]);

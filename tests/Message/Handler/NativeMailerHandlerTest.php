@@ -17,7 +17,6 @@ use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
 use Notify\Contact\EmailContact;
-use Notify\Message\Content\TextContent;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Tests\TestAsset\Message\DummyMessage;
@@ -53,7 +52,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
                 new Recipient(new EmailContact('test2@example.com'), 'Test2'),
             ]),
             'Test',
-            new TextContent('test test test'),
+            'test test test',
             new EmptySender(),
             new EmailOptions()
         );
@@ -79,7 +78,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new Recipients([
                 new Recipient(new EmailContact('test1@example.com'))
             ]),
-            new TextContent('test test test')
+            'test test test'
         );
 
         $handler = new NativeMailerHandler();
@@ -94,7 +93,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
                 new Recipient(new EmailContact('test2@example.com')),
             ]),
             'Test',
-            new TextContent('test test test'),
+            'test test test',
             new EmptySender(),
             new EmailOptions()
         );
@@ -116,7 +115,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
                 new Recipient(new EmailContact('test2@example.com')),
             ]),
             'Test',
-            new TextContent('test test test'),
+            'test test test',
             new EmptySender(),
             new EmailOptions('text/html')
         );

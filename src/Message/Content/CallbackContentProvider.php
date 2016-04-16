@@ -5,7 +5,7 @@ namespace Notify\Message\Content;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class CallbackContent implements ContentInterface
+final class CallbackContentProvider implements ContentProviderInterface
 {
     /**
      * @var callable
@@ -20,7 +20,7 @@ final class CallbackContent implements ContentInterface
         $this->callback = $callback;
     }
 
-    public function get()
+    public function getContent()
     {
         return call_user_func($this->callback);
     }

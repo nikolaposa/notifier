@@ -20,7 +20,6 @@ use Notify\Message\Actor\EmptyRecipient;
 use Notify\BaseNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Content\TextContent;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
@@ -202,7 +201,7 @@ final class NewCommentNotification extends BaseNotification
                     $this->post->getAuthor()->getMessageRecipient(EmailMessage::class, self::ID)
                 ]),
                 'New comment',
-                new TextContent(sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())),
+                sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle()),
                 new EmptySender(),
                 new EmailOptions()
             ),
@@ -227,6 +226,6 @@ $newCommentNotification();
 
 foreach ($defaultHandler->getMessages() as $message) {
     echo get_class($message) . ': ';
-    echo $message->getContent()->get();
+    echo $message->getContent();
     echo "\n\n";
 }

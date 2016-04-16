@@ -12,33 +12,21 @@
 namespace Notify\Message;
 
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Content\ContentInterface;
+use Notify\Message\Content\ContentProviderInterface;
 use Notify\Message\Actor\SenderInterface;
 use Notify\Message\Options\EmailOptions;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class EmailMessage implements
-    MessageInterface,
+final class EmailMessage extends BaseMessage implements
     HasSubjectInterface,
     HasSenderInterface
 {
     /**
-     * @var Recipients
-     */
-    private $recipients;
-
-    /**
-     *
      * @var string
      */
     private $subject;
-
-    /**
-     * @var ContentInterface
-     */
-    private $content;
 
     /**
      * @var SenderInterface
@@ -53,37 +41,26 @@ final class EmailMessage implements
     /**
      * @param Recipients $recipients
      * @param string $subject
-     * @param ContentInterface $content
+     * @param string|ContentProviderInterface $content
      * @param SenderInterface $sender
      * @param EmailOptions $options
      */
     public function __construct(
         Recipients $recipients,
         $subject,
-        ContentInterface $content,
+        $content,
         SenderInterface $sender,
         EmailOptions $options
     ) {
-        $this->recipients = $recipients;
+        parent::__construct($recipients, $content);
         $this->subject = $subject;
-        $this->content = $content;
         $this->sender = $sender;
         $this->options = $options;
-    }
-
-    public function getRecipients()
-    {
-        return $this->recipients;
     }
 
     public function getSubject()
     {
         return $this->subject;
-    }
-
-    public function getContent()
-    {
-        return $this->content;
     }
 
     public function getSender()

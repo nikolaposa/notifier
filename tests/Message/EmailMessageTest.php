@@ -19,8 +19,6 @@ use Notify\Message\HasSenderInterface;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
 use Notify\Tests\TestAsset\Contact\TestContact;
-use Notify\Message\Content\TextContent;
-use Notify\Message\Content\ContentInterface;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Actor\SenderInterface;
 use Notify\Message\Options\EmailOptions;
@@ -37,7 +35,7 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
                 new Recipient(new TestContact('test'), 'Test')
             ]),
             'Test',
-            new TextContent('test test test'),
+            'test test test',
             new EmptySender(),
             new EmailOptions()
         );
@@ -47,7 +45,7 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(HasSenderInterface::class, $message);
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('Test', $message->getSubject());
-        $this->assertInstanceOf(ContentInterface::class, $message->getContent());
+        $this->assertEquals('test test test', $message->getContent());
         $this->assertInstanceOf(SenderInterface::class, $message->getSender());
         $this->assertInstanceOf(EmailOptions::class, $message->getOptions());
     }
