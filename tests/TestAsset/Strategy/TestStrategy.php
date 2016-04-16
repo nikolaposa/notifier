@@ -9,10 +9,11 @@
  * located at the package root folder.
  */
 
-namespace Notify\Strategy;
+namespace Notify\Tests\TestAsset\Strategy;
 
+use Notify\Strategy\StrategyInterface;
 use Notify\Message\MessageInterface;
-use Notify\Message\MessageInterface;
+use Notify\NotificationInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>

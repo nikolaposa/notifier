@@ -13,7 +13,7 @@ namespace Notify\Tests\Notification;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Tests\TestAsset\Notification\TestNotification;
-use Notify\Strategy\TestStrategy;
+use Notify\Tests\TestAsset\Strategy\TestStrategy;
 use Notify\Message\MessageInterface;
 use Notify\Exception\NotificationStrategyNotSuppliedException;
 use Notify\BaseNotification;
