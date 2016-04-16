@@ -44,6 +44,11 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
         $this->sentParameters[] = func_get_args();
     }
 
+    private function getHandler($maxColumnWidth = 70)
+    {
+        return new NativeMailerHandler($maxColumnWidth, [$this, 'mailer']);
+    }
+
     public function testSendWithDefaultOptions()
     {
         $message = new EmailMessage(
@@ -57,8 +62,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new EmailOptions()
         );
 
-        $handler = new NativeMailerHandler(70, [$this, 'mailer']);
-        $handler->send($message);
+        $this->getHandler()->send($message);
 
         $this->assertNotEmpty($this->sentParameters);
         $params = $this->sentParameters[0];
@@ -81,8 +85,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             'test test test'
         );
 
-        $handler = new NativeMailerHandler();
-        $handler->send($message);
+        $this->getHandler()->send($message);
     }
 
     public function testEmailContentWordWrap()
@@ -98,8 +101,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new EmailOptions()
         );
 
-        $handler = new NativeMailerHandler(4, [$this, 'mailer']);
-        $handler->send($message);
+        $this->getHandler(4)->send($message);
 
         $this->assertNotEmpty($this->sentParameters);
         $params = $this->sentParameters[0];
@@ -120,8 +122,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new EmailOptions('text/html')
         );
 
-        $handler = new NativeMailerHandler(4, [$this, 'mailer']);
-        $handler->send($message);
+        $this->getHandler()->send($message);
 
         $this->assertNotEmpty($this->sentParameters);
         $params = $this->sentParameters[0];

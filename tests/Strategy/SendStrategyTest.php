@@ -14,13 +14,11 @@ namespace Notify\Tests\Strategy;
 use PHPUnit_Framework_TestCase;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\Handler\TestHandler;
+use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
-use Notify\Contact\EmailContact;
-use Notify\Message\Actor\EmptySender;
-use Notify\Message\Options\EmailOptions;
-use Notify\Tests\TestAsset\Message\DummyMessage;
+use Notify\Contact\GenericContact;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -42,47 +40,69 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->testHandler = new TestHandler();
-
-        $this->strategy = new SendStrategy([
-            EmailMessage::class => $this->testHandler,
-        ]);
     }
 
-    public function testSendingMessages()
+    public function messages()
     {
-        $message = new EmailMessage(
-            new Recipients([
-                new Recipient(new EmailContact('test1@example.com'), 'John Doe')
-            ]),
-            'Test',
-            'test test test',
-            new EmptySender(),
-            new EmailOptions()
-        );
+        return [
+            [
+                [
+                    new DummyMessage(
+                        new Recipients([
+                            new Recipient(new GenericContact('test'))
+                        ]),
+                        'test1'
+                    ),
+                    new DummyMessage(
+                        new Recipients([
+                            new Recipient(new GenericContact('test'))
+                        ]),
+                        'test2'
+                    ),
+                ]
+            ],
+            [
+                [
+                    new DummyMessage(
+                        new Recipients([
+                            new Recipient(new GenericContact('test'))
+                        ]),
+                        'test3'
+                    ),
+                ]
+            ],
+        ];
+    }
 
-        $this->strategy->handle([
-            $message
+    /**
+     * @dataProvider messages
+     */
+    public function testSendingMessages(array $messages)
+    {
+        $strategy = new SendStrategy([
+            DummyMessage::class => $this->testHandler,
         ]);
+
+        $strategy->handle($messages);
 
         $sentMessages = $this->testHandler->getMessages();
         $this->assertNotEmpty($sentMessages);
-        $sentMessage = current($sentMessages);
-        $this->assertInstanceOf(EmailMessage::class, $sentMessage);
-        $this->assertEquals('Test', $sentMessage->getSubject());
-        $this->assertEquals('test test test', $sentMessage->getContent());
-        $this->assertCount(1, $sentMessage->getRecipients());
+        $this->assertCount(count($messages), $sentMessages);
     }
 
     public function testSendingSkippedInCaseOfUnsupportedMessageType()
     {
         $message = new DummyMessage(
             new Recipients([
-                new Recipient(new EmailContact('test1@example.com'), 'John Doe')
+                new Recipient(new GenericContact('test'))
             ]),
             'test test test'
         );
 
-        $this->strategy->handle([$message]);
+        $strategy = new SendStrategy([
+            EmailMessage::class => $this->testHandler,
+        ]);
+        $strategy->handle([$message]);
 
         $this->assertEmpty($this->testHandler->getMessages());
     }
