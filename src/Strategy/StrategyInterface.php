@@ -23,5 +23,5 @@ interface StrategyInterface
      * @param MessageInterface[] $messages
      * @param NotificationInterface $notification
      */
-    public function handle(array $messages, NotificationInterface $notification);
+    public function handle(array $messages, NotificationInterface $notification = null);
 }

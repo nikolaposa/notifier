@@ -33,7 +33,7 @@ final class TestStrategy implements StrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function handle(array $messages, NotificationInterface $notification)
+    public function handle(array $messages, NotificationInterface $notification = null)
     {
         $this->messages = $messages;
         $this->notification = $notification;

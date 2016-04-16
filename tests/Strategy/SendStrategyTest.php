@@ -26,11 +26,6 @@ use Notify\Contact\GenericContact;
 class HandlersStrategyTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var SendStrategy
-     */
-    private $strategy;
-
-    /**
      * @var TestHandler
      */
     private $testHandler;
