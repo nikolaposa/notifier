@@ -16,6 +16,7 @@ use Notify\Message\EmailMessage;
 use Notify\Exception\UnsupportedMessageException;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\RecipientInterface;
+use Notify\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -91,6 +92,10 @@ final class NativeMailerHandler implements HandlerInterface
 
         $parameters = implode(' ', $options->getParameters());
 
-        call_user_func($this->mailer, $recipients, $subject, $content, $headers, $parameters);
+        $result = call_user_func($this->mailer, $recipients, $subject, $content, $headers, $parameters);
+
+        if (false === $result) {
+            throw new RuntimeException('Email has not been accepted for delivery');
+        }
     }
 }

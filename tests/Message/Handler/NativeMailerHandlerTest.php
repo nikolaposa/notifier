@@ -21,6 +21,7 @@ use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Exception\UnsupportedMessageException;
+use Notify\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -42,6 +43,13 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
     public function mailer()
     {
         $this->sentParameters[] = func_get_args();
+
+        return true;
+    }
+
+    public function mailerError()
+    {
+        return false;
     }
 
     private function getHandler($maxColumnWidth = 70)
@@ -128,5 +136,24 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
         $params = $this->sentParameters[0];
         $this->assertCount(5, $params);
         $this->assertEquals("Content-type: text/html; charset=utf-8\r\nMIME-Version: 1.0\r\n", $params[3]);
+    }
+
+    public function testExceptionIsRaisedIfEmailNotDelivered()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $message = new EmailMessage(
+            new Recipients([
+                new Recipient(new EmailContact('test1@example.com')),
+                new Recipient(new EmailContact('test2@example.com')),
+            ]),
+            'Test',
+            'test test test',
+            new EmptySender(),
+            new EmailOptions('text/html')
+        );
+
+        $handler = new NativeMailerHandler(70, [$this, 'mailerError']);
+        $handler->send($message);
     }
 }
