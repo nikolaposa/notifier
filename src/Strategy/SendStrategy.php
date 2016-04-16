@@ -39,7 +39,7 @@ final class SendStrategy implements StrategyInterface
 
             $messageType = get_class($message);
 
-            if (! isset($this->handlers[$messageType])) {
+            if (!isset($this->handlers[$messageType])) {
                 continue;
             }
 

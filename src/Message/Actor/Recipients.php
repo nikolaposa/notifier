@@ -20,7 +20,7 @@ class Recipients implements Countable, IteratorAggregate
     public function __construct(array $recipients)
     {
         foreach ($recipients as $recipient) {
-            if (! $recipient instanceof RecipientInterface) {
+            if (!$recipient instanceof RecipientInterface) {
                 throw new InvalidArgumentException(sprintf(
                     '%s expects array of %s instances, %s given',
                     __METHOD__,
@@ -41,7 +41,7 @@ class Recipients implements Countable, IteratorAggregate
         $recipients = [];
 
         foreach ($recipientProviders as $recipientProvider) {
-            if (! $recipientProvider instanceof ProvidesRecipientInterface) {
+            if (!$recipientProvider instanceof ProvidesRecipientInterface) {
                 throw new InvalidArgumentException(sprintf(
                     '%s expects array of %s instances',
                     __FUNCTION__,

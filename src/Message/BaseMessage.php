@@ -35,7 +35,7 @@ abstract class BaseMessage implements MessageInterface
     {
         $this->recipients = $recipients;
 
-        if (! (is_string($content) || $content instanceof ContentProviderInterface)) {
+        if (!(is_string($content) || $content instanceof ContentProviderInterface)) {
             throw new InvalidArgumentException(sprintf(
                 'Message content should be either string or %s instance',
                 ContentProviderInterface::class

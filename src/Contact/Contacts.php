@@ -38,7 +38,7 @@ class Contacts implements Countable, IteratorAggregate
     public function __construct(array $contacts = [])
     {
         foreach ($contacts as $contact) {
-            if (! $contact instanceof ContactInterface) {
+            if (!$contact instanceof ContactInterface) {
                 throw new InvalidArgumentException(sprintf(
                     '%s expects array of %s instances, %s given',
                     __METHOD__,

@@ -49,7 +49,7 @@ final class NativeMailerHandler implements HandlerInterface
      */
     public function send(MessageInterface $message)
     {
-        if (! $message instanceof EmailMessage) {
+        if (!$message instanceof EmailMessage) {
             throw UnsupportedMessageException::fromHandlerAndMessage($this, $message);
         }
 
