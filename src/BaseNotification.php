@@ -58,7 +58,7 @@ abstract class BaseNotification implements NotificationInterface
 
         $messages = array_filter($this->getMessages(), function ($message) {
             /* @var $message MessageInterface */
-            return ! $message->getRecipients()->isEmpty();
+            return !$message->getRecipients()->isEmpty();
         });
 
         $strategy->handle($messages);
