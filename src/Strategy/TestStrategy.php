@@ -12,6 +12,7 @@
 namespace Notify\Strategy;
 
 use Notify\Message\MessageInterface;
+use Notify\Message\MessageInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -24,15 +25,26 @@ final class TestStrategy implements StrategyInterface
     private $messages;
 
     /**
+     * @var NotificationInterface
+     */
+    private $notification;
+
+    /**
      * {@inheritDoc}
      */
-    public function handle(array $messages)
+    public function handle(array $messages, NotificationInterface $notification)
     {
         $this->messages = $messages;
+        $this->notification = $notification;
     }
 
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    public function getNotification()
+    {
+        return $this->notification;
     }
 }
