@@ -40,9 +40,9 @@ class NotificationTest extends PHPUnit_Framework_TestCase
         $notification($strategy);
 
         $messages = $strategy->getMessages();
-
         $this->assertNotEmpty($messages);
         $this->assertInstanceOf(MessageInterface::class, current($messages));
+        $this->assertSame($notification, $strategy->getNotification());
     }
 
     public function testExceptionIsRaisedIfStrategyNotSupplied()
@@ -63,9 +63,9 @@ class NotificationTest extends PHPUnit_Framework_TestCase
         $notification();
 
         $messages = $strategy->getMessages();
-
         $this->assertNotEmpty($messages);
         $this->assertInstanceOf(MessageInterface::class, current($messages));
+        $this->assertSame($notification, $strategy->getNotification());
 
         BaseNotification::resetDefaultStrategy();
     }
