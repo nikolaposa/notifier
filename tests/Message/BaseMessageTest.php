@@ -67,4 +67,18 @@ class BaseMessageTest extends PHPUnit_Framework_TestCase
             false
         ]);
     }
+
+    public function testJsonSerializeMessage()
+    {
+        $recipients = new Recipients([
+            new Recipient(new TestContact('test'))
+        ]);
+
+        $message = $this->getMockForAbstractClass(BaseMessage::class, [
+            $recipients,
+            'test test test'
+        ]);
+
+        $this->assertEquals(['recipients' => $recipients], $message->jsonSerialize());
+    }
 }

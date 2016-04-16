@@ -16,4 +16,12 @@ namespace Notify\Message\Actor;
  */
 final class Sender extends GenericActor implements SenderInterface
 {
+    public function __toString()
+    {
+        if (null !== ($name = $this->getName())) {
+            return $name . ' <' . $this->getContact()->getValue() . '>';
+        }
+
+        return $this->getContact()->getValue();
+    }
 }

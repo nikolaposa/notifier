@@ -14,11 +14,12 @@ namespace Notify\Message;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Content\ContentProviderInterface;
 use Notify\Exception\InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-abstract class BaseMessage implements MessageInterface
+abstract class BaseMessage implements MessageInterface, JsonSerializable
 {
     /**
      * @var Recipients
@@ -63,5 +64,12 @@ abstract class BaseMessage implements MessageInterface
         }
 
         return $this->content;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'recipients' => $this->getRecipients(),
+        ];
     }
 }

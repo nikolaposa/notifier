@@ -5,12 +5,13 @@ namespace Notify\Message\Actor;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
+use JsonSerializable;
 use Notify\Exception\InvalidArgumentException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class Recipients implements Countable, IteratorAggregate
+class Recipients implements Countable, IteratorAggregate, JsonSerializable
 {
     /**
      * @var RecipientInterface[]
@@ -91,5 +92,13 @@ class Recipients implements Countable, IteratorAggregate
     public function toArray()
     {
         return $this->recipients;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return array_map('strval', $this->toArray());
     }
 }

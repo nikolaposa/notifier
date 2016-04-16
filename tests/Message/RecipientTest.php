@@ -27,4 +27,18 @@ class RecipientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('test', $recipient->getContact()->getValue());
         $this->assertEquals('Test', $recipient->getName());
     }
+
+    public function testRecipientToStringConversion()
+    {
+        $recipient = new Recipient(new TestContact('test'), 'Test');
+
+        $this->assertEquals('Test <test>', (string) $recipient);
+    }
+
+    public function testRecipientWithNoNameStringConversion()
+    {
+        $recipient = new Recipient(new TestContact('test'));
+
+        $this->assertEquals('test', (string) $recipient);
+    }
 }

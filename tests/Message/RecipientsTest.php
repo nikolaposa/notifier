@@ -84,6 +84,17 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $recipients->toArray());
     }
 
+    public function testJsonSerializeRecipients()
+    {
+        $recipients = new Recipients([
+            new Recipient(new TestContact('test1')),
+            new Recipient(new TestContact('test2')),
+            new Recipient(new TestContact('test3')),
+        ]);
+
+        $this->assertEquals(['test1', 'test2', 'test3'], $recipients->jsonSerialize());
+    }
+
     public function testCreatingRecipientsFromRecipientProviders()
     {
         $recipients = Recipients::fromRecipientProviders([

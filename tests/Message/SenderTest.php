@@ -27,4 +27,18 @@ class SenderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('test', $sender->getContact()->getValue());
         $this->assertEquals('Test', $sender->getName());
     }
+
+    public function testSenderToStringConversion()
+    {
+        $sender = new Sender(new TestContact('test'), 'Test');
+
+        $this->assertEquals('Test <test>', (string) $sender);
+    }
+
+    public function testSenderWithNoNameStringConversion()
+    {
+        $sender = new Sender(new TestContact('test'));
+
+        $this->assertEquals('test', (string) $sender);
+    }
 }
