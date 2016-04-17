@@ -37,7 +37,7 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
     public static function fromRecipientProviders(
         array $recipientProviders,
         $messageType,
-        $notificationId = null
+        $notificationType = null
     ) {
         $recipients = [];
 
@@ -50,7 +50,7 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
                 ));
             }
 
-            $recipient = $recipientProvider->getMessageRecipient($messageType, $notificationId);
+            $recipient = $recipientProvider->getMessageRecipient($messageType, $notificationType);
 
             if (null === $recipient) {
                 continue;
