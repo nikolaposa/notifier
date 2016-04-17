@@ -12,8 +12,9 @@
 namespace Notify\Strategy;
 
 use Notify\Message\SendService\SendServiceInterface;
-use Notify\Message\MessageInterface;
 use Notify\NotificationInterface;
+use Notify\Message\MessageInterface;
+use Notify\Strategy\Exception\NotHandlingMessageException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -24,8 +25,6 @@ use Psr\Log\NullLogger;
  */
 final class SendStrategy extends AbstractStrategy implements LoggerAwareInterface
 {
-    const CATCH_ALL_HANDLER = '*';
-
     use LoggerAwareTrait;
 
     /**
@@ -48,11 +47,7 @@ final class SendStrategy extends AbstractStrategy implements LoggerAwareInterfac
             $messageType = get_class($message);
 
             if (!isset($this->sendServices[$messageType])) {
-                $this->logger->log(LogLevel::NOTICE, 'unsupported message type: {messageType}', [
-                    'messageType' => $messageType,
-                ]);
-
-                continue;
+                throw NotHandlingMessageException::fromMessage($message);
             }
 
             try {
@@ -66,6 +61,11 @@ final class SendStrategy extends AbstractStrategy implements LoggerAwareInterfac
 
                 continue;
             }
+
+            $this->logger->log(LogLevel::INFO, 'message sent', [
+                'notification' => $notification->getName(),
+                'message' => $message,
+            ]);
         }
     }
 }
