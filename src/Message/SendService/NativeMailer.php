@@ -74,6 +74,27 @@ final class NativeMailer implements SendServiceInterface
         return $recipientsString;
     }
 
+    private function buildHeaders(EmailMessage $message)
+    {
+        $options = $message->getOptions();
+
+        $headers = ltrim(implode("\r\n", $options->getHeaders()) . "\r\n", "\r\n");
+
+        $headers .= 'Content-type: ' . $options->getContentType() . '; charset=' . $options->getEncoding() . "\r\n";
+
+        if ($options->getContentType() == 'text/html' && false === strpos($headers, 'MIME-Version:')) {
+            $headers .= "MIME-Version: 1.0\r\n";
+        }
+
+        if (null !== ($sender = $message->getSender())) {
+            $headers .= 'From: ' . $sender->getContact()->getValue() . "\r\n" .
+                'Reply-To: ' . $sender->getContact()->getValue() . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+        }
+
+        return $headers;
+    }
+
     private function doSend(EmailMessage $message)
     {
         $recipients = $this->formatRecipients($message->getRecipients());
@@ -82,15 +103,9 @@ final class NativeMailer implements SendServiceInterface
 
         $content = wordwrap($message->getContent(), $this->maxColumnWidth);
 
-        $options = $message->getOptions();
+        $headers = $this->buildHeaders($message);
 
-        $headers = ltrim(implode("\r\n", $options->getHeaders()) . "\r\n", "\r\n");
-        $headers .= 'Content-type: ' . $options->getContentType() . '; charset=' . $options->getEncoding() . "\r\n";
-        if ($options->getContentType() == 'text/html' && false === strpos($headers, 'MIME-Version:')) {
-            $headers .= "MIME-Version: 1.0\r\n";
-        }
-
-        $parameters = implode(' ', $options->getParameters());
+        $parameters = implode(' ', $message->getOptions()->getParameters());
 
         $result = call_user_func($this->mailer, $recipients, $subject, $content, $headers, $parameters);
 

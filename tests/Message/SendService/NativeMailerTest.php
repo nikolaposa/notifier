@@ -133,6 +133,25 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("Content-type: text/html; charset=utf-8\r\nMIME-Version: 1.0\r\n", $params[3]);
     }
 
+    public function testEmailSenderHeaders()
+    {
+        $message = new EmailMessage(
+            new Recipients([
+                new Actor(new EmailContact('test1@example.com')),
+            ]),
+            'Test',
+            'test test test',
+            new Actor(new EmailContact('john.doe@example.com'))
+        );
+
+        $this->getMailer()->send($message);
+
+        $this->assertNotEmpty($this->sentParameters);
+        $params = $this->sentParameters[0];
+        $this->assertCount(5, $params);
+        $this->assertContains("From: john.doe@example.com\r\nReply-To: john.doe@example.com", $params[3]);
+    }
+
     public function testExceptionIsRaisedIfEmailNotDelivered()
     {
         $this->expectException(RuntimeException::class);
