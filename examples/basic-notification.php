@@ -14,9 +14,8 @@ namespace Notify\Example;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
+use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
-use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\SendService\MockSendService;
@@ -35,11 +34,11 @@ final class TestNotification extends AbstractNotification
         return [
             new EmailMessage(
                 new Recipients([
-                    new Recipient(new EmailContact('john@example.com', 'John Doe')),
+                    new Actor(new EmailContact('john@example.com', 'John Doe')),
                 ]),
                 'Notification exercise',
                 'Some <strong>HTML</strong> notification content',
-                new EmptySender(),
+                null,
                 new EmailOptions('text/html')
             ),
         ];

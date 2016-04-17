@@ -14,18 +14,18 @@ use Notify\Exception\InvalidArgumentException;
 class Recipients implements Countable, IteratorAggregate, JsonSerializable
 {
     /**
-     * @var RecipientInterface[]
+     * @var ActorInterface[]
      */
     private $recipients = [];
 
     public function __construct(array $recipients)
     {
         foreach ($recipients as $recipient) {
-            if (!$recipient instanceof RecipientInterface) {
+            if (!$recipient instanceof ActorInterface) {
                 throw new InvalidArgumentException(sprintf(
                     '%s expects array of %s instances, %s given',
                     __METHOD__,
-                    RecipientInterface::class,
+                    ActorInterface::class,
                     is_object($recipient) ? get_class($recipient) : gettype($recipient)
                 ));
             }
@@ -52,7 +52,7 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
 
             $recipient = $recipientProvider->getMessageRecipient($messageType, $notificationId);
 
-            if (null === $recipient || $recipient instanceof EmptyRecipient) {
+            if (null === $recipient) {
                 continue;
             }
 

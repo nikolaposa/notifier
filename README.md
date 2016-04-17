@@ -28,7 +28,7 @@ would inherit `AbstractNotification` class, which provides some common basis.
 
 `MessageInterface` implementations are generic objects containing information about a message that
 should be sent by the appropriate send service. At least, each message must provide recipients list
-and content that is to be sent. Recipients list is a collection of `RecipientInterface` instances,
+and content that is to be sent. Recipients list is a collection of `ActorInterface` instances,
 each represented by name and a contact information, encapsulated in the `ContactInterface`
 implementation. Content is essentially a string, but it can be supplied to a message in form of a
 `ContentProviderInterface` implementation.
@@ -55,9 +55,8 @@ messages into a background job.
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
+use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
-use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\SendService\NativeMailer;
@@ -74,11 +73,11 @@ final class SampleNotification extends AbstractNotification
         return [
             new EmailMessage(
                 new Recipients([
-                    new Recipient(new EmailContact('john@example.com'), 'John Doe'),
+                    new Actor(new EmailContact('john@example.com'), 'John Doe'),
                 ]),
                 'Notification exercise',
                 'Some <strong>HTML</strong> notification content',
-                new EmptySender(),
+                null,
                 new EmailOptions('text/html')
             ),
         ];

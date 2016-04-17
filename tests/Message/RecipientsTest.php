@@ -13,8 +13,8 @@ namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
-use Notify\Message\Actor\RecipientInterface;
+use Notify\Message\Actor\Actor;
+use Notify\Message\Actor\ActorInterface;
 use Notify\Message\Actor\ProvidesRecipientInterface;
 use Notify\Contact\GenericContact;
 use Notify\Message\EmailMessage;
@@ -52,9 +52,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testCountingRecipients()
     {
         $recipients = new Recipients([
-            new Recipient(new GenericContact('test1')),
-            new Recipient(new GenericContact('test2')),
-            new Recipient(new GenericContact('test3')),
+            new Actor(new GenericContact('test1')),
+            new Actor(new GenericContact('test2')),
+            new Actor(new GenericContact('test3')),
         ]);
 
         $this->assertCount(3, $recipients);
@@ -63,22 +63,22 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testTraversingRecipients()
     {
         $recipients = new Recipients([
-            new Recipient(new GenericContact('test1')),
-            new Recipient(new GenericContact('test2')),
-            new Recipient(new GenericContact('test3')),
+            new Actor(new GenericContact('test1')),
+            new Actor(new GenericContact('test2')),
+            new Actor(new GenericContact('test3')),
         ]);
 
         foreach ($recipients as $recipient) {
-            $this->assertInstanceOf(RecipientInterface::class, $recipient);
+            $this->assertInstanceOf(ActorInterface::class, $recipient);
         }
     }
 
     public function testRecipientsToArrayConversion()
     {
         $recipients = new Recipients([
-            new Recipient(new GenericContact('test1')),
-            new Recipient(new GenericContact('test2')),
-            new Recipient(new GenericContact('test3')),
+            new Actor(new GenericContact('test1')),
+            new Actor(new GenericContact('test2')),
+            new Actor(new GenericContact('test3')),
         ]);
 
         $this->assertInternalType('array', $recipients->toArray());
@@ -87,9 +87,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testJsonSerializeRecipients()
     {
         $recipients = new Recipients([
-            new Recipient(new GenericContact('test1')),
-            new Recipient(new GenericContact('test2')),
-            new Recipient(new GenericContact('test3')),
+            new Actor(new GenericContact('test1')),
+            new Actor(new GenericContact('test2')),
+            new Actor(new GenericContact('test3')),
         ]);
 
         $this->assertEquals(['test1', 'test2', 'test3'], $recipients->jsonSerialize());
@@ -98,7 +98,7 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testCreatingRecipientsFromRecipientProviders()
     {
         $recipients = Recipients::fromRecipientProviders([
-            $this->mockRecipientProvider(new Recipient(new GenericContact('test1'))),
+            $this->mockRecipientProvider(new Actor(new GenericContact('test1'))),
         ], EmailMessage::class);
 
         $this->assertCount(1, $recipients);

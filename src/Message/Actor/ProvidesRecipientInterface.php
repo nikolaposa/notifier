@@ -19,7 +19,7 @@ interface ProvidesRecipientInterface
     /**
      * @param string $messageType
      * @param string $notificationId OPTIONAL
-     * @return RecipientInterface
+     * @return ActorInterface
      */
     public function getMessageRecipient($messageType, $notificationId = null);
 }

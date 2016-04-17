@@ -11,7 +11,7 @@
 
 namespace Notify\Message;
 
-use Notify\Message\Actor\SenderInterface;
+use Notify\Message\Actor\ActorInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -19,7 +19,7 @@ use Notify\Message\Actor\SenderInterface;
 interface HasSenderInterface
 {
     /**
-     * @return SenderInterface
+     * @return ActorInterface
      */
     public function getSender();
 }

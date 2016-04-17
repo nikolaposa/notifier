@@ -17,10 +17,9 @@ use Notify\Message\MessageInterface;
 use Notify\Message\HasSubjectInterface;
 use Notify\Message\HasSenderInterface;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
+use Notify\Message\Actor\Actor;
 use Notify\Contact\GenericContact;
-use Notify\Message\Actor\EmptySender;
-use Notify\Message\Actor\SenderInterface;
+use Notify\Message\Actor\ActorInterface;
 use Notify\Message\Options\EmailOptions;
 
 /**
@@ -28,16 +27,14 @@ use Notify\Message\Options\EmailOptions;
  */
 class EmailMessageTest extends PHPUnit_Framework_TestCase
 {
-    public function testEmailMessageImplementsAppropriateInterfaces()
+    public function testCreatingEmailWithRequiredArguments()
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient(new GenericContact('test'), 'Test')
+                new Actor(new GenericContact('test'), 'Test')
             ]),
             'Test',
-            'test test test',
-            new EmptySender(),
-            new EmailOptions()
+            'test test test'
         );
 
         $this->assertInstanceOf(MessageInterface::class, $message);
@@ -46,7 +43,29 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('Test', $message->getSubject());
         $this->assertEquals('test test test', $message->getContent());
-        $this->assertInstanceOf(SenderInterface::class, $message->getSender());
+        $this->assertNull($message->getSender());
+        $this->assertInstanceOf(EmailOptions::class, $message->getOptions());
+    }
+
+    public function testCreatingEmailWithAllArguments()
+    {
+        $message = new EmailMessage(
+            new Recipients([
+                new Actor(new GenericContact('test'), 'Test')
+            ]),
+            'Test',
+            'test test test',
+            new Actor(new GenericContact('test'), 'Test'),
+            new EmailOptions('text/html')
+        );
+
+        $this->assertInstanceOf(MessageInterface::class, $message);
+        $this->assertInstanceOf(HasSubjectInterface::class, $message);
+        $this->assertInstanceOf(HasSenderInterface::class, $message);
+        $this->assertInstanceOf(Recipients::class, $message->getRecipients());
+        $this->assertEquals('Test', $message->getSubject());
+        $this->assertEquals('test test test', $message->getContent());
+        $this->assertInstanceOf(ActorInterface::class, $message->getSender());
         $this->assertInstanceOf(EmailOptions::class, $message->getOptions());
     }
 }

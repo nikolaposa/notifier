@@ -13,7 +13,7 @@ namespace Notify\Message;
 
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Content\ContentProviderInterface;
-use Notify\Message\Actor\SenderInterface;
+use Notify\Message\Actor\ActorInterface;
 use Notify\Message\Options\EmailOptions;
 
 /**
@@ -29,7 +29,7 @@ final class EmailMessage extends AbstractMessage implements
     private $subject;
 
     /**
-     * @var SenderInterface
+     * @var ActorInterface
      */
     private $sender;
 
@@ -42,19 +42,25 @@ final class EmailMessage extends AbstractMessage implements
      * @param Recipients $recipients
      * @param string $subject
      * @param string|ContentProviderInterface $content
-     * @param SenderInterface $sender
+     * @param ActorInterface $sender
      * @param EmailOptions $options
      */
     public function __construct(
         Recipients $recipients,
         $subject,
         $content,
-        SenderInterface $sender,
-        EmailOptions $options
+        ActorInterface $sender = null,
+        EmailOptions $options = null
     ) {
         parent::__construct($recipients, $content);
+
         $this->subject = $subject;
+
         $this->sender = $sender;
+
+        if (null === $options) {
+            $options = new EmailOptions();
+        }
         $this->options = $options;
     }
 

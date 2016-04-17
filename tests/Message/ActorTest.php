@@ -13,16 +13,16 @@ namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Contact\GenericContact;
-use Notify\Message\Actor\GenericActor;
+use Notify\Message\Actor\Actor;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class GenericActorTest extends PHPUnit_Framework_TestCase
+class ActorTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingActor()
     {
-        $actor = new GenericActor(new GenericContact('test'), 'Test');
+        $actor = new Actor(new GenericContact('test'), 'Test');
 
         $this->assertEquals('test', $actor->getContact()->getValue());
         $this->assertEquals('Test', $actor->getName());
@@ -30,9 +30,23 @@ class GenericActorTest extends PHPUnit_Framework_TestCase
 
     public function testNoActorNameByDefault()
     {
-        $actor = new GenericActor(new GenericContact('test'));
+        $actor = new Actor(new GenericContact('test'));
 
         $this->assertEquals('test', $actor->getContact()->getValue());
         $this->assertNull($actor->getName());
+    }
+
+    public function testActorToStringConversion()
+    {
+        $recipient = new Actor(new GenericContact('test'), 'Test');
+
+        $this->assertEquals('Test <test>', (string) $recipient);
+    }
+
+    public function testActorWithNoNameStringConversion()
+    {
+        $recipient = new Actor(new GenericContact('test'));
+
+        $this->assertEquals('test', (string) $recipient);
     }
 }

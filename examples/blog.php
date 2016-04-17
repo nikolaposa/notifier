@@ -15,13 +15,10 @@ use Notify\Contact\HasContactsInterface;
 use Notify\Contact\Contacts;
 use Notify\Contact\EmailContact;
 use Notify\Message\Actor\ProvidesRecipientInterface;
-use Notify\Message\Actor\Recipient;
-use Notify\Message\Actor\EmptyRecipient;
+use Notify\Message\Actor\Actor;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\EmptySender;
-use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\SendService\MockSendService;
 
@@ -84,11 +81,11 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
 
         if ($messageType == EmailMessage::class) {
             if (false !== ($emailContact = $contacts->getOne(EmailContact::class))) {
-                return new Recipient($emailContact, $name);
+                return new Actor($emailContact, $name);
             }
         }
 
-        return new EmptyRecipient();
+        return null;
     }
 }
 
@@ -201,9 +198,7 @@ final class NewCommentNotification extends AbstractNotification
                     $this->post->getAuthor()->getMessageRecipient(EmailMessage::class, self::ID)
                 ]),
                 'New comment',
-                sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle()),
-                new EmptySender(),
-                new EmailOptions()
+                sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
             ),
         ];
     }

@@ -14,7 +14,7 @@ namespace Notify\Tests\Message;
 use PHPUnit_Framework_TestCase;
 use Notify\Message\AbstractMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
+use Notify\Message\Actor\Actor;
 use Notify\Contact\GenericContact;
 use Notify\Message\Content\ContentProviderInterface;
 use Notify\Exception\InvalidArgumentException;
@@ -28,7 +28,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
     {
         $message = $this->getMockForAbstractClass(AbstractMessage::class, [
             new Recipients([
-                new Recipient(new GenericContact('test'))
+                new Actor(new GenericContact('test'))
             ]),
             'test test test'
         ]);
@@ -47,7 +47,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
         $message = $this->getMockForAbstractClass(AbstractMessage::class, [
             new Recipients([
-                new Recipient(new GenericContact('test'))
+                new Actor(new GenericContact('test'))
             ]),
             $contentProvider
         ]);
@@ -62,7 +62,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
         $this->getMockForAbstractClass(AbstractMessage::class, [
             new Recipients([
-                new Recipient(new GenericContact('test'))
+                new Actor(new GenericContact('test'))
             ]),
             false
         ]);
@@ -71,7 +71,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
     public function testJsonSerializeMessage()
     {
         $recipients = new Recipients([
-            new Recipient(new GenericContact('test'))
+            new Actor(new GenericContact('test'))
         ]);
 
         $message = $this->getMockForAbstractClass(AbstractMessage::class, [

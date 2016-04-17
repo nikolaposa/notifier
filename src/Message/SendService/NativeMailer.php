@@ -15,7 +15,7 @@ use Notify\Message\MessageInterface;
 use Notify\Message\EmailMessage;
 use Notify\Exception\UnsupportedMessageException;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\RecipientInterface;
+use Notify\Message\Actor\ActorInterface;
 use Notify\Exception\RuntimeException;
 
 /**
@@ -59,7 +59,7 @@ final class NativeMailer implements SendServiceInterface
 
     private function formatRecipients(Recipients $recipients)
     {
-        $recipientsString = array_map(function (RecipientInterface $recipient) {
+        $recipientsString = array_map(function (ActorInterface $recipient) {
             $to = $recipient->getContact()->getValue();
 
             if ($recipient->getName() !== '') {

@@ -15,7 +15,7 @@ use PHPUnit_Framework_TestCase;
 use Notify\GenericNotification;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
+use Notify\Message\Actor\Actor;
 use Notify\Contact\GenericContact;
 use Notify\Tests\TestAsset\Strategy\TestStrategy;
 use Notify\Message\MessageInterface;
@@ -36,7 +36,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase
         $this->notification = new GenericNotification([
             new DummyMessage(
                 new Recipients([
-                    new Recipient(new GenericContact('test'))
+                    new Actor(new GenericContact('test'))
                 ]),
                 'test1'
             ),

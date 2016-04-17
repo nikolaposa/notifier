@@ -19,7 +19,7 @@ use Notify\GenericNotification;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
+use Notify\Message\Actor\Actor;
 use Notify\Contact\GenericContact;
 
 /**
@@ -46,13 +46,13 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
                 new GenericNotification([
                     new DummyMessage(
                         new Recipients([
-                            new Recipient(new GenericContact('test'))
+                            new Actor(new GenericContact('test'))
                         ]),
                         'test1'
                     ),
                     new DummyMessage(
                         new Recipients([
-                            new Recipient(new GenericContact('test'))
+                            new Actor(new GenericContact('test'))
                         ]),
                         'test2'
                     ),
@@ -62,7 +62,7 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
                 new GenericNotification([
                     new DummyMessage(
                         new Recipients([
-                            new Recipient(new GenericContact('test'))
+                            new Actor(new GenericContact('test'))
                         ]),
                         'test3'
                     ),
@@ -92,7 +92,7 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
         $notification = new GenericNotification([
             new DummyMessage(
                 new Recipients([
-                    new Recipient(new GenericContact('test'))
+                    new Actor(new GenericContact('test'))
                 ]),
                 'test test test'
             )

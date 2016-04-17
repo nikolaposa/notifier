@@ -15,9 +15,8 @@ use PHPUnit_Framework_TestCase;
 use Notify\Message\SendService\NativeMailer;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Recipient;
+use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
-use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Exception\UnsupportedMessageException;
@@ -61,13 +60,11 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient(new EmailContact('test1@example.com'), 'Test1'),
-                new Recipient(new EmailContact('test2@example.com'), 'Test2'),
+                new Actor(new EmailContact('test1@example.com'), 'Test1'),
+                new Actor(new EmailContact('test2@example.com'), 'Test2'),
             ]),
             'Test',
-            'test test test',
-            new EmptySender(),
-            new EmailOptions()
+            'test test test'
         );
 
         $this->getMailer()->send($message);
@@ -88,7 +85,7 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
 
         $message = new DummyMessage(
             new Recipients([
-                new Recipient(new EmailContact('test1@example.com'))
+                new Actor(new EmailContact('test1@example.com'))
             ]),
             'test test test'
         );
@@ -100,13 +97,11 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient(new EmailContact('test1@example.com')),
-                new Recipient(new EmailContact('test2@example.com')),
+                new Actor(new EmailContact('test1@example.com')),
+                new Actor(new EmailContact('test2@example.com')),
             ]),
             'Test',
-            'test test test',
-            new EmptySender(),
-            new EmailOptions()
+            'test test test'
         );
 
         $this->getMailer(4)->send($message);
@@ -121,12 +116,12 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Recipient(new EmailContact('test1@example.com')),
-                new Recipient(new EmailContact('test2@example.com')),
+                new Actor(new EmailContact('test1@example.com')),
+                new Actor(new EmailContact('test2@example.com')),
             ]),
             'Test',
             'test test test',
-            new EmptySender(),
+            null,
             new EmailOptions('text/html')
         );
 
@@ -144,13 +139,11 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
 
         $message = new EmailMessage(
             new Recipients([
-                new Recipient(new EmailContact('test1@example.com')),
-                new Recipient(new EmailContact('test2@example.com')),
+                new Actor(new EmailContact('test1@example.com')),
+                new Actor(new EmailContact('test2@example.com')),
             ]),
             'Test',
-            'test test test',
-            new EmptySender(),
-            new EmailOptions('text/html')
+            'test test test'
         );
 
         $sendService = new NativeMailer(70, [$this, 'mailerError']);
