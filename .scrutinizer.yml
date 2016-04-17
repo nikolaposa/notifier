@@ -25,11 +25,7 @@ tools:
         enabled: true
         excluded_dirs: ["tests", "vendor"]
     php_cs_fixer:
-        enabled: true
-        config:
-            level: all
-        filter:
-            paths: ["src/*", "tests/*"]
+        enabled: false
     php_loc:
         enabled: true
         excluded_dirs: ["tests", "vendor"]
@@ -43,7 +39,7 @@ tools:
     php_analyzer:
         enabled: true
         filter:
-            paths: ["src/*", "tests/*"]
+            paths: ["src/*"]
     php_hhvm:
         enabled: true
         filter:
