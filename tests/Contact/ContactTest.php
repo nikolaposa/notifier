@@ -13,7 +13,6 @@ namespace Notify\Tests\Contact;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Contact\AbstractContact;
-use Notify\Tests\TestAsset\Contact\TestContact;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
