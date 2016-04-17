@@ -11,10 +11,9 @@
 
 namespace Notify\Strategy;
 
-use Notify\Message\Handler\HandlerInterface;
+use Notify\Message\SendService\SendServiceInterface;
 use Notify\Message\MessageInterface;
 use Notify\NotificationInterface;
-use Notify\Exception\MessageSendFailedException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -23,35 +22,32 @@ use Psr\Log\NullLogger;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class SendStrategy implements StrategyInterface, LoggerAwareInterface
+final class SendStrategy extends AbstractStrategy implements LoggerAwareInterface
 {
     const CATCH_ALL_HANDLER = '*';
 
     use LoggerAwareTrait;
 
     /**
-     * @var HandlerInterface[]
+     * @var SendServiceInterface[]
      */
-    private $handlers;
+    private $sendServices;
 
-    public function __construct(array $handlers)
+    public function __construct(array $sendServices)
     {
-        $this->handlers = $handlers;
+        $this->sendServices = $sendServices;
 
         $this->setLogger(new NullLogger());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function handle(array $messages, NotificationInterface $notification = null)
+    protected function doHandle(array $messages, NotificationInterface $notification)
     {
         foreach ($messages as $message) {
             /* @var $message MessageInterface */
 
             $messageType = get_class($message);
 
-            if (!isset($this->handlers[$messageType])) {
+            if (!isset($this->sendServices[$messageType])) {
                 $this->logger->log(LogLevel::NOTICE, 'unsupported message type: {messageType}', [
                     'messageType' => $messageType,
                 ]);
@@ -60,7 +56,7 @@ final class SendStrategy implements StrategyInterface, LoggerAwareInterface
             }
 
             try {
-                $this->handlers[$messageType]->send($message);
+                $this->sendServices[$messageType]->send($message);
             } catch (\Exception $ex) {
                 $this->logger->log(LogLevel::ERROR, 'message send failure', [
                     'notification' => $notification->getName(),

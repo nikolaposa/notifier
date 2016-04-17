@@ -9,7 +9,7 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\Handler;
+namespace Notify\Message\SendService;
 
 use Notify\Message\MessageInterface;
 use Notify\Message\EmailMessage;
@@ -21,7 +21,7 @@ use Notify\Exception\RuntimeException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class NativeMailerHandler implements HandlerInterface
+final class NativeMailer implements SendServiceInterface
 {
     /**
      * @var int
@@ -51,7 +51,7 @@ final class NativeMailerHandler implements HandlerInterface
     public function send(MessageInterface $message)
     {
         if (!$message instanceof EmailMessage) {
-            throw UnsupportedMessageException::fromHandlerAndMessage($this, $message);
+            throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
         }
 
         $this->doSend($message);

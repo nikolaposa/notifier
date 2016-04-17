@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -9,30 +9,35 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\Handler;
+namespace Notify;
 
 use Notify\Message\MessageInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class TestHandler implements HandlerInterface
+final class GenericNotification extends AbstractNotification
 {
     /**
      * @var MessageInterface[]
      */
     private $messages;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function send(MessageInterface $message)
+    public function __construct(array $messages)
     {
-        $this->messages[] = $message;
+        $this->messages = $messages;
     }
 
     /**
-     * @return array
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+        return 'Generic';
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function getMessages()
     {

@@ -16,7 +16,7 @@ use Notify\Exception\InvalidContactException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class EmailContact extends BaseContact
+class EmailContact extends AbstractContact
 {
     protected function filter($email)
     {

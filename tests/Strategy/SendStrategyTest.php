@@ -13,7 +13,9 @@ namespace Notify\Tests\Strategy;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Strategy\SendStrategy;
-use Notify\Message\Handler\TestHandler;
+use Notify\Message\SendService\MockSendService;
+use Notify\NotificationInterface;
+use Notify\GenericNotification;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
@@ -23,25 +25,25 @@ use Notify\Contact\GenericContact;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class HandlersStrategyTest extends PHPUnit_Framework_TestCase
+class SendStrategyTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var TestHandler
+     * @var MockSendService
      */
-    private $testHandler;
+    private $sendService;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->testHandler = new TestHandler();
+        $this->sendService = new MockSendService();
     }
 
-    public function messages()
+    public function notifications()
     {
         return [
             [
-                [
+                new GenericNotification([
                     new DummyMessage(
                         new Recipients([
                             new Recipient(new GenericContact('test'))
@@ -54,51 +56,53 @@ class HandlersStrategyTest extends PHPUnit_Framework_TestCase
                         ]),
                         'test2'
                     ),
-                ]
+                ])
             ],
             [
-                [
+                new GenericNotification([
                     new DummyMessage(
                         new Recipients([
                             new Recipient(new GenericContact('test'))
                         ]),
                         'test3'
                     ),
-                ]
+                ])
             ],
         ];
     }
 
     /**
-     * @dataProvider messages
+     * @dataProvider notifications
      */
-    public function testSendingMessages(array $messages)
+    public function testSendingNotificationMessages(NotificationInterface $notification)
     {
         $strategy = new SendStrategy([
-            DummyMessage::class => $this->testHandler,
+            DummyMessage::class => $this->sendService,
         ]);
 
-        $strategy->handle($messages);
+        $strategy->handle($notification);
 
-        $sentMessages = $this->testHandler->getMessages();
+        $sentMessages = $this->sendService->getMessages();
         $this->assertNotEmpty($sentMessages);
-        $this->assertCount(count($messages), $sentMessages);
+        $this->assertCount(count($notification->getMessages()), $sentMessages);
     }
 
     public function testSendingSkippedInCaseOfUnsupportedMessageType()
     {
-        $message = new DummyMessage(
-            new Recipients([
-                new Recipient(new GenericContact('test'))
-            ]),
-            'test test test'
-        );
+        $notification = new GenericNotification([
+            new DummyMessage(
+                new Recipients([
+                    new Recipient(new GenericContact('test'))
+                ]),
+                'test test test'
+            )
+        ]);
 
         $strategy = new SendStrategy([
-            EmailMessage::class => $this->testHandler,
+            EmailMessage::class => $this->sendService,
         ]);
-        $strategy->handle([$message]);
+        $strategy->handle($notification);
 
-        $this->assertEmpty($this->testHandler->getMessages());
+        $this->assertEmpty($this->sendService->getMessages());
     }
 }

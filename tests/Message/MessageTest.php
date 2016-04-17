@@ -12,7 +12,7 @@
 namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Message\BaseMessage;
+use Notify\Message\AbstractMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
 use Notify\Tests\TestAsset\Contact\TestContact;
@@ -22,11 +22,11 @@ use Notify\Exception\InvalidArgumentException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class BaseMessageTest extends PHPUnit_Framework_TestCase
+class MessageTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingMessageWithStringContent()
     {
-        $message = $this->getMockForAbstractClass(BaseMessage::class, [
+        $message = $this->getMockForAbstractClass(AbstractMessage::class, [
             new Recipients([
                 new Recipient(new TestContact('test'))
             ]),
@@ -45,7 +45,7 @@ class BaseMessageTest extends PHPUnit_Framework_TestCase
             ->method('getContent')
             ->willReturn('test test test');
 
-        $message = $this->getMockForAbstractClass(BaseMessage::class, [
+        $message = $this->getMockForAbstractClass(AbstractMessage::class, [
             new Recipients([
                 new Recipient(new TestContact('test'))
             ]),
@@ -60,7 +60,7 @@ class BaseMessageTest extends PHPUnit_Framework_TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->getMockForAbstractClass(BaseMessage::class, [
+        $this->getMockForAbstractClass(AbstractMessage::class, [
             new Recipients([
                 new Recipient(new TestContact('test'))
             ]),
@@ -74,7 +74,7 @@ class BaseMessageTest extends PHPUnit_Framework_TestCase
             new Recipient(new TestContact('test'))
         ]);
 
-        $message = $this->getMockForAbstractClass(BaseMessage::class, [
+        $message = $this->getMockForAbstractClass(AbstractMessage::class, [
             $recipients,
             'test test test'
         ]);

@@ -2,12 +2,12 @@
 
 namespace Notify\Tests\TestAsset\Contact;
 
-use Notify\Contact\BaseContact;
+use Notify\Contact\AbstractContact;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class TestContact extends BaseContact
+class TestContact extends AbstractContact
 {
     protected function filter($value)
     {

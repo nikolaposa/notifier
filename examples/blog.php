@@ -17,13 +17,13 @@ use Notify\Contact\EmailContact;
 use Notify\Message\Actor\ProvidesRecipientInterface;
 use Notify\Message\Actor\Recipient;
 use Notify\Message\Actor\EmptyRecipient;
-use Notify\BaseNotification;
+use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
-use Notify\Message\Handler\TestHandler;
+use Notify\Message\SendService\MockSendService;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -174,7 +174,7 @@ final class Comment
     }
 }
 
-final class NewCommentNotification extends BaseNotification
+final class NewCommentNotification extends AbstractNotification
 {
     const ID = 'new-comment';
 
@@ -190,10 +190,10 @@ final class NewCommentNotification extends BaseNotification
 
     public function getName()
     {
-        return 'New comment notification';
+        return 'New comment';
     }
 
-    protected function getMessages()
+    public function getMessages()
     {
         return [
             new EmailMessage(
@@ -215,16 +215,16 @@ $post = new Post('Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisc
 $comment = new Comment('Jane', 'jane@example.com', 'Nice article!');
 $post->comment($comment);
 
-$defaultHandler = new TestHandler();
+$defaultSendService = new MockSendService();
 $defaultStrategy = new SendStrategy([
-    EmailMessage::class => $defaultHandler,
+    EmailMessage::class => $defaultSendService,
 ]);
-BaseNotification::setDefaultStrategy($defaultStrategy);
+AbstractNotification::setDefaultStrategy($defaultStrategy);
 
 $newCommentNotification = new NewCommentNotification($post, $comment);
 $newCommentNotification();
 
-foreach ($defaultHandler->getMessages() as $message) {
+foreach ($defaultSendService->getMessages() as $message) {
     echo get_class($message) . ': ';
     echo $message->getContent();
     echo "\n\n";

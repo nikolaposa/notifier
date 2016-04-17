@@ -11,11 +11,11 @@
 
 namespace Notify\Tests\TestAsset\Message;
 
-use Notify\Message\BaseMessage;
+use Notify\Message\AbstractMessage;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class DummyMessage extends BaseMessage
+final class DummyMessage extends AbstractMessage
 {
 }

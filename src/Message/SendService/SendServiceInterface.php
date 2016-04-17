@@ -9,14 +9,14 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\Handler;
+namespace Notify\Message\SendService;
 
 use Notify\Message\MessageInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface HandlerInterface
+interface SendServiceInterface
 {
     /**
      * @param MessageInterface $message

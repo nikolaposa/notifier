@@ -12,7 +12,7 @@
 namespace Notify\Exception;
 
 use LogicException;
-use Notify\Message\Handler\HandlerInterface;
+use Notify\Message\SendService\SendServiceInterface;
 use Notify\Message\MessageInterface;
 
 /**
@@ -20,11 +20,11 @@ use Notify\Message\MessageInterface;
  */
 class UnsupportedMessageException extends LogicException implements ExceptionInterface
 {
-    public static function fromHandlerAndMessage(HandlerInterface $handler, MessageInterface $message)
+    public static function fromSendServiceAndMessage(SendServiceInterface $sendService, MessageInterface $message)
     {
         return new self(sprintf(
-            'Handler %s does not support %s messages',
-            get_class($handler),
+            '%s send service does not support %s messages',
+            get_class($sendService),
             get_class($message)
         ));
     }

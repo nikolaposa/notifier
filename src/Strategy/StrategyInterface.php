@@ -11,7 +11,6 @@
 
 namespace Notify\Strategy;
 
-use Notify\Message\MessageInterface;
 use Notify\NotificationInterface;
 
 /**
@@ -20,8 +19,7 @@ use Notify\NotificationInterface;
 interface StrategyInterface
 {
     /**
-     * @param MessageInterface[] $messages
      * @param NotificationInterface $notification
      */
-    public function handle(array $messages, NotificationInterface $notification = null);
+    public function handle(NotificationInterface $notification);
 }

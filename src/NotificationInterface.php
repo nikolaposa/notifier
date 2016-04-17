@@ -24,6 +24,11 @@ interface NotificationInterface
     public function getName();
 
     /**
+     * @return array
+     */
+    public function getMessages();
+
+    /**
      * @param StrategyInterface $strategy
      * @return void
      */

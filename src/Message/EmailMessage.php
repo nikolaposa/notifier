@@ -19,7 +19,7 @@ use Notify\Message\Options\EmailOptions;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class EmailMessage extends BaseMessage implements
+final class EmailMessage extends AbstractMessage implements
     HasSubjectInterface,
     HasSenderInterface
 {

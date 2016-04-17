@@ -11,14 +11,13 @@
 
 namespace Notify;
 
-use Notify\Message\MessageInterface;
 use Notify\Strategy\StrategyInterface;
 use Notify\Exception\NotificationStrategyNotSuppliedException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-abstract class BaseNotification implements NotificationInterface
+abstract class AbstractNotification implements NotificationInterface
 {
     /**
      * @var StrategyInterface
@@ -39,11 +38,6 @@ abstract class BaseNotification implements NotificationInterface
     }
 
     /**
-     * @return array
-     */
-    abstract protected function getMessages();
-
-    /**
      * {@inheritDoc}
      */
     public function __invoke(StrategyInterface $strategy = null)
@@ -56,11 +50,6 @@ abstract class BaseNotification implements NotificationInterface
             $strategy = self::$defaultStrategy;
         }
 
-        $messages = array_filter($this->getMessages(), function ($message) {
-            /* @var $message MessageInterface */
-            return !$message->getRecipients()->isEmpty();
-        });
-
-        $strategy->handle($messages, $this);
+        $strategy->handle($this);
     }
 }

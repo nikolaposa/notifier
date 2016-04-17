@@ -14,6 +14,6 @@ namespace Notify\Contact;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class GenericContact extends BaseContact
+final class GenericContact extends AbstractContact
 {
 }

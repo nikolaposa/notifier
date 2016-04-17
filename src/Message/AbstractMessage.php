@@ -19,7 +19,7 @@ use JsonSerializable;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-abstract class BaseMessage implements MessageInterface, JsonSerializable
+abstract class AbstractMessage implements MessageInterface, JsonSerializable
 {
     /**
      * @var Recipients

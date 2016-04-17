@@ -18,41 +18,41 @@ composer require nikolaposa/notify
 
 ## Theory of operation
 
-The essence of using this librarly is creation of notifications, whose task is to construct messages
-(for example email, SMS, push) and send them using a strategy.
+The essence of using this librarly is creation of notifications, whose task is to construct and
+provide messages (for example email, SMS, push) and send them using a strategy.
 
 Notifications are defined through the `NotificationInterface`. Typically, concrete notifications
-would inherit `BaseNotification` class, which provides some common basis.
+would inherit `AbstractNotification` class, which provides some common basis.
 
 ### Messages
 
 `MessageInterface` implementations are generic objects containing information about a message that
-should be sent by the appropriate handler. At least, each message must provide recipients list and
-content that is to be sent. Recipients list is a collection of `RecipientInterface` instances,
+should be sent by the appropriate send service. At least, each message must provide recipients list
+and content that is to be sent. Recipients list is a collection of `RecipientInterface` instances,
 each represented by name and a contact information, encapsulated in the `ContactInterface`
-implementation. Content is represented by the `ContentInterface`, whereas concrete implementations
-are `TextContent` and `CallbackContent`.
+implementation. Content is essentially a string, but it can be supplied to a message in form of a
+`ContentProviderInterface` implementation.
 
-Messages are sent using message `HandlerInterface` implementations.
+Messages are sent using message `SendServiceInterface` implementations.
 
-Out of the box, only `EmailMessage` and related `NativeMailerHandler` is supported, but custom can
+Out of the box, only `EmailMessage` and related `NativeMailer` is supported, but custom can
 be created and consumed.
 
 ### Strategies
 
-Strategies are `StrategyInterface` implementations, responsible for handling messages defined by
-some notification. `SendStrategy` is a concrete, default Strategy implementation that sends messages
-using appropriate message handlers.
+Strategies are `StrategyInterface` implementations, responsible for handling a notification, namely
+its messages. `SendStrategy` is a concrete, default Strategy implementation that sends notification
+messages using appropriate send services.
 
-This concept allows defining custom handling strategies, for example some that will put messages
-into a background job.
+This concept allows defining custom handling strategies, for example some that will put notification
+messages into a background job.
 
 ## Example
 
 ```php
 <?php
 
-use Notify\BaseNotification;
+use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
@@ -60,16 +60,16 @@ use Notify\Contact\EmailContact;
 use Notify\Message\Actor\EmptySender;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
-use Notify\Message\Handler\NativeMailerHandler;
+use Notify\Message\SendService\NativeMailer;
 
-final class SampleNotification extends BaseNotification
+final class SampleNotification extends AbstractNotification
 {
     public function getName()
     {
-        return 'Sample notification';
+        return 'Sample';
     }
 
-    protected function getMessages()
+    public function getMessages()
     {
         return [
             new EmailMessage(
@@ -86,12 +86,12 @@ final class SampleNotification extends BaseNotification
 }
 
 $defaultStrategy = new SendStrategy([
-    EmailMessage::class => new NativeMailerHandler(),
+    EmailMessage::class => new NativeMailer(),
 ]);
 
 //set default strategy so that it do not have to be passed
 //with each and every notification __invoke() call.
-BaseNotification::setDefaultStrategy($defaultStrategy);
+AbstractNotification::setDefaultStrategy($defaultStrategy);
 
 $notification = new SampleNotification();
 $notification();

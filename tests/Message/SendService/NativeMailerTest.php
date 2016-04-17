@@ -9,10 +9,10 @@
  * located at the package root folder.
  */
 
-namespace Notify\Tests\Message\Handler;
+namespace Notify\Tests\Message\SendService;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Message\Handler\NativeMailerHandler;
+use Notify\Message\SendService\NativeMailer;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Recipient;
@@ -26,7 +26,7 @@ use Notify\Exception\RuntimeException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
+class NativeMailerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var array
@@ -52,9 +52,9 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
         return false;
     }
 
-    private function getHandler($maxColumnWidth = 70)
+    private function getMailer($maxColumnWidth = 70)
     {
-        return new NativeMailerHandler($maxColumnWidth, [$this, 'mailer']);
+        return new NativeMailer($maxColumnWidth, [$this, 'mailer']);
     }
 
     public function testSendWithDefaultOptions()
@@ -70,7 +70,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new EmailOptions()
         );
 
-        $this->getHandler()->send($message);
+        $this->getMailer()->send($message);
 
         $this->assertNotEmpty($this->sentParameters);
         $params = $this->sentParameters[0];
@@ -93,7 +93,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             'test test test'
         );
 
-        $this->getHandler()->send($message);
+        $this->getMailer()->send($message);
     }
 
     public function testEmailContentWordWrap()
@@ -109,7 +109,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new EmailOptions()
         );
 
-        $this->getHandler(4)->send($message);
+        $this->getMailer(4)->send($message);
 
         $this->assertNotEmpty($this->sentParameters);
         $params = $this->sentParameters[0];
@@ -130,7 +130,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new EmailOptions('text/html')
         );
 
-        $this->getHandler()->send($message);
+        $this->getMailer()->send($message);
 
         $this->assertNotEmpty($this->sentParameters);
         $params = $this->sentParameters[0];
@@ -153,7 +153,7 @@ class NativeMailerHandlerTest extends PHPUnit_Framework_TestCase
             new EmailOptions('text/html')
         );
 
-        $handler = new NativeMailerHandler(70, [$this, 'mailerError']);
-        $handler->send($message);
+        $sendService = new NativeMailer(70, [$this, 'mailerError']);
+        $sendService->send($message);
     }
 }

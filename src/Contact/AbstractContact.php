@@ -14,7 +14,7 @@ namespace Notify\Contact;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-abstract class BaseContact implements ContactInterface
+abstract class AbstractContact implements ContactInterface
 {
     /**
      * @var string

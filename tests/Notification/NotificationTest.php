@@ -12,11 +12,15 @@
 namespace Notify\Tests\Notification;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Tests\TestAsset\Notification\TestNotification;
+use Notify\GenericNotification;
+use Notify\Tests\TestAsset\Message\DummyMessage;
+use Notify\Message\Actor\Recipients;
+use Notify\Message\Actor\Recipient;
+use Notify\Contact\GenericContact;
 use Notify\Tests\TestAsset\Strategy\TestStrategy;
 use Notify\Message\MessageInterface;
 use Notify\Exception\NotificationStrategyNotSuppliedException;
-use Notify\BaseNotification;
+use Notify\AbstractNotification;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -29,7 +33,14 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->notification = new TestNotification();
+        $this->notification = new GenericNotification([
+            new DummyMessage(
+                new Recipients([
+                    new Recipient(new GenericContact('test'))
+                ]),
+                'test1'
+            ),
+        ]);
     }
 
     public function testMessagesHandledByStrategy()
@@ -48,7 +59,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     public function testExceptionIsRaisedIfStrategyNotSupplied()
     {
         $this->expectException(NotificationStrategyNotSuppliedException::class);
-        $this->expectExceptionMessage('Strategy for notification "' . TestNotification::class . '" was not supplied');
+        $this->expectExceptionMessage('Strategy for notification "' . GenericNotification::class . '" was not supplied');
 
         $notification = $this->notification;
         $notification();
@@ -57,7 +68,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     public function testMessagesHandledByDefaultStrategy()
     {
         $strategy = new TestStrategy();
-        BaseNotification::setDefaultStrategy($strategy);
+        AbstractNotification::setDefaultStrategy($strategy);
 
         $notification = $this->notification;
         $notification();
@@ -67,6 +78,6 @@ class NotificationTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(MessageInterface::class, current($messages));
         $this->assertSame($notification, $strategy->getNotification());
 
-        BaseNotification::resetDefaultStrategy();
+        AbstractNotification::resetDefaultStrategy();
     }
 }
