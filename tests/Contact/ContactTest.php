@@ -40,11 +40,4 @@ class ContactTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('John Doe', $contact->getName());
     }
-
-    public function testFilteringContact()
-    {
-        $contact = new TestContact('    test    ');
-
-        $this->assertEquals('test', $contact->getValue());
-    }
 }

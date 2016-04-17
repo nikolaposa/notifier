@@ -12,7 +12,7 @@
 namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Tests\TestAsset\Contact\TestContact;
+use Notify\Contact\GenericContact;
 use Notify\Message\Actor\Sender;
 
 /**
@@ -22,7 +22,7 @@ class SenderTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingSender()
     {
-        $sender = new Sender(new TestContact('test'), 'Test');
+        $sender = new Sender(new GenericContact('test'), 'Test');
 
         $this->assertEquals('test', $sender->getContact()->getValue());
         $this->assertEquals('Test', $sender->getName());
@@ -30,14 +30,14 @@ class SenderTest extends PHPUnit_Framework_TestCase
 
     public function testSenderToStringConversion()
     {
-        $sender = new Sender(new TestContact('test'), 'Test');
+        $sender = new Sender(new GenericContact('test'), 'Test');
 
         $this->assertEquals('Test <test>', (string) $sender);
     }
 
     public function testSenderWithNoNameStringConversion()
     {
-        $sender = new Sender(new TestContact('test'));
+        $sender = new Sender(new GenericContact('test'));
 
         $this->assertEquals('test', (string) $sender);
     }

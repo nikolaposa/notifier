@@ -15,7 +15,7 @@ use PHPUnit_Framework_TestCase;
 use Notify\Contact\Contacts;
 use Notify\Contact\ContactInterface;
 use Notify\Contact\EmailContact;
-use Notify\Tests\TestAsset\Contact\TestContact;
+use Notify\Contact\GenericContact;
 use Notify\Exception\InvalidArgumentException;
 
 /**
@@ -107,14 +107,14 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         ]);
 
         $this->assertTrue($contacts->has(EmailContact::class));
-        $this->assertFalse($contacts->has(TestContact::class));
+        $this->assertFalse($contacts->has(GenericContact::class));
     }
 
     public function testGettingContactsByType()
     {
         $contacts = new Contacts([
             new EmailContact('test1@example.com', 'home'),
-            new TestContact('123456', 'mobile'),
+            new GenericContact('123456', 'mobile'),
             new EmailContact('test2@example.com', 'work'),
         ]);
 
@@ -128,7 +128,7 @@ class ContactsTest extends PHPUnit_Framework_TestCase
     {
         $contacts = new Contacts([
             new EmailContact('test1@example.com', 'home'),
-            new TestContact('123456', 'mobile'),
+            new GenericContact('123456', 'mobile'),
             new EmailContact('test2@example.com', 'work'),
         ]);
 
@@ -140,7 +140,7 @@ class ContactsTest extends PHPUnit_Framework_TestCase
     public function testGettingContactOfTypeThatDoesNotExist()
     {
         $contacts = new Contacts([
-            new TestContact('123456'),
+            new GenericContact('123456'),
         ]);
 
         $this->assertFalse($contacts->getOne(EmailContact::class));
@@ -161,7 +161,7 @@ class ContactsTest extends PHPUnit_Framework_TestCase
     public function testFindContactReturnsFalseIfContactNotFound()
     {
         $contacts = new Contacts([
-            new TestContact('123456'),
+            new GenericContact('123456'),
         ]);
 
         $this->assertFalse($contacts->find(EmailContact::class, 'default'));

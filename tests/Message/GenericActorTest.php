@@ -12,7 +12,7 @@
 namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Tests\TestAsset\Contact\TestContact;
+use Notify\Contact\GenericContact;
 use Notify\Message\Actor\GenericActor;
 
 /**
@@ -22,7 +22,7 @@ class GenericActorTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingActor()
     {
-        $actor = new GenericActor(new TestContact('test'), 'Test');
+        $actor = new GenericActor(new GenericContact('test'), 'Test');
 
         $this->assertEquals('test', $actor->getContact()->getValue());
         $this->assertEquals('Test', $actor->getName());
@@ -30,7 +30,7 @@ class GenericActorTest extends PHPUnit_Framework_TestCase
 
     public function testNoActorNameByDefault()
     {
-        $actor = new GenericActor(new TestContact('test'));
+        $actor = new GenericActor(new GenericContact('test'));
 
         $this->assertEquals('test', $actor->getContact()->getValue());
         $this->assertNull($actor->getName());
