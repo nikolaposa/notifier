@@ -43,6 +43,16 @@ class NotificationTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
+    public function testGettingName()
+    {
+        $this->assertEquals('Generic', $this->notification->getName());
+    }
+
+    public function testGettingMessages()
+    {
+        $this->assertNotEmpty($this->notification->getMessages());
+    }
+
     public function testMessagesHandledByStrategy()
     {
         $strategy = new TestStrategy();
