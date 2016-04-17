@@ -9,11 +9,11 @@
  * located at the package root folder.
  */
 
-namespace Notify\Exception;
+namespace Notify\Message\SendService\Exception;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class RuntimeException extends \RuntimeException implements ExceptionInterface
+interface ExceptionInterface
 {
 }

@@ -13,10 +13,10 @@ namespace Notify\Message\SendService;
 
 use Notify\Message\MessageInterface;
 use Notify\Message\EmailMessage;
-use Notify\Exception\UnsupportedMessageException;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\ActorInterface;
-use Notify\Exception\RuntimeException;
+use Notify\Message\SendService\Exception\UnsupportedMessageException;
+use Notify\Message\SendService\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>

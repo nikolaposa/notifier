@@ -19,8 +19,8 @@ use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
 use Notify\Message\Options\EmailOptions;
 use Notify\Tests\TestAsset\Message\DummyMessage;
-use Notify\Exception\UnsupportedMessageException;
-use Notify\Exception\RuntimeException;
+use Notify\Message\SendService\Exception\UnsupportedMessageException;
+use Notify\Message\SendService\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
