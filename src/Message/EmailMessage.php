@@ -19,19 +19,16 @@ use Notify\Message\Options\EmailOptions;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class EmailMessage extends AbstractMessage implements
+class EmailMessage extends AbstractMessage implements
     HasSubjectInterface,
     HasSenderInterface
 {
+    use HasSenderTrait;
+
     /**
      * @var string
      */
     private $subject;
-
-    /**
-     * @var ActorInterface
-     */
-    private $sender;
 
     /**
      * @var EmailOptions
@@ -67,11 +64,6 @@ final class EmailMessage extends AbstractMessage implements
     public function getSubject()
     {
         return $this->subject;
-    }
-
-    public function getSender()
-    {
-        return $this->sender;
     }
 
     public function getOptions()

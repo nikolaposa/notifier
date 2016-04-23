@@ -86,7 +86,9 @@ final class NativeMailer implements SendServiceInterface
             $headers .= "MIME-Version: 1.0\r\n";
         }
 
-        if (null !== ($sender = $message->getSender())) {
+        if ($message->hasSender()) {
+            $sender = $message->getSender();
+
             $headers .= 'From: ' . $sender->getContact()->getValue() . "\r\n" .
                 'Reply-To: ' . $sender->getContact()->getValue() . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
