@@ -52,6 +52,13 @@ class EmailMessage extends AbstractMessage implements
         $this->subject = $subject;
         $this->sender = $sender;
 
+        $options = $this->handleDeprecatedOptions($options);
+
+        $this->options = $options;
+    }
+
+    private function handleDeprecatedOptions($options)
+    {
         if (null !== $options && $options instanceof EmailOptions) {
             $options = new Options([
                 'content_type' => $options->getContentType(),
@@ -62,7 +69,7 @@ class EmailMessage extends AbstractMessage implements
             ]);
         }
 
-        $this->options = $options;
+        return $options;
     }
 
     public function getSubject()
