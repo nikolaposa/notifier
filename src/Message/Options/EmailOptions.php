@@ -19,22 +19,22 @@ class EmailOptions
     /**
      * @var string
      */
-    private $contentType;
+    protected $contentType;
 
     /**
      * @var string
      */
-    private $encoding;
+    protected $encoding;
 
     /**
      * @var array
      */
-    private $headers;
+    protected $headers;
 
     /**
      * @var array
      */
-    private $parameters;
+    protected $parameters;
 
     public function __construct(
         $contentType = 'text/plain',

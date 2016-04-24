@@ -28,12 +28,12 @@ class EmailMessage extends AbstractMessage implements
     /**
      * @var string
      */
-    private $subject;
+    protected $subject;
 
     /**
      * @var EmailOptions
      */
-    private $options;
+    protected $options;
 
     /**
      * @param Recipients $recipients
