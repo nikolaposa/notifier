@@ -12,7 +12,7 @@
 namespace Notify\Tests\Message\SendService;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Message\SendService\TwilioSMS;
+use Notify\Message\SendService\PlivoSMS;
 use GuzzleHttp\ClientInterface;
 use Notify\Message\SMSMessage;
 use Notify\Contact\PhoneContact;
@@ -27,66 +27,57 @@ use Notify\Message\SendService\Exception\RuntimeException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class TwilioSMSTest extends PHPUnit_Framework_TestCase
+class PlivoSMSTest extends PHPUnit_Framework_TestCase
 {
-    private function getTwilioSMS(ClientInterface $httpClient = null)
+    private function getPlivoSMS(ClientInterface $httpClient = null)
     {
-        return new TwilioSMS('token', 'id', $httpClient);
+        return new PlivoSMS('token', 'id', $httpClient);
     }
 
     private function getHttpClientWithSuccessResponse(SMSMessage $message)
     {
         $httpClient = $this->getMock(ClientInterface::class);
-
-        $i = 0;
-        foreach ($message->getRecipients() as $recipient) {
-            $httpClient->expects($this->at($i++))
-                ->method('request')
-                ->with(
-                    $this->equalTo('POST'),
-                    $this->callback(function ($url) {
-                        return preg_match('[' . TwilioSMS::API_BASE_URL . '|id]', $url);
-                    }),
-                    $this->callback(function ($options) use ($message, $recipient) {
-                        if (!is_array($options)) {
-                            return false;
-                        }
-
-                        if (!isset($options['auth'])) {
-                            return false;
-                        }
-
-                        if (!isset($options['body'])) {
-                            return false;
-                        }
-
-                        if (false === strpos($options['body'], $message->getSender()->getContact()->getValue())) {
-                            return false;
-                        }
-
-                        if (false === strpos($options['body'], $recipient->getContact()->getValue())) {
-                            return false;
-                        }
-
-                        if (false === strpos($options['body'], $message->getContent())) {
-                            return false;
-                        }
-
-                        return true;
-                    })
-                )
-                ->will($this->returnValue(new Response(204)));
-        }
-
-        return $httpClient;
-    }
-
-    private function getHttpClientWithInvalidResponse()
-    {
-        $httpClient = $this->getMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
-            ->will($this->returnValue(new Response(500, [], 'invalid json response')));
+            ->with(
+                $this->equalTo('POST'),
+                $this->callback(function ($url) {
+                    return preg_match('[' . PlivoSMS::API_BASE_URL . '|id]', $url);
+                }),
+                $this->callback(function ($options) use ($message) {
+                    if (!is_array($options)) {
+                        return false;
+                    }
+
+                    if (!isset($options['auth'])) {
+                        return false;
+                    }
+
+                    if (!isset($options['body'])) {
+                        return false;
+                    }
+
+                    if (false === strpos($options['body'], $message->getSender()->getContact()->getValue())) {
+                        return false;
+                    }
+
+                    $to = [];
+                    foreach ($message->getRecipients() as $recipient) {
+                        $to[] = $recipient->getContact()->getValue();
+                    }
+
+                    if (false === strpos($options['body'], implode('<', $to))) {
+                        return false;
+                    }
+
+                    if (false === strpos($options['body'], $message->getContent())) {
+                        return false;
+                    }
+
+                    return true;
+                })
+            )
+            ->will($this->returnValue(new Response(202)));
 
         return $httpClient;
     }
@@ -96,7 +87,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
         $httpClient = $this->getMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
-            ->will($this->returnValue(new Response(403, [], '{"message":"Queue overflow", "code":30001}')));
+            ->will($this->returnValue(new Response(403)));
 
         return $httpClient;
     }
@@ -111,7 +102,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
             new Actor(new PhoneContact('+11111111111'))
         );
 
-        $this->getTwilioSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
+        $this->getPlivoSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
     }
 
     public function testMultiSendSuccess()
@@ -126,10 +117,10 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
             new Actor(new PhoneContact('+11111111111'))
         );
 
-        $this->getTwilioSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
+        $this->getPlivoSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
     }
 
-    public function testSendResultsInServerError()
+    public function testSendResultsInError()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('SMS not sent');
@@ -142,24 +133,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
             new Actor(new PhoneContact('+11111111111'))
         );
 
-        $this->getTwilioSMS($this->getHttpClientWithInvalidResponse())->send($message);
-    }
-
-    public function testSendResultsInClientError()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Queue overflow');
-        $this->expectExceptionCode(30001);
-
-        $message = new SMSMessage(
-            new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
-            ]),
-            'test test test',
-            new Actor(new PhoneContact('+11111111111'))
-        );
-
-        $this->getTwilioSMS($this->getHttpClientWithErrorResponse())->send($message);
+        $this->getPlivoSMS($this->getHttpClientWithErrorResponse())->send($message);
     }
 
     public function testExceptionIsRaisedInCaseOfUnsupportedMessageType()
@@ -173,7 +147,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
             'test test test'
         );
 
-        $this->getTwilioSMS()->send($message);
+        $this->getPlivoSMS()->send($message);
     }
 
     public function testExceptionIsRaisedIfMessageSenderIsMissing()
@@ -188,6 +162,6 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
             'test test test'
         );
 
-        $this->getTwilioSMS()->send($message);
+        $this->getPlivoSMS()->send($message);
     }
 }
