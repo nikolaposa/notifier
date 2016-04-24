@@ -14,10 +14,12 @@ namespace Notify\Example;
 use Notify\Contact\HasContactsInterface;
 use Notify\Contact\Contacts;
 use Notify\Contact\EmailContact;
+use Notify\Contact\PhoneContact;
 use Notify\Message\Actor\ProvidesRecipientInterface;
 use Notify\Message\Actor\Actor;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
+use Notify\Message\SMSMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\SendService\MockSendService;
@@ -34,16 +36,20 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
 
     private $email;
 
+    private $phoneNumber;
+
     public function __construct(
         $username,
         $firstName,
         $lastName,
-        $email
+        $email,
+        $phoneNumber
     ) {
         $this->username = $username;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->email = $email;
+        $this->phoneNumber = $phoneNumber;
     }
 
     public function getUsername()
@@ -66,10 +72,16 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
         return $this->email;
     }
 
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
     public function getContacts()
     {
         return new Contacts([
             new EmailContact($this->email),
+            new PhoneContact($this->phoneNumber),
         ]);
     }
 
@@ -82,6 +94,10 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
         if ($messageType == EmailMessage::class) {
             if (false !== ($emailContact = $contacts->getOne(EmailContact::class))) {
                 return new Actor($emailContact, $name);
+            }
+        } elseif ($messageType == SMSMessage::class) {
+            if (false !== ($phoneContact = $contacts->getOne(PhoneContact::class))) {
+                return new Actor($phoneContact, $name);
             }
         }
 
@@ -194,17 +210,19 @@ final class NewCommentNotification extends AbstractNotification
     {
         return [
             new EmailMessage(
-                new Recipients([
-                    $this->post->getAuthor()->getMessageRecipient(EmailMessage::class, self::ID)
-                ]),
+                Recipients::fromRecipientProviders([$this->post->getAuthor()], EmailMessage::class, self::ID),
                 'New comment',
                 sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
+            ),
+            new SMSMessage(
+                Recipients::fromRecipientProviders([$this->post->getAuthor()], SMSMessage::class, self::ID),
+                sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
             ),
         ];
     }
 }
 
-$user = new User('admin', 'John', 'Doe', 'jd@example.com');
+$user = new User('admin', 'John', 'Doe', 'jd@example.com', '+12222222222');
 $post = new Post('Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $user);
 
 $comment = new Comment('Jane', 'jane@example.com', 'Nice article!');
@@ -213,6 +231,7 @@ $post->comment($comment);
 $defaultSendService = new MockSendService();
 $defaultStrategy = new SendStrategy([
     EmailMessage::class => $defaultSendService,
+    SMSMessage::class => $defaultSendService,
 ]);
 AbstractNotification::setDefaultStrategy($defaultStrategy);
 
