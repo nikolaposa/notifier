@@ -35,8 +35,7 @@ implementation. Content is essentially a string, but it can be supplied to a mes
 
 Messages are sent using message `SendServiceInterface` implementations.
 
-Out of the box, only `EmailMessage` and related `NativeMailer` is supported, but custom can
-be created and consumed.
+Out of the box, Notify provides email, SMS and push message types, as well as their related send services.
 
 ### Strategies
 
@@ -54,12 +53,15 @@ messages into a background job.
 
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
+use Notify\Message\SMSMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
+use Notify\Contact\PhoneContact;
 use Notify\Message\Options\EmailOptions;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\SendService\NativeMailer;
+use Notify\Message\SendService\TwilioSMS;
 
 final class SampleNotification extends AbstractNotification
 {
@@ -80,12 +82,20 @@ final class SampleNotification extends AbstractNotification
                 null,
                 new EmailOptions('text/html')
             ),
+            new SMSMessage(
+                new Recipients([
+                    new Actor(new PhoneContact('+12222222222'))
+                ]),
+                'test test test',
+                new Actor(new PhoneContact('+11111111111'))
+            )
         ];
     }
 }
 
 $defaultStrategy = new SendStrategy([
     EmailMessage::class => new NativeMailer(),
+    SMSMessage::class => new TwilioSMS('token', 'id'),
 ]);
 
 //set default strategy so that it do not have to be passed
