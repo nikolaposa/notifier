@@ -26,10 +26,8 @@ class SMSMessage extends AbstractMessage implements HasSenderInterface
 
     /**
      * @param Recipients $recipients
-     * @param string $subject
      * @param string|ContentProviderInterface $content
      * @param ActorInterface $sender
-     * @param EmailOptions $options
      */
     public function __construct(
         Recipients $recipients,
@@ -41,19 +39,25 @@ class SMSMessage extends AbstractMessage implements HasSenderInterface
         $this->sender = $sender;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getContent()
     {
-        $this->loadContent();
+        $content = $this->loadContent();
 
-        return strlen($this->content) > self::CONTENT_LENGTH_LIMIT
-            ? substr($this->content, 0, self::CONTENT_LENGTH_LIMIT)
-            : $this->content;
+        return strlen($content) > self::CONTENT_LENGTH_LIMIT
+            ? substr($content, 0, self::CONTENT_LENGTH_LIMIT)
+            : $content;
     }
 
+    /**
+     * @return string
+     */
     public function getRawContent()
     {
         $this->loadContent();
 
-        return $this->content;
+        return $this->loadContent();
     }
 }

@@ -59,16 +59,19 @@ abstract class AbstractMessage implements MessageInterface, JsonSerializable
      */
     public function getContent()
     {
-        $this->loadContent();
-
-        return $this->content;
+        return $this->loadContent();
     }
 
+    /**
+     * @return string
+     */
     protected function loadContent()
     {
         if ($this->content instanceof ContentProviderInterface) {
             $this->content = $this->content->getContent();
         }
+
+        return $this->content;
     }
 
     public function jsonSerialize()

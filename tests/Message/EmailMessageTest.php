@@ -18,7 +18,7 @@ use Notify\Message\HasSubjectInterface;
 use Notify\Message\HasSenderInterface;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
-use Notify\Contact\GenericContact;
+use Notify\Contact\EmailContact;
 use Notify\Message\Actor\ActorInterface;
 use Notify\Message\Options\EmailOptions;
 
@@ -31,7 +31,7 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Actor(new GenericContact('test'), 'Test')
+                new Actor(new EmailContact('john@example.com'), 'Test')
             ]),
             'Test',
             'test test test'
@@ -51,11 +51,11 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Actor(new GenericContact('test'), 'Test')
+                new Actor(new EmailContact('john@example.com'), 'Test')
             ]),
             'Test',
             'test test test',
-            new Actor(new GenericContact('test'), 'Test'),
+            new Actor(new EmailContact('test@example.com'), 'Test'),
             new EmailOptions('text/html')
         );
 
