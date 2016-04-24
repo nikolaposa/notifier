@@ -16,7 +16,7 @@ use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
-use Notify\Message\Options\EmailOptions;
+use Notify\Message\Options\Options;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\SendService\MockSendService;
 
@@ -39,7 +39,7 @@ final class TestNotification extends AbstractNotification
                 'Notification exercise',
                 'Some <strong>HTML</strong> notification content',
                 null,
-                new EmailOptions('text/html')
+                new Options(['content_type' => 'text/html'])
             ),
         ];
     }

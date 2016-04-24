@@ -59,7 +59,7 @@ use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
 use Notify\Contact\PhoneContact;
-use Notify\Message\Options\EmailOptions;
+use Notify\Message\Options\Options;
 use Notify\Strategy\SendStrategy;
 use Notify\Message\SendService\NativeMailer;
 use Notify\Message\SendService\TwilioSMS;
@@ -81,7 +81,7 @@ final class SampleNotification extends AbstractNotification
                 'Notification exercise',
                 'Some <strong>HTML</strong> notification content',
                 null,
-                new EmailOptions('text/html')
+                new Options(['content_type' => 'text/html'])
             ),
             new SMSMessage(
                 new Recipients([
