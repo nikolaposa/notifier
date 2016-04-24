@@ -14,7 +14,6 @@ namespace Notify\Message;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Content\ContentProviderInterface;
 use Notify\Message\Actor\ActorInterface;
-use Notify\Message\Options\OptionsInterface;
 use Notify\Message\Options\Options;
 use Notify\Message\Options\EmailOptions;
 
