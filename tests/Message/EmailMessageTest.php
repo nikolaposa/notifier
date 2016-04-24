@@ -20,6 +20,7 @@ use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
 use Notify\Message\Actor\ActorInterface;
+use Notify\Message\Options\Options;
 use Notify\Message\Options\EmailOptions;
 
 /**
@@ -44,7 +45,7 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Test', $message->getSubject());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertNull($message->getSender());
-        $this->assertInstanceOf(EmailOptions::class, $message->getOptions());
+        $this->assertInstanceOf(Options::class, $message->getOptions());
     }
 
     public function testCreatingEmailWithAllArguments()
@@ -56,7 +57,7 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
             'Test',
             'test test test',
             new Actor(new EmailContact('test@example.com'), 'Test'),
-            new EmailOptions('text/html')
+            new Options(['html' => true])
         );
 
         $this->assertInstanceOf(MessageInterface::class, $message);
@@ -66,6 +67,27 @@ class EmailMessageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Test', $message->getSubject());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertInstanceOf(ActorInterface::class, $message->getSender());
-        $this->assertInstanceOf(EmailOptions::class, $message->getOptions());
+        $this->assertInstanceOf(Options::class, $message->getOptions());
+    }
+
+    public function testCreatingEmailWithDeprecatedOptionsClassPasses()
+    {
+        @ $options = new EmailOptions('text/html');
+
+        $message = new EmailMessage(
+            new Recipients([
+                new Actor(new EmailContact('john@example.com'), 'Test')
+            ]),
+            'Test',
+            'test test test',
+            new Actor(new EmailContact('test@example.com'), 'Test'),
+            $options
+        );
+
+        $this->assertInstanceOf(Options::class, $message->getOptions());
+        $this->assertEquals('text/html', $message->getOptions()->get('content_type'));
+        $this->assertEquals('utf-8', $message->getOptions()->get('encoding'));
+        $this->assertEquals([], $message->getOptions()->get('headers'));
+        $this->assertEquals([], $message->getOptions()->get('parameters'));
     }
 }

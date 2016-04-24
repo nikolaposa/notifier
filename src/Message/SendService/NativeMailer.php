@@ -78,11 +78,13 @@ final class NativeMailer implements SendServiceInterface
     {
         $options = $message->getOptions();
 
-        $headers = ltrim(implode("\r\n", $options->getHeaders()) . "\r\n", "\r\n");
+        $headers = ltrim(implode("\r\n", $options->get('headers', [])) . "\r\n", "\r\n");
 
-        $headers .= 'Content-type: ' . $options->getContentType() . '; charset=' . $options->getEncoding() . "\r\n";
+        $contentType = $options->get('content_type', 'text/plain');
 
-        if ($options->getContentType() == 'text/html' && false === strpos($headers, 'MIME-Version:')) {
+        $headers .= 'Content-type: ' . $contentType . '; charset=' . $options->get('encoding', 'utf-8') . "\r\n";
+
+        if ($contentType == 'text/html' && false === strpos($headers, 'MIME-Version:')) {
             $headers .= "MIME-Version: 1.0\r\n";
         }
 
@@ -107,7 +109,7 @@ final class NativeMailer implements SendServiceInterface
 
         $headers = $this->buildHeaders($message);
 
-        $parameters = implode(' ', $message->getOptions()->getParameters());
+        $parameters = implode(' ', $message->getOptions()->get('parameters', []));
 
         $result = call_user_func($this->mailer, $recipients, $subject, $content, $headers, $parameters);
 

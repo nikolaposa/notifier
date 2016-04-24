@@ -47,7 +47,7 @@ class OptionsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('default', $options->get('baz', 'default'));
     }
 
-    public function testGettingAllOptions()
+    public function testOptionsToArray()
     {
         $options = new Options([
             'opt1' => 'val1',
@@ -55,7 +55,7 @@ class OptionsTest extends PHPUnit_Framework_TestCase
             'opt3' => 'val3',
         ]);
 
-        $allOptions = $options->getAll();
+        $allOptions = $options->toArray();
 
         $this->assertInternalType('array', $allOptions);
         $this->assertCount(3, $allOptions);

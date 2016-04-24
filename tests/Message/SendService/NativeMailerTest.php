@@ -17,7 +17,7 @@ use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
-use Notify\Message\Options\EmailOptions;
+use Notify\Message\Options\Options;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Message\SendService\Exception\UnsupportedMessageException;
 use Notify\Message\SendService\Exception\RuntimeException;
@@ -122,7 +122,9 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
             'Test',
             'test test test',
             null,
-            new EmailOptions('text/html')
+            new Options([
+                'content_type' => 'text/html',
+            ])
         );
 
         $this->getMailer()->send($message);

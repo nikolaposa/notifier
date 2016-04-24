@@ -14,6 +14,8 @@ namespace Notify\Message;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Content\ContentProviderInterface;
 use Notify\Message\Actor\ActorInterface;
+use Notify\Message\Options\OptionsInterface;
+use Notify\Message\Options\Options;
 use Notify\Message\Options\EmailOptions;
 
 /**
@@ -21,9 +23,11 @@ use Notify\Message\Options\EmailOptions;
  */
 class EmailMessage extends AbstractMessage implements
     HasSubjectInterface,
-    HasSenderInterface
+    HasSenderInterface,
+    HasOptionsInterface
 {
     use HasSenderTrait;
+    use HasOptionsTrait;
 
     /**
      * @var string
@@ -31,43 +35,39 @@ class EmailMessage extends AbstractMessage implements
     protected $subject;
 
     /**
-     * @var EmailOptions
-     */
-    protected $options;
-
-    /**
      * @param Recipients $recipients
      * @param string $subject
      * @param string|ContentProviderInterface $content
      * @param ActorInterface $sender
-     * @param EmailOptions $options
+     * @param $options
      */
     public function __construct(
         Recipients $recipients,
         $subject,
         $content,
         ActorInterface $sender = null,
-        EmailOptions $options = null
+        $options = null
     ) {
         parent::__construct($recipients, $content);
 
         $this->subject = $subject;
-
         $this->sender = $sender;
 
-        if (null === $options) {
-            $options = new EmailOptions();
+        if (null !== $options && $options instanceof EmailOptions) {
+            $options = new Options([
+                'content_type' => $options->getContentType(),
+                'encoding' => $options->getEncoding(),
+                'headers' => $options->getHeaders(),
+                'parameters' => $options->getParameters(),
+                'html' => $options->getContentType() == 'text/html',
+            ]);
         }
+
         $this->options = $options;
     }
 
     public function getSubject()
     {
         return $this->subject;
-    }
-
-    public function getOptions()
-    {
-        return $this->options;
     }
 }

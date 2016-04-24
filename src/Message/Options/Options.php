@@ -12,11 +12,9 @@
 namespace Notify\Message\Options;
 
 /**
- * Generic message options.
- *
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class Options
+final class Options implements OptionsInterface
 {
     /**
      * @var array
@@ -28,11 +26,17 @@ final class Options
         $this->options = $options;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function has($name)
     {
         return array_key_exists($name, $this->options);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function get($name, $default = null)
     {
         if (!$this->has($name)) {
@@ -42,7 +46,18 @@ final class Options
         return $this->options[$name];
     }
 
-    public function getAll()
+    /**
+     * {@inheritDoc}
+     */
+    public function set($name, $value)
+    {
+        $this->options[$name] = $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toArray()
     {
         return $this->options;
     }

@@ -13,6 +13,8 @@ namespace Notify\Message\Options;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
+ * @deprecated since version v2.1.0
+ * @codeCoverageIgnore
  */
 class EmailOptions
 {
@@ -42,6 +44,11 @@ class EmailOptions
         array $headers = [],
         array $parameters = []
     ) {
+        trigger_error(
+            __CLASS__ . ' is deprecated as of Notify 2.1.0; use ' . Options::class . ' instead',
+            E_USER_DEPRECATED
+        );
+
         $this->contentType = $contentType;
         $this->encoding = $encoding;
         $this->headers = $headers;

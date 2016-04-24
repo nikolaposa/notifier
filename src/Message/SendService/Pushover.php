@@ -90,7 +90,7 @@ final class Pushover implements SendServiceInterface
             'message' => $message->getContent(),
         ];
 
-        $options = $message->getOptions()->getAll();
+        $options = $message->getOptions()->toArray();
 
         if (isset($options['device'])) {
             $data['device'] = implode(',', (array) $options['device']);
