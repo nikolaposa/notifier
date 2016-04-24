@@ -84,32 +84,17 @@ final class TwilioSMS implements SendServiceInterface
                 'POST',
                 self::API_BASE_URL . "/2010-04-01/Accounts/{$this->authId}/Messages.json",
                 [
-                    'body' => $this->buildPayload($message, $recipient),
                     'auth' => [$this->authToken, $this->authId],
-                    'headers' => [
-                        'Content-Type' => 'application/json',
+                    'json' => [
+                        'From' => $message->getSender()->getContact()->getValue(),
+                        'To' => $recipient->getContact()->getValue(),
+                        'Body' => $message->getContent(),
                     ],
                 ]
             );
 
             $this->validateResponse($response);
         }
-    }
-
-    /**
-     * @param SMSMessage $message
-     * @param ActorInterface $recipient
-     * @return string
-     */
-    private function buildPayload(SMSMessage $message, ActorInterface $recipient)
-    {
-        $data = [
-            'From' => $message->getSender()->getContact()->getValue(),
-            'To' => $recipient->getContact()->getValue(),
-            'Body' => $message->getContent(),
-        ];
-
-        return json_encode($data);
     }
 
     /**

@@ -56,19 +56,23 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
                             return false;
                         }
 
-                        if (!isset($options['body'])) {
+                        if (!isset($options['json'])) {
                             return false;
                         }
 
-                        if (false === strpos($options['body'], $message->getSender()->getContact()->getValue())) {
+                        if (!isset($options['json']['From']) || !isset($options['json']['To']) || !isset($options['json']['Body'])) {
                             return false;
                         }
 
-                        if (false === strpos($options['body'], $recipient->getContact()->getValue())) {
+                        if ($options['json']['From'] != $message->getSender()->getContact()->getValue()) {
                             return false;
                         }
 
-                        if (false === strpos($options['body'], $message->getContent())) {
+                        if ($options['json']['To'] != $recipient->getContact()->getValue()) {
+                            return false;
+                        }
+
+                        if ($options['json']['Body'] != $message->getContent()) {
                             return false;
                         }
 

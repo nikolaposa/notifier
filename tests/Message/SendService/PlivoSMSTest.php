@@ -53,11 +53,15 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
                         return false;
                     }
 
-                    if (!isset($options['body'])) {
+                    if (!isset($options['json'])) {
                         return false;
                     }
 
-                    if (false === strpos($options['body'], $message->getSender()->getContact()->getValue())) {
+                    if (!isset($options['json']['src']) || !isset($options['json']['dst']) || !isset($options['json']['text'])) {
+                        return false;
+                    }
+
+                    if ($options['json']['src'] != $message->getSender()->getContact()->getValue()) {
                         return false;
                     }
 
@@ -66,11 +70,11 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
                         $to[] = $recipient->getContact()->getValue();
                     }
 
-                    if (false === strpos($options['body'], implode('<', $to))) {
+                    if ($options['json']['dst'] != implode('<', $to)) {
                         return false;
                     }
 
-                    if (false === strpos($options['body'], $message->getContent())) {
+                    if ($options['json']['text'] != $message->getContent()) {
                         return false;
                     }
 

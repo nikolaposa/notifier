@@ -81,11 +81,8 @@ final class PlivoSMS implements SendServiceInterface
             'POST',
             self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
             [
-                'body' => $this->buildPayload($message),
                 'auth' => [$this->authToken, $this->authId],
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
+                'json' => $this->buildPayload($message),
             ]
         );
 
@@ -104,13 +101,11 @@ final class PlivoSMS implements SendServiceInterface
             $dst[] = $recipient->getContact()->getValue();
         }
 
-        $data = [
+        return [
             'src' => $message->getSender()->getContact()->getValue(),
             'dst' => implode('<', $dst),
             'text' => $message->getContent(),
         ];
-
-        return json_encode($data);
     }
 
     /**
