@@ -91,7 +91,7 @@ final class PlivoSMS implements SendServiceInterface
 
     /**
      * @param SMSMessage $message
-     * @return string
+     * @return array
      */
     private function buildPayload(SMSMessage $message)
     {
