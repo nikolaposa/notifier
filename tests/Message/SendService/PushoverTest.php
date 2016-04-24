@@ -119,6 +119,35 @@ class PushoverTest extends PHPUnit_Framework_TestCase
         $this->getPushover($this->getHttpClientWithSuccessResponse($message))->send($message);
     }
 
+    public function testSendingWithOptions()
+    {
+        $message = new PushMessage(
+            new Recipients([
+                new Actor(new MobileDeviceContact('11111111111'))
+            ]),
+            'test test test',
+            new Options([
+                'title' => 'test',
+                'sound' => 'example',
+            ])
+        );
+
+        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->equalTo('POST'),
+                $this->stringContains(Pushover::API_BASE_URL),
+                $this->callback(function ($options) {
+                    return $options['form_params']['title'] == 'test'
+                        && $options['form_params']['sound'] == 'example';
+                })
+            )
+            ->will($this->returnValue(new Response(200)));
+
+        $this->getPushover($httpClient)->send($message);
+    }
+
     public function testSendingDeviceOption()
     {
         $message = new PushMessage(
@@ -136,16 +165,16 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
         $httpClient = $this->getMock(ClientInterface::class);
         $httpClient->expects($this->once())
-                ->method('request')
-                ->with(
-                    $this->equalTo('POST'),
-                    $this->stringContains(Pushover::API_BASE_URL),
-                    $this->callback(function ($options) {
-                        return isset($options['form_params']['device'])
-                            && $options['form_params']['device'] == 'iphone,nexus5';
-                    })
-                )
-                ->will($this->returnValue(new Response(200)));
+            ->method('request')
+            ->with(
+                $this->equalTo('POST'),
+                $this->stringContains(Pushover::API_BASE_URL),
+                $this->callback(function ($options) {
+                    return isset($options['form_params']['device'])
+                        && $options['form_params']['device'] == 'iphone,nexus5';
+                })
+            )
+            ->will($this->returnValue(new Response(200)));
 
         $this->getPushover($httpClient)->send($message);
     }
@@ -163,16 +192,16 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
         $httpClient = $this->getMock(ClientInterface::class);
         $httpClient->expects($this->once())
-                ->method('request')
-                ->with(
-                    $this->equalTo('POST'),
-                    $this->stringContains(Pushover::API_BASE_URL),
-                    $this->callback(function ($options) use ($content) {
-                        return $options['form_params']['message'] != $content
-                            && strlen($options['form_params']['message']) == Pushover::MESSAGE_LIMIT;
-                    })
-                )
-                ->will($this->returnValue(new Response(200)));
+            ->method('request')
+            ->with(
+                $this->equalTo('POST'),
+                $this->stringContains(Pushover::API_BASE_URL),
+                $this->callback(function ($options) use ($content) {
+                    return $options['form_params']['message'] != $content
+                        && strlen($options['form_params']['message']) == Pushover::MESSAGE_LIMIT;
+                })
+            )
+            ->will($this->returnValue(new Response(200)));
 
         $this->getPushover($httpClient)->send($message);
     }
@@ -192,15 +221,15 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
         $httpClient = $this->getMock(ClientInterface::class);
         $httpClient->expects($this->once())
-                ->method('request')
-                ->with(
-                    $this->equalTo('POST'),
-                    $this->stringContains(Pushover::API_BASE_URL),
-                    $this->callback(function ($options) {
-                        return strlen($options['form_params']['message'] . $options['form_params']['title']) == Pushover::MESSAGE_LIMIT;
-                    })
-                )
-                ->will($this->returnValue(new Response(200)));
+            ->method('request')
+            ->with(
+                $this->equalTo('POST'),
+                $this->stringContains(Pushover::API_BASE_URL),
+                $this->callback(function ($options) {
+                    return strlen($options['form_params']['message'] . $options['form_params']['title']) == Pushover::MESSAGE_LIMIT;
+                })
+            )
+            ->will($this->returnValue(new Response(200)));
 
         $this->getPushover($httpClient)->send($message);
     }
