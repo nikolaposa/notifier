@@ -35,7 +35,8 @@ implementation. Content is essentially a string, but it can be supplied to a mes
 
 Messages are sent using message `SendServiceInterface` implementations.
 
-Out of the box, Notify provides email, SMS and push message types, as well as their related send services.
+Out of the box, Notify provides email, SMS and push message types, as well as their related send
+services.
 
 ### Strategies
 
