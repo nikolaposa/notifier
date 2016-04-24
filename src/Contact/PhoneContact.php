@@ -16,4 +16,8 @@ namespace Notify\Contact;
  */
 class PhoneContact extends AbstractContact
 {
+    protected function filter($phone)
+    {
+        return preg_replace('/[^\+0-9\x]/', '', $phone);
+    }
 }
