@@ -26,7 +26,7 @@ use Notify\Message\SendService\Exception\RuntimeException;
  */
 final class TwilioSMS implements SendServiceInterface
 {
-    const API_BASE_URL = 'api.twilio.com';
+    const API_BASE_URL = 'https://api.twilio.com';
 
     /**
      * @var string
@@ -80,18 +80,14 @@ final class TwilioSMS implements SendServiceInterface
         foreach ($message->getRecipients() as $recipient) {
             /* @var $recipient ActorInterface */
 
-            $payload = $this->buildPayload($message, $recipient);
-
             $response = $this->httpClient->request(
                 'POST',
                 self::API_BASE_URL . "/2010-04-01/Accounts/{$this->authId}/Messages.json",
                 [
-                    'body' => $payload,
+                    'body' => $this->buildPayload($message, $recipient),
                     'auth' => [$this->authToken, $this->authId],
                     'headers' => [
-                        'Host' => self::API_BASE_URL,
                         'Content-Type' => 'application/json',
-                        'Content-Length' => strlen($payload),
                     ],
                 ]
             );

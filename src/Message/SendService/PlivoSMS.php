@@ -26,7 +26,7 @@ use Notify\Message\SendService\Exception\RuntimeException;
  */
 final class PlivoSMS implements SendServiceInterface
 {
-    const API_BASE_URL = 'api.plivo.com';
+    const API_BASE_URL = 'https://api.plivo.com';
 
     /**
      * @var string
@@ -77,18 +77,14 @@ final class PlivoSMS implements SendServiceInterface
      */
     private function doSend(SMSMessage $message)
     {
-        $payload = $this->buildPayload($message);
-
         $response = $this->httpClient->request(
             'POST',
             self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
             [
-                'body' => $payload,
+                'body' => $this->buildPayload($message),
                 'auth' => [$this->authToken, $this->authId],
                 'headers' => [
-                    'Host' => self::API_BASE_URL,
                     'Content-Type' => 'application/json',
-                    'Content-Length' => strlen($payload),
                 ],
             ]
         );
