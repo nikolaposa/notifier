@@ -47,6 +47,17 @@ class OptionsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('default', $options->get('baz', 'default'));
     }
 
+    public function testSettingOption()
+    {
+        $options = new Options([
+            'foo' => 'bar',
+        ]);
+
+        $options->set('foo', 'baz');
+
+        $this->assertEquals('baz', $options->get('foo'));
+    }
+
     public function testOptionsToArray()
     {
         $options = new Options([
