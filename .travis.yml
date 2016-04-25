@@ -2,6 +2,11 @@ sudo: false
 
 language: php
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - vendor
+    
 matrix:
   include:
     - php: 5.6
