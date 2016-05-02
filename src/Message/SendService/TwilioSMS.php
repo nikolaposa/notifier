@@ -31,22 +31,22 @@ final class TwilioSMS implements SendServiceInterface
     /**
      * @var string
      */
-    private $authToken;
+    private $authId;
 
     /**
      * @var string
      */
-    private $authId;
+    private $authToken;
 
     /**
      * @var ClientInterface
      */
     private $httpClient;
 
-    public function __construct($authToken, $authId, ClientInterface $httpClient = null)
+    public function __construct($authId, $authToken, ClientInterface $httpClient = null)
     {
-        $this->authToken = $authToken;
         $this->authId = $authId;
+        $this->authToken = $authToken;
 
         if (null === $httpClient) {
             $httpClient = new Client();
@@ -84,7 +84,7 @@ final class TwilioSMS implements SendServiceInterface
                 'POST',
                 self::API_BASE_URL . "/2010-04-01/Accounts/{$this->authId}/Messages.json",
                 [
-                    'auth' => [$this->authToken, $this->authId],
+                    'auth' => [$this->authId, $this->authToken],
                     'json' => [
                         'From' => $message->getSender()->getContact()->getValue(),
                         'To' => $recipient->getContact()->getValue(),

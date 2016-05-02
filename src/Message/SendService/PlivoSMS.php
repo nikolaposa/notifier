@@ -31,22 +31,22 @@ final class PlivoSMS implements SendServiceInterface
     /**
      * @var string
      */
-    private $authToken;
+    private $authId;
 
     /**
      * @var string
      */
-    private $authId;
+    private $authToken;
 
     /**
      * @var ClientInterface
      */
     private $httpClient;
 
-    public function __construct($authToken, $authId, ClientInterface $httpClient = null)
+    public function __construct($authId, $authToken, ClientInterface $httpClient = null)
     {
-        $this->authToken = $authToken;
         $this->authId = $authId;
+        $this->authToken = $authToken;
 
         if (null === $httpClient) {
             $httpClient = new Client();
@@ -81,7 +81,7 @@ final class PlivoSMS implements SendServiceInterface
             'POST',
             self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
             [
-                'auth' => [$this->authToken, $this->authId],
+                'auth' => [$this->authId, $this->authToken],
                 'json' => $this->buildPayload($message),
             ]
         );
