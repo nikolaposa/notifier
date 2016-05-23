@@ -21,14 +21,7 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
     public function __construct(array $recipients)
     {
         foreach ($recipients as $recipient) {
-            if (!$recipient instanceof ActorInterface) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s expects array of %s instances, %s given',
-                    __METHOD__,
-                    ActorInterface::class,
-                    is_object($recipient) ? get_class($recipient) : gettype($recipient)
-                ));
-            }
+            self::validateRecipient($recipient);
 
             $this->recipients[] = $recipient;
         }
@@ -42,13 +35,9 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
         $recipients = [];
 
         foreach ($recipientProviders as $recipientProvider) {
-            if (!$recipientProvider instanceof ProvidesRecipientInterface) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s expects array of %s instances',
-                    __FUNCTION__,
-                    ProvidesRecipientInterface::class
-                ));
-            }
+            self::validateRecipientProvider($recipientProvider);
+
+            /* @var $recipientProvider ProvidesRecipientInterface */
 
             $recipient = $recipientProvider->getMessageRecipient($messageType, $notificationType);
 
@@ -60,6 +49,29 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
         }
 
         return new self($recipients);
+    }
+
+    private static function validateRecipient($recipient)
+    {
+        if (!$recipient instanceof ActorInterface) {
+            throw new InvalidArgumentException(sprintf(
+                '%s expects array of %s instances, %s given',
+                __METHOD__,
+                ActorInterface::class,
+                is_object($recipient) ? get_class($recipient) : gettype($recipient)
+            ));
+        }
+    }
+
+    private static function validateRecipientProvider($recipientProvider)
+    {
+        if (!$recipientProvider instanceof ProvidesRecipientInterface) {
+                throw new InvalidArgumentException(sprintf(
+                    '%s expects array of %s instances',
+                    __FUNCTION__,
+                    ProvidesRecipientInterface::class
+                ));
+            }
     }
 
     public function count()

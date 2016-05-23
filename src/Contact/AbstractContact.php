@@ -46,4 +46,9 @@ abstract class AbstractContact implements ContactInterface
     {
         return $this->name;
     }
+
+    public function hasName()
+    {
+        return (null !== $this->name);
+    }
 }

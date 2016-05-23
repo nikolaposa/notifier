@@ -28,9 +28,6 @@ class MobileDeviceContact extends AbstractContact
         $this->parameters = $parameters;
     }
 
-    /**
-     * @return array
-     */
     public function getParameters()
     {
         return $this->parameters;
