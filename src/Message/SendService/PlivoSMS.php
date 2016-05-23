@@ -82,21 +82,18 @@ final class PlivoSMS implements SendServiceInterface
     private function buildPayload()
     {
         return [
-            'auth' => [$this->authId, $this->authToken],
-            'json' => [
-                'src' => $this->buildSourceString(),
-                'dst' => $this->buildDestinationString(),
-                'text' => $this->buildText(),
-            ],
+            'src' => $this->buildPayloadSourceString(),
+            'dst' => $this->buildPayloadDestinationString(),
+            'text' => $this->buildPayloadText(),
         ];
     }
 
-    private function buildSourceString()
+    private function buildPayloadSourceString()
     {
         return $this->message->getSender()->getContact()->getValue();
     }
 
-    private function buildDestinationString()
+    private function buildPayloadDestinationString()
     {
         $dst = [];
         foreach ($this->message->getRecipients() as $recipient) {
@@ -107,7 +104,7 @@ final class PlivoSMS implements SendServiceInterface
         return implode('<', $dst);
     }
 
-    private function buildText()
+    private function buildPayloadText()
     {
         return $this->message->getContent();
     }
@@ -117,7 +114,10 @@ final class PlivoSMS implements SendServiceInterface
         return $this->httpClient->request(
             'POST',
             self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
-            $payload
+            [
+                'auth' => [$this->authId, $this->authToken],
+                'json' => $payload,
+            ]
         );
     }
 
