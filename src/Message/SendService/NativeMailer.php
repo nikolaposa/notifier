@@ -13,7 +13,6 @@ namespace Notify\Message\SendService;
 
 use Notify\Message\MessageInterface;
 use Notify\Message\EmailMessage;
-use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\ActorInterface;
 use Notify\Message\SendService\Exception\UnsupportedMessageException;
 use Notify\Message\SendService\Exception\RuntimeException;
@@ -23,6 +22,8 @@ use Notify\Message\SendService\Exception\RuntimeException;
  */
 final class NativeMailer implements SendServiceInterface
 {
+    const DEFAULT_MAX_COLUMN_WIDTH = 70;
+
     /**
      * @var int
      */
@@ -34,9 +35,25 @@ final class NativeMailer implements SendServiceInterface
     private $mailer = 'mail';
 
     /**
+     * @var EmailMessage
+     */
+    private $message;
+
+    /**
+     * @var array
+     */
+    private $mailParts = [
+        'to' => null,
+        'subject' => null,
+        'message' => null,
+        'headers' => null,
+        'parameters' => null,
+    ];
+
+    /**
      * @param int $maxColumnWidth
      */
-    public function __construct($maxColumnWidth = 70, callable $mailer = null)
+    public function __construct($maxColumnWidth = self::DEFAULT_MAX_COLUMN_WIDTH, callable $mailer = null)
     {
         $this->maxColumnWidth = (int) $maxColumnWidth;
 
@@ -51,21 +68,27 @@ final class NativeMailer implements SendServiceInterface
             throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
         }
 
-        $result = call_user_func(
-            $this->mailer,
-            $this->getRecipients($message),
-            $this->getSubject($message),
-            $this->getContent($message),
-            $this->getHeaders($message),
-            $this->getParameters($message)
-        );
+        $this->message = $message;
 
-        if (false === $result) {
+        $this->buildMailParts();
+
+        $sendResult = $this->doSend();
+
+        if (false === $sendResult) {
             throw new RuntimeException('Email has not been accepted for delivery');
         }
     }
 
-    private function getRecipients(EmailMessage $message)
+    private function buildMailParts()
+    {
+        $this->buildMailTo();
+        $this->buildMailSubject();
+        $this->buildMailMessage();
+        $this->buildMailHeaders();
+        $this->buildMailParameters();
+    }
+
+    private function buildMailTo()
     {
         $recipientsString = array_map(function (ActorInterface $recipient) {
             $to = $recipient->getContact()->getValue();
@@ -75,26 +98,24 @@ final class NativeMailer implements SendServiceInterface
             }
 
             return $to;
-        }, $message->getRecipients()->toArray());
+        }, $this->message->getRecipients()->toArray());
 
-        $recipientsString = implode(',', $recipientsString);
-
-        return $recipientsString;
+        $this->mailParts['to'] = implode(',', $recipientsString);
     }
 
-    private function getSubject(EmailMessage $message)
+    private function buildMailSubject()
     {
-        return $message->getSubject();
+        $this->mailParts['subject'] = $this->message->getSubject();
     }
 
-    private function getContent(EmailMessage $message)
+    private function buildMailMessage()
     {
-        return wordwrap($message->getContent(), $this->maxColumnWidth);
+        $this->mailParts['message'] = wordwrap($this->message->getContent(), $this->maxColumnWidth);
     }
 
-    private function getHeaders(EmailMessage $message)
+    private function buildMailHeaders()
     {
-        $options = $message->getOptions();
+        $options = $this->message->getOptions();
 
         $headers = ltrim(implode("\r\n", $options->get('headers', [])) . "\r\n", "\r\n");
 
@@ -106,19 +127,31 @@ final class NativeMailer implements SendServiceInterface
             $headers .= "MIME-Version: 1.0\r\n";
         }
 
-        if ($message->hasSender()) {
-            $sender = $message->getSender();
+        if ($this->message->hasSender()) {
+            $sender = $this->message->getSender();
 
             $headers .= 'From: ' . $sender->getContact()->getValue() . "\r\n" .
                 'Reply-To: ' . $sender->getContact()->getValue() . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
         }
 
-        return $headers;
+        $this->mailParts['headers'] = $headers;
     }
 
-    private function getParameters(EmailMessage $message)
+    private function buildMailParameters()
     {
-        return implode(' ', $message->getOptions()->get('parameters', []));
+        $this->mailParts['parameters'] = implode(' ', $this->message->getOptions()->get('parameters', []));
+    }
+
+    private function doSend()
+    {
+        return call_user_func(
+            $this->mailer,
+            $this->mailParts['to'],
+            $this->mailParts['subject'],
+            $this->mailParts['message'],
+            $this->mailParts['headers'],
+            $this->mailParts['parameters']
+        );
     }
 }
