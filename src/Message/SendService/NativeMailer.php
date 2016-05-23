@@ -51,10 +51,21 @@ final class NativeMailer implements SendServiceInterface
             throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
         }
 
-        $this->doSend($message);
+        $result = call_user_func(
+            $this->mailer,
+            $this->getRecipients($message),
+            $this->getSubject($message),
+            $this->getContent($message),
+            $this->getHeaders($message),
+            $this->getParameters($message)
+        );
+
+        if (false === $result) {
+            throw new RuntimeException('Email has not been accepted for delivery');
+        }
     }
 
-    private function formatRecipients(Recipients $recipients)
+    private function getRecipients(EmailMessage $message)
     {
         $recipientsString = array_map(function (ActorInterface $recipient) {
             $to = $recipient->getContact()->getValue();
@@ -64,14 +75,24 @@ final class NativeMailer implements SendServiceInterface
             }
 
             return $to;
-        }, $recipients->toArray());
+        }, $message->getRecipients()->toArray());
 
         $recipientsString = implode(',', $recipientsString);
 
         return $recipientsString;
     }
 
-    private function buildHeaders(EmailMessage $message)
+    private function getSubject(EmailMessage $message)
+    {
+        return $message->getSubject();
+    }
+
+    private function getContent(EmailMessage $message)
+    {
+        return wordwrap($message->getContent(), $this->maxColumnWidth);
+    }
+
+    private function getHeaders(EmailMessage $message)
     {
         $options = $message->getOptions();
 
@@ -96,22 +117,8 @@ final class NativeMailer implements SendServiceInterface
         return $headers;
     }
 
-    private function doSend(EmailMessage $message)
+    private function getParameters(EmailMessage $message)
     {
-        $recipients = $this->formatRecipients($message->getRecipients());
-
-        $subject = $message->getSubject();
-
-        $content = wordwrap($message->getContent(), $this->maxColumnWidth);
-
-        $headers = $this->buildHeaders($message);
-
-        $parameters = implode(' ', $message->getOptions()->get('parameters', []));
-
-        $result = call_user_func($this->mailer, $recipients, $subject, $content, $headers, $parameters);
-
-        if (false === $result) {
-            throw new RuntimeException('Email has not been accepted for delivery');
-        }
+        return implode(' ', $message->getOptions()->get('parameters', []));
     }
 }
