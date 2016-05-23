@@ -19,11 +19,6 @@ use Notify\Message\MessageInterface;
  */
 abstract class AbstractStrategy implements StrategyInterface
 {
-    abstract protected function doHandle(array $messages, NotificationInterface $notification);
-
-    /**
-     * {@inheritDoc}
-     */
     public function handle(NotificationInterface $notification)
     {
         $messages = array_filter($notification->getMessages(), function ($message) {
@@ -33,4 +28,6 @@ abstract class AbstractStrategy implements StrategyInterface
 
         $this->doHandle($messages, $notification);
     }
+
+    abstract protected function doHandle(array $messages, NotificationInterface $notification);
 }

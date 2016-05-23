@@ -28,17 +28,11 @@ final class GenericNotification extends AbstractNotification
         $this->messages = $messages;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getName()
     {
         return 'Generic';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getMessages()
     {
         return $this->messages;

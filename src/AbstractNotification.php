@@ -37,9 +37,6 @@ abstract class AbstractNotification implements NotificationInterface
         self::$defaultStrategy = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function __invoke(StrategyInterface $strategy = null)
     {
         if (null === $strategy) {
