@@ -40,11 +40,6 @@ final class NativeMailer implements SendServiceInterface
     private $message;
 
     /**
-     * @var array
-     */
-    private $mailParts = [];
-
-    /**
      * @param int $maxColumnWidth
      */
     public function __construct($maxColumnWidth = self::DEFAULT_MAX_COLUMN_WIDTH, callable $mailer = null)
@@ -64,22 +59,23 @@ final class NativeMailer implements SendServiceInterface
 
         $this->message = $message;
 
-        $this->buildMailParts();
-
-        $sendResult = $this->doSend();
+        $sendResult = $this->invokeMailer();
 
         if (false === $sendResult) {
             throw new RuntimeException('Email has not been accepted for delivery');
         }
     }
 
-    private function buildMailParts()
+    private function invokeMailer()
     {
-        $this->buildMailTo();
-        $this->buildMailSubject();
-        $this->buildMailMessage();
-        $this->buildMailHeaders();
-        $this->buildMailParameters();
+        return call_user_func(
+            $this->mailer,
+            $this->buildMailTo(),
+            $this->buildMailSubject(),
+            $this->buildMailMessage(),
+            $this->buildMailHeaders(),
+            $this->buildMailParameters()
+        );
     }
 
     private function buildMailTo()
@@ -94,17 +90,17 @@ final class NativeMailer implements SendServiceInterface
             return $to;
         }, $this->message->getRecipients()->toArray());
 
-        $this->mailParts['to'] = implode(',', $recipientsString);
+        return implode(',', $recipientsString);
     }
 
     private function buildMailSubject()
     {
-        $this->mailParts['subject'] = $this->message->getSubject();
+        return $this->message->getSubject();
     }
 
     private function buildMailMessage()
     {
-        $this->mailParts['message'] = wordwrap($this->message->getContent(), $this->maxColumnWidth);
+        return wordwrap($this->message->getContent(), $this->maxColumnWidth);
     }
 
     private function buildMailHeaders()
@@ -129,23 +125,11 @@ final class NativeMailer implements SendServiceInterface
                 'X-Mailer: PHP/' . phpversion();
         }
 
-        $this->mailParts['headers'] = $headers;
+        return $headers;
     }
 
     private function buildMailParameters()
     {
-        $this->mailParts['parameters'] = implode(' ', $this->message->getOptions()->get('parameters', []));
-    }
-
-    private function doSend()
-    {
-        return call_user_func(
-            $this->mailer,
-            $this->mailParts['to'],
-            $this->mailParts['subject'],
-            $this->mailParts['message'],
-            $this->mailParts['headers'],
-            $this->mailParts['parameters']
-        );
+        return implode(' ', $this->message->getOptions()->get('parameters', []));
     }
 }
