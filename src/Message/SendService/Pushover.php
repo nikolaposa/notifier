@@ -39,6 +39,11 @@ final class Pushover implements SendServiceInterface
      */
     private $httpClient;
 
+    /**
+     * @var PushMessage
+     */
+    private $message;
+
     public function __construct($apiToken, ClientInterface $httpClient = null)
     {
         $this->apiToken = $apiToken;
@@ -56,67 +61,73 @@ final class Pushover implements SendServiceInterface
             throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
         }
 
-        $this->doSend($message);
-    }
+        $this->message = $message;
 
-    /**
-     * @param PushMessage $message
-     * @return void
-     */
-    private function doSend(PushMessage $message)
-    {
-        foreach ($message->getRecipients() as $recipient) {
-            $response = $this->httpClient->request(
-                'POST',
-                self::API_BASE_URL . '/1/messages.json',
-                [
-                    'form_params' => $this->buildPayload($message, $recipient),
-                ]
-            );
+        $parameters = $this->buildParameters();
+
+        foreach ($this->message->getRecipients() as $recipient) {
+            $parameters = $this->addUserParameter($parameters, $recipient);
+
+            $response = $this->executeApiRequest($parameters);
 
             $this->validateResponse($response);
         }
     }
 
-    /**
-     * @param PushMessage $message
-     * @return array
-     */
-    private function buildPayload(PushMessage $message, ActorInterface $recipient)
+    private function buildParameters()
     {
-        $data = [
+        return array_merge($this->buildOptions(), [
             'token' => $this->apiToken,
-            'user' => $recipient->getContact()->getValue(),
-            'message' => $message->getContent(),
-        ];
+            'message' => $this->buildMessageString(),
+        ]);
+    }
 
-        $options = $message->getOptions()->toArray();
+    private function buildOptions()
+    {
+        $options = $this->message->getOptions()->toArray();
 
         if (isset($options['device'])) {
-            $data['device'] = implode(',', (array) $options['device']);
-            unset($options['device']);
+            $options['device'] = implode(',', (array) $options['device']);
         }
+
+        return $options;
+    }
+
+    private function buildMessageString()
+    {
+        $message = $this->message->getContent();
 
         $messageLimit = self::MESSAGE_LIMIT;
 
-        if (isset($options['title'])) {
-            $messageLimit -= strlen($options['title']);
+        if ($this->message->getOptions()->has('title')) {
+            $messageLimit -= strlen($this->message->getOptions()->get('title'));
         }
 
-        if (strlen($data['message']) > $messageLimit) {
-            $data['message'] = substr($data['message'], 0, $messageLimit);
+        if (strlen($message) > $messageLimit) {
+            $message = substr($message, 0, $messageLimit);
         }
 
-        $data = array_merge($data, $options);
-
-        return $data;
+        return $message;
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @return void
-     * @throws RuntimeException
-     */
+    private function addUserParameter(array $parameters, ActorInterface $recipient)
+    {
+        $parameters['user'] = $recipient->getContact()->getValue();
+
+        return $parameters;
+    }
+
+    private function executeApiRequest(array $parameters)
+    {
+        return $this->httpClient->request(
+            'POST',
+            self::API_BASE_URL . '/1/messages.json',
+            [
+                'form_params' => $parameters,
+            ]
+        );
+    }
+
     private function validateResponse(ResponseInterface $response)
     {
         $status = $response->getStatusCode();
