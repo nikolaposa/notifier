@@ -66,12 +66,12 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
     private static function validateRecipientProvider($recipientProvider)
     {
         if (!$recipientProvider instanceof ProvidesRecipientInterface) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s expects array of %s instances',
-                    __FUNCTION__,
-                    ProvidesRecipientInterface::class
-                ));
-            }
+            throw new InvalidArgumentException(sprintf(
+                '%s expects array of %s instances',
+                __FUNCTION__,
+                ProvidesRecipientInterface::class
+            ));
+        }
     }
 
     public function count()
