@@ -23,17 +23,11 @@ trait HasSenderTrait
      */
     protected $sender;
 
-    /**
-     * @return ActorInterface
-     */
     public function getSender()
     {
         return $this->sender;
     }
 
-    /**
-     * @return bool
-     */
     public function hasSender()
     {
         return $this->sender !== null;
