@@ -48,11 +48,6 @@ final class PlivoSMS implements SendServiceInterface
      */
     private $message;
 
-    /**
-     * @var array
-     */
-    private $payload = [];
-
     public function __construct($authId, $authToken, ClientInterface $httpClient = null)
     {
         $this->authId = $authId;
@@ -77,23 +72,25 @@ final class PlivoSMS implements SendServiceInterface
 
         $this->message = $message;
 
-        $this->buildPayload();
+        $payload = $this->buildPayload();
 
-        $response = $this->doSend();
+        $response = $this->executeApiRequest($payload);
 
         $this->validateResponse($response);
     }
 
     private function buildPayload()
     {
-        $this->buildSourceString();
-        $this->buildDestinationString();
-        $this->buildText();
+        return [
+            'src' => $this->buildSourceString(),
+            'dst' => $this->buildDestinationString(),
+            'text' => $this->buildText(),
+        ];
     }
 
     private function buildSourceString()
     {
-        $this->payload['src'] = $this->message->getSender()->getContact()->getValue();
+        return $this->message->getSender()->getContact()->getValue();
     }
 
     private function buildDestinationString()
@@ -104,22 +101,22 @@ final class PlivoSMS implements SendServiceInterface
             $dst[] = $recipient->getContact()->getValue();
         }
 
-        $this->payload['dst'] = implode('<', $dst);
+        return implode('<', $dst);
     }
 
     private function buildText()
     {
-        $this->payload['text'] = $this->message->getContent();
+        return $this->message->getContent();
     }
 
-    private function doSend()
+    private function executeApiRequest(array $payload)
     {
         return $this->httpClient->request(
             'POST',
             self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
             [
                 'auth' => [$this->authId, $this->authToken],
-                'json' => $this->payload,
+                'json' => $payload,
             ]
         );
     }
