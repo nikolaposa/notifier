@@ -43,6 +43,16 @@ final class PlivoSMS implements SendServiceInterface
      */
     private $httpClient;
 
+    /**
+     * @var SMSMessage
+     */
+    private $message;
+
+    /**
+     * @var array
+     */
+    private $payload = [];
+
     public function __construct($authId, $authToken, ClientInterface $httpClient = null)
     {
         $this->authId = $authId;
@@ -65,36 +75,53 @@ final class PlivoSMS implements SendServiceInterface
             throw new IncompleteMessageException('Message sender is missing');
         }
 
-        $this->doSend($message);
-    }
+        $this->message = $message;
 
-    private function doSend(SMSMessage $message)
-    {
-        $response = $this->httpClient->request(
-            'POST',
-            self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
-            [
-                'auth' => [$this->authId, $this->authToken],
-                'json' => $this->buildPayload($message),
-            ]
-        );
+        $this->buildPayload();
+
+        $response = $this->doSend();
 
         $this->validateResponse($response);
     }
 
-    private function buildPayload(SMSMessage $message)
+    private function buildPayload()
+    {
+        $this->buildSourceString();
+        $this->buildDestinationString();
+        $this->buildText();
+    }
+
+    private function buildSourceString()
+    {
+        $this->payload['src'] = $this->message->getSender()->getContact()->getValue();
+    }
+
+    private function buildDestinationString()
     {
         $dst = [];
-        foreach ($message->getRecipients() as $recipient) {
+        foreach ($this->message->getRecipients() as $recipient) {
             /* @var $recipient ActorInterface */
             $dst[] = $recipient->getContact()->getValue();
         }
 
-        return [
-            'src' => $message->getSender()->getContact()->getValue(),
-            'dst' => implode('<', $dst),
-            'text' => $message->getContent(),
-        ];
+        $this->payload['dst'] = implode('<', $dst);
+    }
+
+    private function buildText()
+    {
+        $this->payload['text'] = $this->message->getContent();
+    }
+
+    private function doSend()
+    {
+        return $this->httpClient->request(
+            'POST',
+            self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
+            [
+                'auth' => [$this->authId, $this->authToken],
+                'json' => $this->payload,
+            ]
+        );
     }
 
     private function validateResponse(ResponseInterface $response)
