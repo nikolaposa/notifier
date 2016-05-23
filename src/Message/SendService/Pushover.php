@@ -63,26 +63,27 @@ final class Pushover implements SendServiceInterface
 
         $this->message = $message;
 
-        $parameters = $this->buildParameters();
+        $payload = $this->buildPayload();
 
         foreach ($this->message->getRecipients() as $recipient) {
-            $parameters = $this->addUserParameter($parameters, $recipient);
+            /* @var $recipient ActorInterface */
 
-            $response = $this->executeApiRequest($parameters);
+            $payload = $this->addPayloadUser($payload, $recipient);
+
+            $response = $this->executeApiRequest($payload);
 
             $this->validateResponse($response);
         }
     }
 
-    private function buildParameters()
+    private function buildPayload()
     {
-        return array_merge($this->buildOptions(), [
-            'token' => $this->apiToken,
-            'message' => $this->buildMessageString(),
+        return array_merge($this->buildPayloadOptions(), [
+            'message' => $this->buildPayloadMessageString(),
         ]);
     }
 
-    private function buildOptions()
+    private function buildPayloadOptions()
     {
         $options = $this->message->getOptions()->toArray();
 
@@ -93,7 +94,7 @@ final class Pushover implements SendServiceInterface
         return $options;
     }
 
-    private function buildMessageString()
+    private function buildPayloadMessageString()
     {
         $message = $this->message->getContent();
 
@@ -110,20 +111,22 @@ final class Pushover implements SendServiceInterface
         return $message;
     }
 
-    private function addUserParameter(array $parameters, ActorInterface $recipient)
+    private function addPayloadUser(array $payload, ActorInterface $recipient)
     {
-        $parameters['user'] = $recipient->getContact()->getValue();
+        $payload['user'] = $recipient->getContact()->getValue();
 
-        return $parameters;
+        return $payload;
     }
 
-    private function executeApiRequest(array $parameters)
+    private function executeApiRequest(array $payload)
     {
+        $payload['token'] = $this->apiToken;
+
         return $this->httpClient->request(
             'POST',
             self::API_BASE_URL . '/1/messages.json',
             [
-                'form_params' => $parameters,
+                'form_params' => $payload,
             ]
         );
     }
