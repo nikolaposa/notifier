@@ -42,13 +42,7 @@ final class NativeMailer implements SendServiceInterface
     /**
      * @var array
      */
-    private $mailParts = [
-        'to' => null,
-        'subject' => null,
-        'message' => null,
-        'headers' => null,
-        'parameters' => null,
-    ];
+    private $mailParts = [];
 
     /**
      * @param int $maxColumnWidth
