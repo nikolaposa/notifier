@@ -26,17 +26,11 @@ final class Options implements OptionsInterface
         $this->options = $options;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function has($name)
     {
         return array_key_exists($name, $this->options);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function get($name, $default = null)
     {
         if (!$this->has($name)) {
@@ -46,17 +40,11 @@ final class Options implements OptionsInterface
         return $this->options[$name];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function set($name, $value)
     {
         $this->options[$name] = $value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function toArray()
     {
         return $this->options;

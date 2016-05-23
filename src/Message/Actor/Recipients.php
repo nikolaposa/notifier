@@ -62,41 +62,26 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
         return new self($recipients);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function count()
     {
         return count($this->recipients);
     }
 
-    /**
-     * @return bool
-     */
     public function isEmpty()
     {
         return empty($this->recipients);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getIterator()
     {
         return new ArrayIterator($this->recipients);
     }
 
-    /**
-     * @return array
-     */
     public function toArray()
     {
         return $this->recipients;
     }
 
-    /**
-     * @return array
-     */
     public function jsonSerialize()
     {
         return array_map('strval', $this->toArray());

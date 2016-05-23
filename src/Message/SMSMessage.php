@@ -39,9 +39,6 @@ class SMSMessage extends AbstractMessage implements HasSenderInterface
         $this->sender = $sender;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getContent()
     {
         $content = $this->loadContent();
@@ -51,9 +48,6 @@ class SMSMessage extends AbstractMessage implements HasSenderInterface
             : $content;
     }
 
-    /**
-     * @return string
-     */
     public function getRawContent()
     {
         return $this->loadContent();

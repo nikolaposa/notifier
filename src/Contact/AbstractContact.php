@@ -37,17 +37,11 @@ abstract class AbstractContact implements ContactInterface
         return $value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getValue()
     {
         return $this->value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getName()
     {
         return $this->name;

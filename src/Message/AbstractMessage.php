@@ -46,17 +46,11 @@ abstract class AbstractMessage implements MessageInterface, JsonSerializable
         $this->content = $content;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRecipients()
     {
         return $this->recipients;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getContent()
     {
         return $this->loadContent();

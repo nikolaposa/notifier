@@ -45,9 +45,6 @@ final class NativeMailer implements SendServiceInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function send(MessageInterface $message)
     {
         if (!$message instanceof EmailMessage) {

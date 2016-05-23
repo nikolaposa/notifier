@@ -55,9 +55,6 @@ final class TwilioSMS implements SendServiceInterface
         $this->httpClient = $httpClient;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function send(MessageInterface $message)
     {
         if (!$message instanceof SMSMessage) {
@@ -71,10 +68,6 @@ final class TwilioSMS implements SendServiceInterface
         $this->doSend($message);
     }
 
-    /**
-     * @param SMSMessage $message
-     * @return void
-     */
     private function doSend(SMSMessage $message)
     {
         foreach ($message->getRecipients() as $recipient) {
@@ -97,11 +90,6 @@ final class TwilioSMS implements SendServiceInterface
         }
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @return void
-     * @throws RuntimeException
-     */
     private function validateResponse(ResponseInterface $response)
     {
         $status = $response->getStatusCode();

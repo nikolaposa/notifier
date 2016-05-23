@@ -34,25 +34,16 @@ class Actor implements ActorInterface, HasNameInterface
         $this->name = $name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getContact()
     {
         return $this->contact;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function __toString()
     {
         if (null !== ($name = $this->getName())) {

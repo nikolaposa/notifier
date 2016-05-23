@@ -23,17 +23,11 @@ final class MockSendService implements SendServiceInterface
      */
     private $messages;
 
-    /**
-     * {@inheritDoc}
-     */
     public function send(MessageInterface $message)
     {
         $this->messages[] = $message;
     }
 
-    /**
-     * @return array
-     */
     public function getMessages()
     {
         return $this->messages;

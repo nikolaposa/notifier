@@ -55,9 +55,6 @@ final class PlivoSMS implements SendServiceInterface
         $this->httpClient = $httpClient;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function send(MessageInterface $message)
     {
         if (!$message instanceof SMSMessage) {
@@ -71,10 +68,6 @@ final class PlivoSMS implements SendServiceInterface
         $this->doSend($message);
     }
 
-    /**
-     * @param SMSMessage $message
-     * @return void
-     */
     private function doSend(SMSMessage $message)
     {
         $response = $this->httpClient->request(
@@ -89,10 +82,6 @@ final class PlivoSMS implements SendServiceInterface
         $this->validateResponse($response);
     }
 
-    /**
-     * @param SMSMessage $message
-     * @return array
-     */
     private function buildPayload(SMSMessage $message)
     {
         $dst = [];
@@ -108,11 +97,6 @@ final class PlivoSMS implements SendServiceInterface
         ];
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @return void
-     * @throws RuntimeException
-     */
     private function validateResponse(ResponseInterface $response)
     {
         $status = $response->getStatusCode();

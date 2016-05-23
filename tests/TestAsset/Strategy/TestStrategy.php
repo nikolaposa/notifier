@@ -24,9 +24,6 @@ final class TestStrategy implements StrategyInterface
      */
     private $notification;
 
-    /**
-     * {@inheritDoc}
-     */
     public function handle(NotificationInterface $notification)
     {
         $this->notification = $notification;
