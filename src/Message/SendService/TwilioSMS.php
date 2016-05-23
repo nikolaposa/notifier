@@ -43,6 +43,11 @@ final class TwilioSMS implements SendServiceInterface
      */
     private $httpClient;
 
+    /**
+     * @var SMSMessage
+     */
+    private $message;
+
     public function __construct($authId, $authToken, ClientInterface $httpClient = null)
     {
         $this->authId = $authId;
@@ -65,29 +70,46 @@ final class TwilioSMS implements SendServiceInterface
             throw new IncompleteMessageException('Message sender is missing');
         }
 
-        $this->doSend($message);
-    }
+        $this->message = $message;
 
-    private function doSend(SMSMessage $message)
-    {
-        foreach ($message->getRecipients() as $recipient) {
+        $payload = $this->buildPayload();
+
+        foreach ($this->message->getRecipients() as $recipient) {
             /* @var $recipient ActorInterface */
 
-            $response = $this->httpClient->request(
-                'POST',
-                self::API_BASE_URL . "/2010-04-01/Accounts/{$this->authId}/Messages.json",
-                [
-                    'auth' => [$this->authId, $this->authToken],
-                    'json' => [
-                        'From' => $message->getSender()->getContact()->getValue(),
-                        'To' => $recipient->getContact()->getValue(),
-                        'Body' => $message->getContent(),
-                    ],
-                ]
-            );
+            $payload = $this->addPayloadTo($payload, $recipient);
+
+            $response = $this->executeApiRequest($payload);
 
             $this->validateResponse($response);
         }
+    }
+
+    private function buildPayload()
+    {
+        return [
+            'From' => $this->message->getSender()->getContact()->getValue(),
+            'Body' => $this->message->getContent(),
+        ];
+    }
+
+    private function addPayloadTo(array $payload, ActorInterface $recipient)
+    {
+        $payload['To'] = $recipient->getContact()->getValue();
+
+        return $payload;
+    }
+
+    private function executeApiRequest(array $payload)
+    {
+        return $this->httpClient->request(
+            'POST',
+            self::API_BASE_URL . "/2010-04-01/Accounts/{$this->authId}/Messages.json",
+            [
+                'auth' => [$this->authId, $this->authToken],
+                'json' => $payload,
+            ]
+        );
     }
 
     private function validateResponse(ResponseInterface $response)
