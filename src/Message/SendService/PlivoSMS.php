@@ -82,9 +82,12 @@ final class PlivoSMS implements SendServiceInterface
     private function buildPayload()
     {
         return [
-            'src' => $this->buildSourceString(),
-            'dst' => $this->buildDestinationString(),
-            'text' => $this->buildText(),
+            'auth' => [$this->authId, $this->authToken],
+            'json' => [
+                'src' => $this->buildSourceString(),
+                'dst' => $this->buildDestinationString(),
+                'text' => $this->buildText(),
+            ],
         ];
     }
 
@@ -114,10 +117,7 @@ final class PlivoSMS implements SendServiceInterface
         return $this->httpClient->request(
             'POST',
             self::API_BASE_URL . "/v1/Account/{$this->authId}/Message/",
-            [
-                'auth' => [$this->authId, $this->authToken],
-                'json' => $payload,
-            ]
+            $payload
         );
     }
 
