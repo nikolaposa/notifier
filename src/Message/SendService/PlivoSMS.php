@@ -62,6 +62,17 @@ final class PlivoSMS implements SendServiceInterface
 
     public function send(MessageInterface $message)
     {
+        $this->setMessage($message);
+
+        $payload = $this->buildPayload();
+
+        $response = $this->executeApiRequest($payload);
+
+        $this->validateResponse($response);
+    }
+
+    private function setMessage(MessageInterface $message)
+    {
         if (!$message instanceof SMSMessage) {
             throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
         }
@@ -71,12 +82,6 @@ final class PlivoSMS implements SendServiceInterface
         }
 
         $this->message = $message;
-
-        $payload = $this->buildPayload();
-
-        $response = $this->executeApiRequest($payload);
-
-        $this->validateResponse($response);
     }
 
     private function buildPayload()
