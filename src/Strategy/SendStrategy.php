@@ -44,14 +44,10 @@ final class SendStrategy extends AbstractStrategy implements LoggerAwareInterfac
         foreach ($messages as $message) {
             /* @var $message MessageInterface */
 
-            $messageType = get_class($message);
-
-            if (!isset($this->sendServices[$messageType])) {
-                throw NotHandlingMessageException::fromMessage($message);
-            }
+            $sendService = $this->getSendService($message);
 
             try {
-                $this->sendServices[$messageType]->send($message);
+                $sendService->send($message);
             } catch (\Exception $ex) {
                 $this->logger->log(LogLevel::ERROR, 'message send failure', [
                     'notification' => $notification->getName(),
@@ -67,5 +63,21 @@ final class SendStrategy extends AbstractStrategy implements LoggerAwareInterfac
                 'message' => $message,
             ]);
         }
+    }
+
+    /**
+     * @param MessageInterface $message
+     * @return SendServiceInterface
+     * @throws NotHandlingMessageException
+     */
+    private function getSendService(MessageInterface $message)
+    {
+        $messageType = get_class($message);
+
+        if (!isset($this->sendServices[$messageType])) {
+            throw NotHandlingMessageException::fromMessage($message);
+        }
+
+        return $this->sendServices[$messageType];
     }
 }
