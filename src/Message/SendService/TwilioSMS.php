@@ -62,15 +62,7 @@ final class TwilioSMS implements SendServiceInterface
 
     public function send(MessageInterface $message)
     {
-        if (!$message instanceof SMSMessage) {
-            throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
-        }
-
-        if (!$message->hasSender()) {
-            throw new IncompleteMessageException('Message sender is missing');
-        }
-
-        $this->message = $message;
+        $this->setMessage($message);
 
         $payload = $this->buildPayload();
 
@@ -83,6 +75,19 @@ final class TwilioSMS implements SendServiceInterface
 
             $this->validateResponse($response);
         }
+    }
+
+    private function setMessage(MessageInterface $message)
+    {
+        if (!$message instanceof SMSMessage) {
+            throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
+        }
+
+        if (!$message->hasSender()) {
+            throw new IncompleteMessageException('Message sender is missing');
+        }
+
+        $this->message = $message;
     }
 
     private function buildPayload()
