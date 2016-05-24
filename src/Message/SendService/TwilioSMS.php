@@ -120,17 +120,17 @@ final class TwilioSMS implements SendServiceInterface
             return;
         }
 
-        $body = $response->getBody();
-
-        $error = json_decode($body, true);
+        $error = json_decode($response->getBody(), true);
 
         if (null === $error) {
             throw new RuntimeException('SMS not sent');
         }
 
-        throw new RuntimeException(
-            isset($error['message']) ? $error['message'] : 'SMS not sent',
-            isset($error['code']) ? $error['code'] : null
-        );
+        $error = array_merge([
+            'message' => 'SMS not sent',
+            'code' => null,
+        ], $error);
+
+        throw new RuntimeException($error['message'], $error['code']);
     }
 }
