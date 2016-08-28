@@ -16,7 +16,7 @@ use Notify\Strategy\SendStrategy;
 use Notify\Channel;
 use Notify\Message\Sender\TestMessageSender;
 use Notify\Tests\TestAsset\Notification\TestNotification;
-use Notify\GenericNotificationReceiver;
+use Notify\Tests\TestAsset\Entity\User;
 use Notify\Contact\Contacts;
 use Notify\Contact\GenericContact;
 use Notify\Message\Sender\MessageSenderInterface;
@@ -47,12 +47,12 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
         ]);
 
         $strategy->notify([
-            new GenericNotificationReceiver(new Contacts([
-                new GenericContact('test')
+            new User(new Contacts([
+                new GenericContact('123')
             ])),
-            new GenericNotificationReceiver(new Contacts([
-                new GenericContact('test'),
-                new GenericContact('email')
+            new User(new Contacts([
+                new GenericContact('456'),
+                new GenericContact('789')
             ]))
         ], new TestNotification());
 
@@ -80,8 +80,8 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
         $strategy->setLogger($logger);
 
         $strategy->notify([
-            new GenericNotificationReceiver(new Contacts([
-                new GenericContact('test')
+            new User(new Contacts([
+                new GenericContact('123')
             ]))
         ], new TestNotification());
     }
@@ -99,8 +99,11 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
         $strategy->setLogger($logger);
 
         $strategy->notify([
-            new GenericNotificationReceiver(new Contacts([
-                new GenericContact('test')
+            new User(new Contacts([
+                new GenericContact('123')
+            ])),
+            new User(new Contacts([
+                new GenericContact('456')
             ]))
         ], new TestNotification());
     }
