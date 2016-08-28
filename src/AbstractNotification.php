@@ -24,7 +24,6 @@ abstract class AbstractNotification implements NotificationInterface
         $messageFactory = $this->getMessageFactory($channelName);
 
         if (!is_callable($messageFactory)) {
-
         }
 
         return call_user_func($messageFactory, $channelName, $receiver);

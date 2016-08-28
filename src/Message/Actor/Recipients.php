@@ -38,7 +38,7 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
             ));
         }
     }
-    
+
     public function count()
     {
         return count($this->recipients);
