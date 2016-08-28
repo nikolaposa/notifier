@@ -27,30 +27,6 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
         }
     }
 
-    public static function fromRecipientProviders(
-        array $recipientProviders,
-        $messageType,
-        $notificationType = null
-    ) {
-        $recipients = [];
-
-        foreach ($recipientProviders as $recipientProvider) {
-            self::validateRecipientProvider($recipientProvider);
-
-            /* @var $recipientProvider ProvidesRecipientInterface */
-
-            $recipient = $recipientProvider->getMessageRecipient($messageType, $notificationType);
-
-            if (null === $recipient) {
-                continue;
-            }
-
-            $recipients[] = $recipient;
-        }
-
-        return new self($recipients);
-    }
-
     private static function validateRecipient($recipient)
     {
         if (!$recipient instanceof ActorInterface) {
@@ -62,18 +38,7 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
             ));
         }
     }
-
-    private static function validateRecipientProvider($recipientProvider)
-    {
-        if (!$recipientProvider instanceof ProvidesRecipientInterface) {
-            throw new InvalidArgumentException(sprintf(
-                '%s expects array of %s instances',
-                __FUNCTION__,
-                ProvidesRecipientInterface::class
-            ));
-        }
-    }
-
+    
     public function count()
     {
         return count($this->recipients);

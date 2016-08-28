@@ -21,7 +21,7 @@ final class TestMessageSender implements MessageSenderInterface
     /**
      * @var MessageInterface[]
      */
-    private $messages;
+    private $messages = [];
 
     /**
      * {@inheritdoc}
