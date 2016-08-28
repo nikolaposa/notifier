@@ -13,7 +13,7 @@ namespace Notify\Tests\Strategy;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Strategy\SendStrategy;
-use Notify\Message\SendService\MockSendService;
+use Notify\Message\Sender\TestMessageSender;
 use Notify\NotificationInterface;
 use Notify\GenericNotification;
 use Notify\Tests\TestAsset\Message\DummyMessage;
@@ -22,8 +22,8 @@ use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\GenericContact;
 use Notify\Strategy\Exception\NotHandlingMessageException;
-use Notify\Message\SendService\SendServiceInterface;
-use Notify\Message\SendService\Exception\RuntimeException as SendServiceException;
+use Notify\Message\Sender\MessageSenderInterface;
+use Notify\Message\Sender\Exception\RuntimeException as MessageSenderException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -33,15 +33,15 @@ use Psr\Log\LogLevel;
 class SendStrategyTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var MockSendService
+     * @var TestMessageSender
      */
-    private $sendService;
+    private $messageSender;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->sendService = new MockSendService();
+        $this->messageSender = new TestMessageSender();
     }
 
     public function notifications()
@@ -82,12 +82,12 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
     public function testSendingNotificationMessages(NotificationInterface $notification)
     {
         $strategy = new SendStrategy([
-            DummyMessage::class => $this->sendService,
+            DummyMessage::class => $this->messageSender,
         ]);
 
         $strategy->handle($notification);
 
-        $sentMessages = $this->sendService->getMessages();
+        $sentMessages = $this->messageSender->getMessages();
         $this->assertNotEmpty($sentMessages);
         $this->assertCount(count($notification->getMessages()), $sentMessages);
     }
@@ -106,7 +106,7 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
         ]);
 
         $strategy = new SendStrategy([
-            EmailMessage::class => $this->sendService,
+            EmailMessage::class => $this->messageSender,
         ]);
         $strategy->handle($notification);
     }
@@ -122,13 +122,13 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
             )
         ]);
 
-        $sendService = $this->getMock(SendServiceInterface::class);
-        $sendService->expects($this->once())
+        $messageSender = $this->getMock(MessageSenderInterface::class);
+        $messageSender->expects($this->once())
             ->method('send')
-            ->willThrowException(new SendServiceException('send failed'));
+            ->willThrowException(new MessageSenderException('send failed'));
 
         $strategy = new SendStrategy([
-            DummyMessage::class => $sendService,
+            DummyMessage::class => $messageSender,
         ]);
 
         $logger = $this->getMock(LoggerInterface::class);
@@ -159,7 +159,7 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
         ]);
 
         $strategy = new SendStrategy([
-            DummyMessage::class => $this->sendService,
+            DummyMessage::class => $this->messageSender,
         ]);
 
         $logger = $this->getMock(LoggerInterface::class);

@@ -11,9 +11,11 @@
 
 namespace Notify\Strategy\Exception;
 
+use Notify\Exception\ExceptionInterface as NotifyException;
+
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface ExceptionInterface
+interface ExceptionInterface extends NotifyException
 {
 }

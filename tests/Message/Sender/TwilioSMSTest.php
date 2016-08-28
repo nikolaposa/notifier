@@ -9,10 +9,10 @@
  * located at the package root folder.
  */
 
-namespace Notify\Tests\Message\SendService;
+namespace Notify\Tests\Message\Sender;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Message\SendService\TwilioSMS;
+use Notify\Message\Sender\TwilioSMS;
 use GuzzleHttp\ClientInterface;
 use Notify\Message\SMSMessage;
 use Notify\Contact\PhoneContact;
@@ -20,9 +20,9 @@ use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use GuzzleHttp\Psr7\Response;
-use Notify\Message\SendService\Exception\UnsupportedMessageException;
-use Notify\Message\SendService\Exception\IncompleteMessageException;
-use Notify\Message\SendService\Exception\RuntimeException;
+use Notify\Message\Sender\Exception\UnsupportedMessageException;
+use Notify\Message\Sender\Exception\IncompleteMessageException;
+use Notify\Message\Sender\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>

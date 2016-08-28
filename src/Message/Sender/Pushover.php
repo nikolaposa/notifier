@@ -9,7 +9,7 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService;
+namespace Notify\Message\Sender;
 
 use Notify\Message\MessageInterface;
 use Notify\Message\PushMessage;
@@ -17,13 +17,13 @@ use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
-use Notify\Message\SendService\Exception\UnsupportedMessageException;
-use Notify\Message\SendService\Exception\RuntimeException;
+use Notify\Message\Sender\Exception\UnsupportedMessageException;
+use Notify\Message\Sender\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class Pushover implements SendServiceInterface
+final class Pushover implements MessageSenderInterface
 {
     const API_BASE_URL = 'https://api.pushover.net';
 
@@ -55,10 +55,13 @@ final class Pushover implements SendServiceInterface
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function send(MessageInterface $message)
     {
         if (!$message instanceof PushMessage) {
-            throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
+            throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
         }
 
         $this->message = $message;

@@ -11,7 +11,7 @@
 
 namespace Notify\Strategy;
 
-use Notify\Message\SendService\SendServiceInterface;
+use Notify\Message\Sender\MessageSenderInterface;
 use Notify\NotificationInterface;
 use Notify\Message\MessageInterface;
 use Notify\Strategy\Exception\NotHandlingMessageException;
@@ -28,13 +28,13 @@ final class SendStrategy extends AbstractStrategy implements LoggerAwareInterfac
     use LoggerAwareTrait;
 
     /**
-     * @var SendServiceInterface[]
+     * @var MessageSenderInterface[]
      */
-    private $sendServices;
+    private $messageSenders;
 
-    public function __construct(array $sendServices)
+    public function __construct(array $messageSenders)
     {
-        $this->sendServices = $sendServices;
+        $this->messageSenders = $messageSenders;
 
         $this->setLogger(new NullLogger());
     }
@@ -44,10 +44,10 @@ final class SendStrategy extends AbstractStrategy implements LoggerAwareInterfac
         foreach ($messages as $message) {
             /* @var $message MessageInterface */
 
-            $sendService = $this->getSendService($message);
+            $messageSender = $this->getMessageSender($message);
 
             try {
-                $sendService->send($message);
+                $messageSender->send($message);
             } catch (\Exception $ex) {
                 $this->logger->log(LogLevel::ERROR, 'message send failure', [
                     'notification' => $notification->getName(),
@@ -67,17 +67,17 @@ final class SendStrategy extends AbstractStrategy implements LoggerAwareInterfac
 
     /**
      * @param MessageInterface $message
-     * @return SendServiceInterface
+     * @return MessageSenderInterface
      * @throws NotHandlingMessageException
      */
-    private function getSendService(MessageInterface $message)
+    private function getMessageSender(MessageInterface $message)
     {
         $messageType = get_class($message);
 
-        if (!isset($this->sendServices[$messageType])) {
+        if (!isset($this->messageSenders[$messageType])) {
             throw NotHandlingMessageException::fromMessage($message);
         }
 
-        return $this->sendServices[$messageType];
+        return $this->messageSenders[$messageType];
     }
 }

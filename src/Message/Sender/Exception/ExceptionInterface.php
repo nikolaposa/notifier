@@ -9,11 +9,13 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService\Exception;
+namespace Notify\Message\Sender\Exception;
+
+use Notify\Exception\ExceptionInterface as NotifyException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface ExceptionInterface
+interface ExceptionInterface extends NotifyException
 {
 }

@@ -9,18 +9,18 @@
  * located at the package root folder.
  */
 
-namespace Notify\Tests\Message\SendService;
+namespace Notify\Tests\Message\Sender;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Message\SendService\NativeMailer;
+use Notify\Message\Sender\NativeMailer;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
 use Notify\Message\Options\Options;
 use Notify\Tests\TestAsset\Message\DummyMessage;
-use Notify\Message\SendService\Exception\UnsupportedMessageException;
-use Notify\Message\SendService\Exception\RuntimeException;
+use Notify\Message\Sender\Exception\UnsupportedMessageException;
+use Notify\Message\Sender\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -167,7 +167,7 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
             'test test test'
         );
 
-        $sendService = new NativeMailer(70, [$this, 'mailerError']);
-        $sendService->send($message);
+        $messageSender = new NativeMailer(70, [$this, 'mailerError']);
+        $messageSender->send($message);
     }
 }

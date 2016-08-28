@@ -22,7 +22,7 @@ use Notify\Message\EmailMessage;
 use Notify\Message\SMSMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Strategy\SendStrategy;
-use Notify\Message\SendService\MockSendService;
+use Notify\Message\Sender\TestMessageSender;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -228,17 +228,17 @@ $post = new Post('Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisc
 $comment = new Comment('Jane', 'jane@example.com', 'Nice article!');
 $post->comment($comment);
 
-$defaultSendService = new MockSendService();
+$defaultMessageSender = new TestMessageSender();
 $defaultStrategy = new SendStrategy([
-    EmailMessage::class => $defaultSendService,
-    SMSMessage::class => $defaultSendService,
+    EmailMessage::class => $defaultMessageSender,
+    SMSMessage::class => $defaultMessageSender,
 ]);
 AbstractNotification::setDefaultStrategy($defaultStrategy);
 
 $newCommentNotification = new NewCommentNotification($post, $comment);
 $newCommentNotification();
 
-foreach ($defaultSendService->getMessages() as $message) {
+foreach ($defaultMessageSender->getMessages() as $message) {
     echo get_class($message) . ': ';
     echo $message->getContent();
     echo "\n\n";

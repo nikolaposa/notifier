@@ -17,7 +17,7 @@ use Notify\Contact\PhoneContact;
 use Notify\Message\Actor\Actor;
 use Notify\Message\Actor\Recipients;
 use GuzzleHttp\Client;
-use Notify\Message\SendService\TwilioSMS;
+use Notify\Message\Sender\TwilioSMS;
 use Notify\Strategy\SendStrategy;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -43,7 +43,7 @@ final class TestNotification extends AbstractNotification
     }
 }
 
-$sendService = new TwilioSMS(
+$messageSender = new TwilioSMS(
     'AC28bb303afb47a8f292642756035836dd',
     '653e3bbe7cd1fc766b012e379b4614ba',
     new Client(['verify' => false])
@@ -51,5 +51,5 @@ $sendService = new TwilioSMS(
 
 $notification = new TestNotification($post, $comment);
 $notification(new SendStrategy([
-    SMSMessage::class => $sendService,
+    SMSMessage::class => $messageSender,
 ]));

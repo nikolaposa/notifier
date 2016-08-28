@@ -18,7 +18,7 @@ use Notify\Message\Actor\Actor;
 use Notify\Contact\EmailContact;
 use Notify\Message\Options\Options;
 use Notify\Strategy\SendStrategy;
-use Notify\Message\SendService\MockSendService;
+use Notify\Message\Sender\TestMessageSender;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -45,14 +45,14 @@ final class TestNotification extends AbstractNotification
     }
 }
 
-$sendService = new MockSendService();
+$messageSender = new TestMessageSender();
 
 $notification = new TestNotification($post, $comment);
 $notification(new SendStrategy([
-    EmailMessage::class => $sendService,
+    EmailMessage::class => $messageSender,
 ]));
 
-foreach ($sendService->getMessages() as $message) {
+foreach ($messageSender->getMessages() as $message) {
     echo get_class($message) . ': ';
     echo htmlentities($message->getContent());
     echo "\n\n";

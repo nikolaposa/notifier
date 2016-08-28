@@ -9,7 +9,7 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService;
+namespace Notify\Message\Sender;
 
 use Notify\Message\MessageInterface;
 use Notify\Message\SMSMessage;
@@ -17,14 +17,14 @@ use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
-use Notify\Message\SendService\Exception\UnsupportedMessageException;
-use Notify\Message\SendService\Exception\IncompleteMessageException;
-use Notify\Message\SendService\Exception\RuntimeException;
+use Notify\Message\Sender\Exception\UnsupportedMessageException;
+use Notify\Message\Sender\Exception\IncompleteMessageException;
+use Notify\Message\Sender\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class TwilioSMS implements SendServiceInterface
+final class TwilioSMS implements MessageSenderInterface
 {
     const API_BASE_URL = 'https://api.twilio.com';
 
@@ -60,6 +60,9 @@ final class TwilioSMS implements SendServiceInterface
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function send(MessageInterface $message)
     {
         $this->setMessage($message);
@@ -80,7 +83,7 @@ final class TwilioSMS implements SendServiceInterface
     private function setMessage(MessageInterface $message)
     {
         if (!$message instanceof SMSMessage) {
-            throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
+            throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
         }
 
         if (!$message->hasSender()) {

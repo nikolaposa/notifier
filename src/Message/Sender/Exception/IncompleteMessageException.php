@@ -9,7 +9,7 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService\Exception;
+namespace Notify\Message\Sender\Exception;
 
 use LogicException;
 
