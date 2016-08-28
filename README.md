@@ -28,22 +28,22 @@ would inherit `AbstractNotification` class, which provides some common basis.
 ### Messages
 
 `MessageInterface` implementations are generic objects containing information about a message that
-should be sent by the appropriate send service. At least, each message must provide recipients list
+should be sent by the appropriate sender. At least, each message must provide recipients list
 and content that is to be sent. Recipients list is a collection of `ActorInterface` instances,
 each represented by name and a contact information, encapsulated in the `ContactInterface`
 implementation. Content is essentially a string, but it can be supplied to a message in form of a
 `ContentProviderInterface` implementation.
 
-Messages are sent using message `SendServiceInterface` implementations.
+Messages are sent using message `MessageSenderInterface` implementations.
 
-Out of the box, Notify provides email, SMS and push message types, as well as their related send
-services.
+Out of the box, Notify provides email, SMS and push message types, as well as their related message
+senders.
 
 ### Strategies
 
 Strategies are `StrategyInterface` implementations, responsible for handling a notification, namely
 its messages. `SendStrategy` is a concrete, default Strategy implementation that sends notification
-messages using appropriate send services.
+messages using appropriate senders.
 
 This concept allows defining custom handling strategies, for example some that will put notification
 messages into a background job.
@@ -62,8 +62,8 @@ use Notify\Contact\EmailContact;
 use Notify\Contact\PhoneContact;
 use Notify\Message\Options\Options;
 use Notify\Strategy\SendStrategy;
-use Notify\Message\SendService\NativeMailer;
-use Notify\Message\SendService\TwilioSMS;
+use Notify\Message\Sender\NativeMailer;
+use Notify\Message\Sender\TwilioSMS;
 
 final class SampleNotification extends AbstractNotification
 {

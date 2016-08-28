@@ -9,11 +9,14 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService\Exception;
+namespace Notify;
+
+use Notify\Message\Actor\ActorInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface ExceptionInterface
+interface ProvidesSmsMessageInterface
 {
+    public function getSMSMessage(ActorInterface $actor);
 }

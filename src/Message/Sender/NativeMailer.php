@@ -9,18 +9,18 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService;
+namespace Notify\Message\Sender;
 
 use Notify\Message\MessageInterface;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\ActorInterface;
-use Notify\Message\SendService\Exception\UnsupportedMessageException;
-use Notify\Message\SendService\Exception\RuntimeException;
+use Notify\Message\Sender\Exception\UnsupportedMessageException;
+use Notify\Message\Sender\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class NativeMailer implements SendServiceInterface
+final class NativeMailer implements MessageSenderInterface
 {
     const DEFAULT_MAX_COLUMN_WIDTH = 70;
 
@@ -51,10 +51,13 @@ final class NativeMailer implements SendServiceInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function send(MessageInterface $message)
     {
         if (!$message instanceof EmailMessage) {
-            throw UnsupportedMessageException::fromSendServiceAndMessage($this, $message);
+            throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
         }
 
         $this->message = $message;

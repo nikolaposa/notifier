@@ -9,7 +9,7 @@
  * located at the package root folder.
  */
 
-namespace Notify\Strategy\Exception;
+namespace Notify\Message\Sender\Exception;
 
 use Notify\Exception\ExceptionInterface as NotifyException;
 

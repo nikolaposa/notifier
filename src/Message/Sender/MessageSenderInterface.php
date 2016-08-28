@@ -9,27 +9,22 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService;
+namespace Notify\Message\Sender;
 
 use Notify\Message\MessageInterface;
+use Notify\Message\Sender\Exception\UnsupportedMessageException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class MockSendService implements SendServiceInterface
+interface MessageSenderInterface
 {
     /**
-     * @var MessageInterface[]
+     * @param MessageInterface $message
+     *
+     * @throws UnsupportedMessageException
+     *
+     * @return void
      */
-    private $messages;
-
-    public function send(MessageInterface $message)
-    {
-        $this->messages[] = $message;
-    }
-
-    public function getMessages()
-    {
-        return $this->messages;
-    }
+    public function send(MessageInterface $message);
 }

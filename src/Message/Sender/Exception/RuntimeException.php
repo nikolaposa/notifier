@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -9,18 +9,11 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService;
-
-use Notify\Message\MessageInterface;
+namespace Notify\Message\Sender\Exception;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface SendServiceInterface
+class RuntimeException extends \RuntimeException implements ExceptionInterface
 {
-    /**
-     * @param MessageInterface $message
-     * @return void
-     */
-    public function send(MessageInterface $message);
 }

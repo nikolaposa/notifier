@@ -9,13 +9,15 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService\Exception;
+namespace Notify;
 
-use LogicException;
+use Notify\Message\Actor\ActorInterface;
 
 /**
+ *
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class IncompleteMessageException extends LogicException implements ExceptionInterface
+interface ProvidesEmailMessageInterface
 {
+    public function getEmailMessage(ActorInterface $actor);
 }

@@ -27,7 +27,6 @@ abstract class AbstractMessage implements MessageInterface, JsonSerializable
     protected $recipients;
 
     /**
-     *
      * @var string|ContentProviderInterface
      */
     protected $content;

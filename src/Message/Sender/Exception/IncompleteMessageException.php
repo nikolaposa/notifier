@@ -9,11 +9,13 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\SendService\Exception;
+namespace Notify\Message\Sender\Exception;
+
+use LogicException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class RuntimeException extends \RuntimeException implements ExceptionInterface
+class IncompleteMessageException extends LogicException implements ExceptionInterface
 {
 }
