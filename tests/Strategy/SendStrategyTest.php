@@ -13,19 +13,15 @@ namespace Notify\Tests\Strategy;
 
 use PHPUnit_Framework_TestCase;
 use Notify\Strategy\SendStrategy;
+use Notify\Channel;
 use Notify\Message\Sender\TestMessageSender;
-use Notify\NotificationInterface;
-use Notify\GenericNotification;
-use Notify\Tests\TestAsset\Message\DummyMessage;
-use Notify\Message\EmailMessage;
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Actor;
+use Notify\Tests\TestAsset\Notification\TestNotification;
+use Notify\GenericNotificationReceiver;
+use Notify\Contact\Contacts;
 use Notify\Contact\GenericContact;
-use Notify\Strategy\Exception\NotHandlingMessageException;
 use Notify\Message\Sender\MessageSenderInterface;
 use Notify\Message\Sender\Exception\RuntimeException as MessageSenderException;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -44,131 +40,68 @@ class SendStrategyTest extends PHPUnit_Framework_TestCase
         $this->messageSender = new TestMessageSender();
     }
 
-    public function notifications()
-    {
-        return [
-            [
-                new GenericNotification([
-                    new DummyMessage(
-                        new Recipients([
-                            new Actor(new GenericContact('test'))
-                        ]),
-                        'test1'
-                    ),
-                    new DummyMessage(
-                        new Recipients([
-                            new Actor(new GenericContact('test'))
-                        ]),
-                        'test2'
-                    ),
-                ])
-            ],
-            [
-                new GenericNotification([
-                    new DummyMessage(
-                        new Recipients([
-                            new Actor(new GenericContact('test'))
-                        ]),
-                        'test3'
-                    ),
-                ])
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider notifications
-     */
-    public function testSendingNotificationMessages(NotificationInterface $notification)
+    public function testSendingNotification()
     {
         $strategy = new SendStrategy([
-            DummyMessage::class => $this->messageSender,
+            new Channel('test', $this->messageSender),
         ]);
 
-        $strategy->handle($notification);
+        $strategy->notify([
+            new GenericNotificationReceiver(new Contacts([
+                new GenericContact('test')
+            ])),
+            new GenericNotificationReceiver(new Contacts([
+                new GenericContact('test'),
+                new GenericContact('email')
+            ]))
+        ], new TestNotification());
 
         $sentMessages = $this->messageSender->getMessages();
+
         $this->assertNotEmpty($sentMessages);
-        $this->assertCount(count($notification->getMessages()), $sentMessages);
-    }
-
-    public function testExceptionIsRaisedInCaseOfUnsupportedMessageType()
-    {
-        $this->expectException(NotHandlingMessageException::class);
-
-        $notification = new GenericNotification([
-            new DummyMessage(
-                new Recipients([
-                    new Actor(new GenericContact('test'))
-                ]),
-                'test test test'
-            )
-        ]);
-
-        $strategy = new SendStrategy([
-            EmailMessage::class => $this->messageSender,
-        ]);
-        $strategy->handle($notification);
+        $this->assertCount(2, $sentMessages);
     }
 
     public function testLoggingMessageSendFailures()
     {
-        $notification = new GenericNotification([
-            new DummyMessage(
-                new Recipients([
-                    new Actor(new GenericContact('test'))
-                ]),
-                'test test test'
-            )
-        ]);
-
         $messageSender = $this->getMock(MessageSenderInterface::class);
         $messageSender->expects($this->once())
             ->method('send')
             ->willThrowException(new MessageSenderException('send failed'));
 
         $strategy = new SendStrategy([
-            DummyMessage::class => $messageSender,
+            new Channel('test', $messageSender)
         ]);
 
         $logger = $this->getMock(LoggerInterface::class);
         $logger->expects($this->once())
-            ->method('log')
-            ->with($this->equalTo(LogLevel::ERROR));
+            ->method('error');
 
         $strategy->setLogger($logger);
 
-        $strategy->handle($notification);
+        $strategy->notify([
+            new GenericNotificationReceiver(new Contacts([
+                new GenericContact('test')
+            ]))
+        ], new TestNotification());
     }
 
     public function testLoggingMessageSendSuccess()
     {
-        $notification = new GenericNotification([
-            new DummyMessage(
-                new Recipients([
-                    new Actor(new GenericContact('test'))
-                ]),
-                'test1'
-            ),
-            new DummyMessage(
-                new Recipients([
-                    new Actor(new GenericContact('test'))
-                ]),
-                'test2'
-            ),
-        ]);
-
         $strategy = new SendStrategy([
-            DummyMessage::class => $this->messageSender,
+            new Channel('test', $this->messageSender),
         ]);
 
         $logger = $this->getMock(LoggerInterface::class);
         $logger->expects($this->exactly(2))
-            ->method('log')
-            ->with($this->equalTo(LogLevel::INFO));
+            ->method('info');
 
         $strategy->setLogger($logger);
 
-        $strategy->handle($notification);
+        $strategy->notify([
+            new GenericNotificationReceiver(new Contacts([
+                new GenericContact('test')
+            ]))
+        ], new TestNotification());
     }
 }

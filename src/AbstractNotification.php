@@ -16,4 +16,32 @@ namespace Notify;
  */
 abstract class AbstractNotification implements NotificationInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessage($channelName, NotificationReceiverInterface $receiver)
+    {
+        $messageFactory = $this->getMessageFactory($channelName);
+
+        if (!is_callable($messageFactory)) {
+
+        }
+
+        return call_user_func($messageFactory, $channelName, $receiver);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCapableFor($channelName)
+    {
+        $messageFactory = $this->getMessageFactory($channelName);
+
+        return is_callable($messageFactory);
+    }
+
+    private function getMessageFactory($channelName)
+    {
+        return [$this, 'create' . ucfirst(strtolower($channelName)) . 'Message'];
+    }
 }

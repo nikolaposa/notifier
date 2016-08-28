@@ -12,9 +12,12 @@
 namespace Notify\Example;
 
 use Notify\AbstractNotification;
+use Notify\NotificationReceiverInterface;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
+use Notify\GenericNotificationReceiver;
+use Notify\Contact\Contacts;
 use Notify\Contact\EmailContact;
 use Notify\Message\Options\Options;
 use Notify\Strategy\SendStrategy;
@@ -29,19 +32,17 @@ final class TestNotification extends AbstractNotification
         return 'Test notification';
     }
 
-    public function getMessages()
+    public function createEmailMessage($channelName, NotificationReceiverInterface $receiver)
     {
-        return [
-            new EmailMessage(
-                new Recipients([
-                    new Actor(new EmailContact('john@example.com', 'John Doe')),
-                ]),
-                'Notification exercise',
-                'Some <strong>HTML</strong> notification content',
-                null,
-                new Options(['content_type' => 'text/html'])
-            ),
-        ];
+        return new EmailMessage(
+            new Recipients([
+                new Actor($receiver->getNotifyContact($channelName, $this)),
+            ]),
+            'Notification exercise',
+            'Some <strong>HTML</strong> notification content',
+            null,
+            new Options(['content_type' => 'text/html'])
+        );
     }
 }
 
@@ -53,7 +54,9 @@ $notifyStrategy = new SendStrategy([
 
 $notification = new TestNotification($post, $comment);
 
-$notifyStrategy->handle($notification);
+$notifyStrategy->notify([
+    new GenericNotificationReceiver(new Contacts([new EmailContact('test@example.com')]))
+], $notification);
 
 foreach ($messageSender->getMessages() as $message) {
     echo get_class($message) . ': ';

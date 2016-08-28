@@ -12,11 +12,7 @@
 namespace Notify\Tests\Notification;
 
 use PHPUnit_Framework_TestCase;
-use Notify\GenericNotification;
-use Notify\Tests\TestAsset\Message\DummyMessage;
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Actor;
-use Notify\Contact\GenericContact;
+use Notify\Tests\TestAsset\Notification\TestNotification;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -29,23 +25,11 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->notification = new GenericNotification([
-            new DummyMessage(
-                new Recipients([
-                    new Actor(new GenericContact('test'))
-                ]),
-                'test1'
-            ),
-        ]);
+        $this->notification = new TestNotification();
     }
 
     public function testGettingName()
     {
-        $this->assertEquals('Generic', $this->notification->getName());
-    }
-
-    public function testGettingMessages()
-    {
-        $this->assertNotEmpty($this->notification->getMessages());
+        $this->assertEquals('Test', $this->notification->getName());
     }
 }

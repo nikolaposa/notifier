@@ -11,73 +11,84 @@
 
 namespace Notify\Strategy;
 
-use Notify\Message\Sender\MessageSenderInterface;
 use Notify\NotificationInterface;
-use Notify\Message\MessageInterface;
-use Notify\Strategy\Exception\NotHandlingMessageException;
+use Notify\NotificationReceiverInterface;
+use Notify\Channel;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class SendStrategy extends AbstractStrategy implements LoggerAwareInterface
+final class SendStrategy implements StrategyInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
-     * @var MessageSenderInterface[]
+     * @var Channel[]
      */
-    private $messageSenders;
+    private $channels;
 
-    public function __construct(array $messageSenders)
+    public function __construct(array $channels)
     {
-        $this->messageSenders = $messageSenders;
-
-        $this->setLogger(new NullLogger());
-    }
-
-    protected function doHandle(array $messages, NotificationInterface $notification)
-    {
-        foreach ($messages as $message) {
-            /* @var $message MessageInterface */
-
-            $messageSender = $this->getMessageSender($message);
-
-            try {
-                $messageSender->send($message);
-            } catch (\Exception $ex) {
-                $this->logger->log(LogLevel::ERROR, 'message send failure', [
-                    'notification' => $notification->getName(),
-                    'message' => $message,
-                    'exception' => $ex,
-                ]);
-
-                continue;
-            }
-
-            $this->logger->log(LogLevel::INFO, 'message sent', [
-                'notification' => $notification->getName(),
-                'message' => $message,
-            ]);
-        }
+        $this->channels = $channels;
     }
 
     /**
-     * @param MessageInterface $message
-     * @return MessageSenderInterface
-     * @throws NotHandlingMessageException
+     * {@inheritdoc}
      */
-    private function getMessageSender(MessageInterface $message)
+    public function notify(array $notificationReceivers, NotificationInterface $notification)
     {
-        $messageType = get_class($message);
+        return $this->notifiyIndividually($notificationReceivers, $notification);
+    }
 
-        if (!isset($this->messageSenders[$messageType])) {
-            throw NotHandlingMessageException::fromMessage($message);
+    private function notifiyIndividually(array $notificationReceivers, NotificationInterface $notification)
+    {
+        foreach ($notificationReceivers as $notificationReceiver) {
+            /* @var $notificationReceiver NotificationReceiverInterface */
+
+            foreach ($this->channels as $channel) {
+                $channelName = $channel->getName();
+
+                if (!$notification->isCapableFor($channelName)) {
+                    continue;
+                }
+
+                if (!$notificationReceiver->shouldReceiveNotification($channelName, $notification)) {
+                    continue;
+                }
+
+                $messageSender = $channel->getMessageSender();
+
+                $message = $notification->getMessage($channelName, $notificationReceiver);
+
+                try {
+                    $messageSender->send($message);
+                } catch (\Exception $ex) {
+                    $this->getLogger()->error('message send failure', [
+                        'notification' => $notification->getName(),
+                        'message' => $message,
+                        'exception' => $ex,
+                    ]);
+
+                    continue;
+                }
+
+                $this->getLogger()->info('message sent', [
+                    'notification' => $notification->getName(),
+                    'message' => $message,
+                ]);
+            }
+        }
+    }
+
+    private function getLogger()
+    {
+        if (is_null($this->logger)) {
+            $this->setLogger(new NullLogger());
         }
 
-        return $this->messageSenders[$messageType];
+        return $this->logger;
     }
 }

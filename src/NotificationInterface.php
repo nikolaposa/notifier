@@ -11,6 +11,8 @@
 
 namespace Notify;
 
+use Notify\Message\MessageInterface;
+
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
@@ -22,7 +24,17 @@ interface NotificationInterface
     public function getName();
 
     /**
-     * @return array
+     * @param type $channelName
+     *
+     * @return bool
      */
-    public function getMessages();
+    public function isCapableFor($channelName);
+
+    /**
+     * @param string $channelName
+     * @param NotificationReceiverInterface $receiver
+     *
+     * @return MessageInterface
+     */
+    public function getMessage($channelName, NotificationReceiverInterface $receiver);
 }
