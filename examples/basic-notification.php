@@ -47,10 +47,13 @@ final class TestNotification extends AbstractNotification
 
 $messageSender = new TestMessageSender();
 
-$notification = new TestNotification($post, $comment);
-$notification(new SendStrategy([
+$notifyStrategy = new SendStrategy([
     EmailMessage::class => $messageSender,
-]));
+]);
+
+$notification = new TestNotification($post, $comment);
+
+$notifyStrategy->handle($notification);
 
 foreach ($messageSender->getMessages() as $message) {
     echo get_class($message) . ': ';

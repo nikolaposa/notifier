@@ -11,8 +11,6 @@
 
 namespace Notify;
 
-use Notify\Strategy\StrategyInterface;
-
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
@@ -27,10 +25,4 @@ interface NotificationInterface
      * @return array
      */
     public function getMessages();
-
-    /**
-     * @param StrategyInterface $strategy
-     * @return void
-     */
-    public function __invoke(StrategyInterface $strategy = null);
 }

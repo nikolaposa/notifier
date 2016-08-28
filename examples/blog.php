@@ -229,14 +229,14 @@ $comment = new Comment('Jane', 'jane@example.com', 'Nice article!');
 $post->comment($comment);
 
 $defaultMessageSender = new TestMessageSender();
-$defaultStrategy = new SendStrategy([
+$notifyStrategy = new SendStrategy([
     EmailMessage::class => $defaultMessageSender,
     SMSMessage::class => $defaultMessageSender,
 ]);
-AbstractNotification::setDefaultStrategy($defaultStrategy);
 
 $newCommentNotification = new NewCommentNotification($post, $comment);
-$newCommentNotification();
+
+$notifyStrategy->handle($newCommentNotification);
 
 foreach ($defaultMessageSender->getMessages() as $message) {
     echo get_class($message) . ': ';

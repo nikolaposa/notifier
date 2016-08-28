@@ -44,12 +44,15 @@ final class TestNotification extends AbstractNotification
 }
 
 $messageSender = new TwilioSMS(
-    'AC28bb303afb47a8f292642756035836dd',
-    '653e3bbe7cd1fc766b012e379b4614ba',
+    'auth_id',
+    'auth_token',
     new Client(['verify' => false])
 );
 
-$notification = new TestNotification($post, $comment);
-$notification(new SendStrategy([
+$notifyStrategy = new SendStrategy([
     SMSMessage::class => $messageSender,
-]));
+]);
+
+$notification = new TestNotification($post, $comment);
+
+$notifyStrategy->handle($notification);

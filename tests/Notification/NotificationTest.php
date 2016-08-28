@@ -17,10 +17,6 @@ use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Contact\GenericContact;
-use Notify\Tests\TestAsset\Strategy\TestStrategy;
-use Notify\Message\MessageInterface;
-use Notify\Exception\NotificationStrategyNotSuppliedException;
-use Notify\AbstractNotification;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -51,43 +47,5 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     public function testGettingMessages()
     {
         $this->assertNotEmpty($this->notification->getMessages());
-    }
-
-    public function testMessagesHandledByStrategy()
-    {
-        $strategy = new TestStrategy();
-
-        $notification = $this->notification;
-        $notification($strategy);
-
-        $messages = $strategy->getMessages();
-        $this->assertNotEmpty($messages);
-        $this->assertInstanceOf(MessageInterface::class, current($messages));
-        $this->assertSame($notification, $strategy->getNotification());
-    }
-
-    public function testExceptionIsRaisedIfStrategyNotSupplied()
-    {
-        $this->expectException(NotificationStrategyNotSuppliedException::class);
-        $this->expectExceptionMessage('Strategy for notification "' . GenericNotification::class . '" was not supplied');
-
-        $notification = $this->notification;
-        $notification();
-    }
-
-    public function testMessagesHandledByDefaultStrategy()
-    {
-        $strategy = new TestStrategy();
-        AbstractNotification::setDefaultStrategy($strategy);
-
-        $notification = $this->notification;
-        $notification();
-
-        $messages = $strategy->getMessages();
-        $this->assertNotEmpty($messages);
-        $this->assertInstanceOf(MessageInterface::class, current($messages));
-        $this->assertSame($notification, $strategy->getNotification());
-
-        AbstractNotification::resetDefaultStrategy();
     }
 }
