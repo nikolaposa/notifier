@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -9,37 +9,37 @@
  * located at the package root folder.
  */
 
-namespace Notify;
+namespace Notify\Strategy;
 
 use Notify\Message\Sender\MessageSenderInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class Channel
+final class ChannelHandler
 {
     /**
      * @var string
      */
-    private $name;
+    private $channel;
 
     /**
      * @var MessageSenderInterface
      */
     private $messageSender;
 
-    public function __construct($name, MessageSenderInterface $messageSender)
+    public function __construct($channel, MessageSenderInterface $messageSender)
     {
-        $this->name = $name;
+        $this->channel = $channel;
         $this->messageSender = $messageSender;
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getChannel()
     {
-        return $this->name;
+        return $this->channel;
     }
 
     /**

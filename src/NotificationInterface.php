@@ -24,17 +24,22 @@ interface NotificationInterface
     public function getName();
 
     /**
-     * @param type $channelName
+     * @return array
+     */
+    public function getSupportedChannels();
+
+    /**
+     * @param string $channel
      *
      * @return bool
      */
-    public function isCapableFor($channelName);
+    public function isChannelSupported($channel);
 
     /**
-     * @param string $channelName
+     * @param string $channel
      * @param NotificationReceiverInterface $receiver
      *
      * @return MessageInterface
      */
-    public function getMessage($channelName, NotificationReceiverInterface $receiver);
+    public function getMessage($channel, NotificationReceiverInterface $receiver);
 }

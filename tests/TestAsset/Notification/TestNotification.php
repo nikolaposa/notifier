@@ -27,11 +27,11 @@ class TestNotification extends AbstractNotification
         return 'Test';
     }
 
-    public function createTestMessage($channelName, NotificationReceiverInterface $receiver)
+    public function createEmailMessage($channel, NotificationReceiverInterface $receiver)
     {
         return new EmailMessage(
             new Recipients([
-                new Actor($receiver->getNotifyContact($channelName, $this)),
+                new Actor($receiver->getNotifyContact($channel, $this)),
             ]),
             'Test notification',
             'test notification'

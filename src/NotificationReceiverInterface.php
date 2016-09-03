@@ -19,18 +19,26 @@ use Notify\Contact\ContactInterface;
 interface NotificationReceiverInterface
 {
     /**
-     * @param string $channelName
      * @param NotificationInterface $notification
+     * @param string $channel
      *
      * @return bool
      */
-    public function shouldReceiveNotification($channelName, NotificationInterface $notification);
+    public function acceptsNotification(NotificationInterface $notification, $channel);
 
     /**
-     * @param string $channelName
+     * @param string $channel
      * @param NotificationInterface $notification
      *
      * @return ContactInterface
      */
-    public function getNotifyContact($channelName, NotificationInterface $notification);
+    public function getNotifyContact($channel, NotificationInterface $notification);
+
+    /**
+     * @param NotificationInterface $notification
+     * @param string $channel
+     *
+     * @return void
+     */
+    public function onNotified(NotificationInterface $notification, $channel);
 }

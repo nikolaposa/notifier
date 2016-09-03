@@ -11,22 +11,22 @@
 
 namespace Notify\Example;
 
-use Notify\Contact\HasContactsInterface;
-use Notify\Contact\Contacts;
+use Notify\NotificationReceiverInterface;
 use Notify\Contact\EmailContact;
 use Notify\Contact\PhoneContact;
-use Notify\Message\Actor\ProvidesRecipientInterface;
-use Notify\Message\Actor\Actor;
+use Notify\NotificationInterface;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\SMSMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Strategy\SendStrategy;
+use Notify\Message\Actor\Actor;
+use Notify\Strategy\DefaultStrategy;
+use Notify\Strategy\ChannelHandler;
 use Notify\Message\Sender\TestMessageSender;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-final class User implements HasContactsInterface, ProvidesRecipientInterface
+final class User implements NotificationReceiverInterface
 {
     private $username;
 
@@ -37,6 +37,8 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
     private $email;
 
     private $phoneNumber;
+
+    private $notified = [];
 
     public function __construct(
         $username,
@@ -77,31 +79,29 @@ final class User implements HasContactsInterface, ProvidesRecipientInterface
         return $this->phoneNumber;
     }
 
-    public function getContacts()
+    public function acceptsNotification(NotificationInterface $notification, $channel)
     {
-        return new Contacts([
-            new EmailContact($this->email),
-            new PhoneContact($this->phoneNumber),
-        ]);
+        return in_array($channel, ['Email', 'Sms']);
     }
 
-    public function getMessageRecipient($messageType, $notificationType = null)
+    public function getNotifyContact($channel, NotificationInterface $notification)
     {
-        $name = sprintf('%s %s', $this->getFirstName(), $this->getLastName());
-
-        $contacts = $this->getContacts();
-
-        if ($messageType == EmailMessage::class) {
-            if (false !== ($emailContact = $contacts->getOne(EmailContact::class))) {
-                return new Actor($emailContact, $name);
-            }
-        } elseif ($messageType == SMSMessage::class) {
-            if (false !== ($phoneContact = $contacts->getOne(PhoneContact::class))) {
-                return new Actor($phoneContact, $name);
-            }
+        switch ($channel) {
+            case 'Email' :
+                return new EmailContact($this->email);
+            case 'Sms' :
+                return new PhoneContact($this->phoneNumber);
+            default :
+                throw new \RuntimeException(sprintf(
+                    'User does not accept notifications through %s channel',
+                    $channel
+                ));
         }
+    }
 
-        return null;
+    public function onNotified(NotificationInterface $notification, $channel)
+    {
+        $this->notified[$notification->getName()][$channel] = true;
     }
 }
 
@@ -189,8 +189,6 @@ final class Comment
 
 final class NewCommentNotification extends AbstractNotification
 {
-    const ID = 'new-comment';
-
     private $post;
 
     private $comment;
@@ -206,37 +204,49 @@ final class NewCommentNotification extends AbstractNotification
         return 'New comment';
     }
 
-    public function getMessages()
+    public function createEmailMessage($channel, NotificationReceiverInterface $receiver)
     {
-        return [
-            new EmailMessage(
-                Recipients::fromRecipientProviders([$this->post->getAuthor()], EmailMessage::class, self::ID),
-                'New comment',
-                sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
-            ),
-            new SMSMessage(
-                Recipients::fromRecipientProviders([$this->post->getAuthor()], SMSMessage::class, self::ID),
-                sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
-            ),
-        ];
+        return new EmailMessage(
+            new Recipients([
+                new Actor($receiver->getNotifyContact($channel, $this)),
+            ]),
+            'New comment',
+            sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
+        );
+    }
+
+    public function createSmsMessage($channel, NotificationReceiverInterface $receiver)
+    {
+        return new SMSMessage(
+            new Recipients([
+                new Actor($receiver->getNotifyContact($channel, $this)),
+            ]),
+            sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
+        );
     }
 }
 
-$user = new User('admin', 'John', 'Doe', 'jd@example.com', '+12222222222');
-$post = new Post('Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $user);
+$author = new User('admin', 'John', 'Doe', 'jd@example.com', '+12222222222');
+$post = new Post('Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $author);
 
 $comment = new Comment('Jane', 'jane@example.com', 'Nice article!');
 $post->comment($comment);
 
 $defaultMessageSender = new TestMessageSender();
-$notifyStrategy = new SendStrategy([
-    EmailMessage::class => $defaultMessageSender,
-    SMSMessage::class => $defaultMessageSender,
+
+$notifyStrategy = new DefaultStrategy([
+    new ChannelHandler('Email', $defaultMessageSender),
+    new ChannelHandler('Sms', $defaultMessageSender),
 ]);
 
 $newCommentNotification = new NewCommentNotification($post, $comment);
 
-$notifyStrategy->handle($newCommentNotification);
+$notifyStrategy->notify(
+    [
+        $author
+    ],
+    $newCommentNotification
+);
 
 foreach ($defaultMessageSender->getMessages() as $message) {
     echo get_class($message) . ': ';

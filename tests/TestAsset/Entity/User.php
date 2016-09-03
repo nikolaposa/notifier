@@ -14,7 +14,6 @@ namespace Notify\Tests\TestAsset\Entity;
 use Notify\NotificationReceiverInterface;
 use Notify\Contact\Contacts;
 use Notify\NotificationInterface;
-use Notify\Contact\GenericContact;
 use Notify\Contact\EmailContact;
 use Notify\Contact\PhoneContact;
 use Notify\Contact\MobileDeviceContact;
@@ -32,11 +31,15 @@ class User implements NotificationReceiverInterface
     /**
      * @var array
      */
+    private $notified = [];
+
+    /**
+     * @var array
+     */
     private static $channelContactTypeMap = [
-        'test' => GenericContact::class,
-        'email' => EmailContact::class,
-        'sms' => PhoneContact::class,
-        'push' => MobileDeviceContact::class,
+        'Email' => EmailContact::class,
+        'Sms' => PhoneContact::class,
+        'Push' => MobileDeviceContact::class,
     ];
 
     public function __construct(Contacts $contacts)
@@ -44,22 +47,22 @@ class User implements NotificationReceiverInterface
         $this->contacts = $contacts;
     }
 
-    public function shouldReceiveNotification($channelName, NotificationInterface $notification)
+    public function acceptsNotification(NotificationInterface $notification, $channel)
     {
-        if (!isset(self::$channelContactTypeMap[$channelName])) {
+        if (!isset(self::$channelContactTypeMap[$channel])) {
             return false;
         }
 
-        return $this->contacts->has(self::$channelContactTypeMap[$channelName]);
+        return $this->contacts->has(self::$channelContactTypeMap[$channel]);
     }
 
-    public function getNotifyContact($channelName, NotificationInterface $notification)
+    public function getNotifyContact($channel, NotificationInterface $notification)
     {
-        if (!isset(self::$channelContactTypeMap[$channelName])) {
+        if (!isset(self::$channelContactTypeMap[$channel])) {
             //@todo throw
         }
 
-        $contactType = self::$channelContactTypeMap[$channelName];
+        $contactType = self::$channelContactTypeMap[$channel];
 
         $contact = $this->contacts->getOne($contactType);
 
@@ -68,5 +71,10 @@ class User implements NotificationReceiverInterface
         }
 
         return $contact;
+    }
+
+    public function onNotified(NotificationInterface $notification, $channel)
+    {
+        $this->notified[$notification->getName()][$channel] = true;
     }
 }
