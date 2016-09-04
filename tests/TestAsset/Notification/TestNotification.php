@@ -22,11 +22,6 @@ use Notify\Message\Actor\Actor;
  */
 class TestNotification extends AbstractNotification
 {
-    public function getName()
-    {
-        return 'Test';
-    }
-
     public function createEmailMessage($channel, NotificationRecipientInterface $recipient)
     {
         return new EmailMessage(

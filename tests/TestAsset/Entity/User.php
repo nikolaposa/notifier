@@ -81,6 +81,6 @@ class User implements NotificationRecipientInterface
 
     public function onNotified(NotificationInterface $notification, $channel)
     {
-        $this->notified[$notification->getName()][$channel] = true;
+        $this->notified[get_class($notification)][$channel] = true;
     }
 }

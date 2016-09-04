@@ -32,11 +32,6 @@ class NotificationTest extends PHPUnit_Framework_TestCase
         $this->notification = new TestNotification();
     }
 
-    public function testGettingName()
-    {
-        $this->assertEquals('Test', $this->notification->getName());
-    }
-
     public function testGettingSupportedChannels()
     {
         $supportedChannels = $this->notification->getSupportedChannels();

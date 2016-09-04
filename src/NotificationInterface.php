@@ -19,11 +19,6 @@ use Notify\Message\MessageInterface;
 interface NotificationInterface
 {
     /**
-     * @return string
-     */
-    public function getName();
-
-    /**
      * @return array
      */
     public function getSupportedChannels();

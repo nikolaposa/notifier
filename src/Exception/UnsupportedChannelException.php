@@ -27,8 +27,8 @@ class UnsupportedChannelException extends RuntimeException implements ExceptionI
     public static function forNotificationAndChannel(NotificationInterface $notification, $channel)
     {
         return new self(sprintf(
-            'Notification "%s" cannot be sent through "%s" channel',
-            $notification->getName(),
+            '"%s" notification cannot be sent through "%s" channel',
+            get_class($notification),
             $channel
         ));
     }
