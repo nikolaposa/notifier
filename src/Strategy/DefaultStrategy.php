@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -9,18 +9,20 @@
  * located at the package root folder.
  */
 
-namespace Notify\Exception;
+namespace Notify\Strategy;
 
-use LogicException;
 use Notify\NotificationInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class NotificationStrategyNotSuppliedException extends LogicException implements ExceptionInterface
+final class DefaultStrategy extends AbstractSendStrategy
 {
-    public static function forNotification(NotificationInterface $notification)
+    /**
+     * {@inheritdoc}
+     */
+    public function notify(array $notificationReceivers, NotificationInterface $notification)
     {
-        return new self(sprintf('Strategy for notification "%s" was not supplied', get_class($notification)));
+        return $this->notifiyIndividually($notificationReceivers, $notification);
     }
 }

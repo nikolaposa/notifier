@@ -11,7 +11,7 @@
 
 namespace Notify;
 
-use Notify\Strategy\StrategyInterface;
+use Notify\Message\MessageInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -19,18 +19,22 @@ use Notify\Strategy\StrategyInterface;
 interface NotificationInterface
 {
     /**
-     * @return string
-     */
-    public function getName();
-
-    /**
      * @return array
      */
-    public function getMessages();
+    public function getSupportedChannels();
 
     /**
-     * @param StrategyInterface $strategy
-     * @return void
+     * @param string $channel
+     *
+     * @return bool
      */
-    public function __invoke(StrategyInterface $strategy = null);
+    public function isChannelSupported($channel);
+
+    /**
+     * @param string $channel
+     * @param NotificationRecipientInterface $recipient
+     *
+     * @return MessageInterface
+     */
+    public function getMessage($channel, NotificationRecipientInterface $recipient);
 }

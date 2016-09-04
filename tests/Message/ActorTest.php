@@ -12,7 +12,7 @@
 namespace Notify\Tests\Message;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Contact\GenericContact;
+use Notify\Contact\EmailContact;
 use Notify\Message\Actor\Actor;
 
 /**
@@ -22,31 +22,31 @@ class ActorTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatingActor()
     {
-        $actor = new Actor(new GenericContact('test'), 'Test');
+        $actor = new Actor(new EmailContact('test@example.com'), 'Test');
 
-        $this->assertEquals('test', $actor->getContact()->getValue());
+        $this->assertEquals('test@example.com', $actor->getContact()->getValue());
         $this->assertEquals('Test', $actor->getName());
     }
 
     public function testNoActorNameByDefault()
     {
-        $actor = new Actor(new GenericContact('test'));
+        $actor = new Actor(new EmailContact('test@example.com'));
 
-        $this->assertEquals('test', $actor->getContact()->getValue());
+        $this->assertEquals('test@example.com', $actor->getContact()->getValue());
         $this->assertNull($actor->getName());
     }
 
     public function testActorToStringConversion()
     {
-        $recipient = new Actor(new GenericContact('test'), 'Test');
+        $recipient = new Actor(new EmailContact('test@example.com'), 'Test');
 
-        $this->assertEquals('Test <test>', (string) $recipient);
+        $this->assertEquals('Test <test@example.com>', (string) $recipient);
     }
 
     public function testActorWithNoNameStringConversion()
     {
-        $recipient = new Actor(new GenericContact('test'));
+        $recipient = new Actor(new EmailContact('test@example.com'));
 
-        $this->assertEquals('test', (string) $recipient);
+        $this->assertEquals('test@example.com', (string) $recipient);
     }
 }

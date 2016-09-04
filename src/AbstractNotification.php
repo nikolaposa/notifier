@@ -11,8 +11,9 @@
 
 namespace Notify;
 
-use Notify\Strategy\StrategyInterface;
-use Notify\Exception\NotificationStrategyNotSuppliedException;
+use Notify\Exception\UnsupportedChannelException;
+use Notify\Message\Actor\Recipients;
+use Notify\Message\Actor\Actor;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -20,33 +21,82 @@ use Notify\Exception\NotificationStrategyNotSuppliedException;
 abstract class AbstractNotification implements NotificationInterface
 {
     /**
-     * @var StrategyInterface
+     * @var array
      */
-    private static $defaultStrategy = null;
+    private $messageFactories = null;
 
     /**
-     * @param StrategyInterface $defaultStrategy
+     * {@inheritdoc}
      */
-    public static function setDefaultStrategy(StrategyInterface $defaultStrategy)
+    public function getSupportedChannels()
     {
-        self::$defaultStrategy = $defaultStrategy;
+        return $this->getMessageFactoryNames();
     }
 
-    public static function resetDefaultStrategy()
+    /**
+     * {@inheritdoc}
+     */
+    public function isChannelSupported($channel)
     {
-        self::$defaultStrategy = null;
-    }
-
-    public function __invoke(StrategyInterface $strategy = null)
-    {
-        if (null === $strategy) {
-            if (null === self::$defaultStrategy) {
-                throw NotificationStrategyNotSuppliedException::forNotification($this);
-            }
-
-            $strategy = self::$defaultStrategy;
+        try {
+            $this->getMessageFactory($channel);
+        } catch (UnsupportedChannelException $ex) {
+            return false;
         }
 
-        $strategy->handle($this);
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessage($channel, NotificationRecipientInterface $recipient)
+    {
+        $messageFactory = $this->getMessageFactory($channel);
+
+        return $this->$messageFactory($channel, $recipient);
+    }
+
+    final protected function getMessageFactoryNames()
+    {
+        $this->initMessageFactories();
+
+        return array_keys($this->messageFactories);
+    }
+
+    final protected function getMessageFactory($channel)
+    {
+        $this->initMessageFactories();
+
+        if (!isset($this->messageFactories[$channel])) {
+            throw UnsupportedChannelException::forNotificationAndChannel($this, $channel);
+        }
+
+        return $this->messageFactories[$channel];
+    }
+
+    final protected function initMessageFactories()
+    {
+        if (!is_null($this->messageFactories)) {
+            return;
+        }
+
+        $this->messageFactories = [];
+
+        foreach (get_class_methods($this) as $methodName) {
+            $matches = [];
+
+            if (preg_match('/^create(?P<channel>.+)Message$/', $methodName, $matches)) {
+                $channel = $matches['channel'];
+                $this->messageFactories[$channel] = $methodName;
+            }
+        }
+    }
+
+    protected function createRecipients(NotificationRecipientInterface $recipient, $channel)
+    {
+        return new Recipients([
+            new Actor($recipient->getNotifyContact($channel, $this)),
+        ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -9,21 +9,20 @@
  * located at the package root folder.
  */
 
-namespace Notify\Strategy\Exception;
+namespace Notify\Exception;
 
 use RuntimeException;
-use Notify\Message\MessageInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class NotHandlingMessageException extends RuntimeException implements ExceptionInterface
+class UnhandledChannelException extends RuntimeException implements ExceptionInterface
 {
-    public static function fromMessage(MessageInterface $message)
+    public static function forChannel($channel)
     {
         return new self(sprintf(
-            'Send strategy does not handle messages of type "%s"',
-            get_class($message))
-        );
+            'No message sender has been set for the "%s" channel',
+            $channel
+        ));
     }
 }

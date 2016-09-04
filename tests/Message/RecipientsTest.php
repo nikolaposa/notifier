@@ -15,9 +15,7 @@ use PHPUnit_Framework_TestCase;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Message\Actor\ActorInterface;
-use Notify\Message\Actor\ProvidesRecipientInterface;
-use Notify\Contact\GenericContact;
-use Notify\Message\EmailMessage;
+use Notify\Contact\EmailContact;
 use Notify\Exception\InvalidArgumentException;
 
 /**
@@ -25,16 +23,6 @@ use Notify\Exception\InvalidArgumentException;
  */
 class RecipientsTest extends PHPUnit_Framework_TestCase
 {
-    private function mockRecipientProvider($recipient = null)
-    {
-        $provider = $this->getMock(ProvidesRecipientInterface::class);
-        $provider->expects($this->once())
-            ->method('getMessageRecipient')
-            ->will($this->returnValue($recipient));
-
-        return $provider;
-    }
-
     public function testCreatingEmptyRecipients()
     {
         $recipients = new Recipients([]);
@@ -52,9 +40,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testCountingRecipients()
     {
         $recipients = new Recipients([
-            new Actor(new GenericContact('test1')),
-            new Actor(new GenericContact('test2')),
-            new Actor(new GenericContact('test3')),
+            new Actor(new EmailContact('test1@example.com')),
+            new Actor(new EmailContact('test2@example.com')),
+            new Actor(new EmailContact('test3@example.com')),
         ]);
 
         $this->assertCount(3, $recipients);
@@ -63,9 +51,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testTraversingRecipients()
     {
         $recipients = new Recipients([
-            new Actor(new GenericContact('test1')),
-            new Actor(new GenericContact('test2')),
-            new Actor(new GenericContact('test3')),
+            new Actor(new EmailContact('test1@example.com')),
+            new Actor(new EmailContact('test2@example.com')),
+            new Actor(new EmailContact('test3@example.com')),
         ]);
 
         foreach ($recipients as $recipient) {
@@ -76,9 +64,9 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testRecipientsToArrayConversion()
     {
         $recipients = new Recipients([
-            new Actor(new GenericContact('test1')),
-            new Actor(new GenericContact('test2')),
-            new Actor(new GenericContact('test3')),
+            new Actor(new EmailContact('test1@example.com')),
+            new Actor(new EmailContact('test2@example.com')),
+            new Actor(new EmailContact('test3@example.com')),
         ]);
 
         $this->assertInternalType('array', $recipients->toArray());
@@ -87,38 +75,14 @@ class RecipientsTest extends PHPUnit_Framework_TestCase
     public function testJsonSerializeRecipients()
     {
         $recipients = new Recipients([
-            new Actor(new GenericContact('test1')),
-            new Actor(new GenericContact('test2')),
-            new Actor(new GenericContact('test3')),
+            new Actor(new EmailContact('test1@example.com')),
+            new Actor(new EmailContact('test2@example.com')),
+            new Actor(new EmailContact('test3@example.com')),
         ]);
 
-        $this->assertEquals(['test1', 'test2', 'test3'], $recipients->jsonSerialize());
-    }
-
-    public function testCreatingRecipientsFromRecipientProviders()
-    {
-        $recipients = Recipients::fromRecipientProviders([
-            $this->mockRecipientProvider(new Actor(new GenericContact('test1'))),
-        ], EmailMessage::class);
-
-        $this->assertCount(1, $recipients);
-    }
-
-    public function testCreatingRecipientsFromRecipientProvidersFailsInCaseOfInvalidProvider()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        Recipients::fromRecipientProviders([
-            'invalid',
-        ], EmailMessage::class);
-    }
-
-    public function testCreatingRecipientsFromRecipientProvidersSkippedIfRecipientNotResolved()
-    {
-        $recipients = Recipients::fromRecipientProviders([
-            $this->mockRecipientProvider(null),
-        ], EmailMessage::class);
-
-        $this->assertTrue($recipients->isEmpty());
+        $this->assertEquals(
+            ['test1@example.com', 'test2@example.com', 'test3@example.com'],
+            $recipients->jsonSerialize()
+        );
     }
 }

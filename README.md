@@ -5,8 +5,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/nikolaposa/notify/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nikolaposa/notify/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/nikolaposa/notify/v/stable)](https://packagist.org/packages/nikolaposa/notify)
 
-PHP library which provides abstractions for modeling and implementing notifications functionality in
-some application.
+PHP library which provides abstractions for creating notifications system in some application.
 
 ## Installation
 
@@ -19,97 +18,96 @@ composer require nikolaposa/notify
 
 ## Theory of operation
 
-The essence of using this librarly is creation of notifications, whose task is to construct and
-provide messages (for example email, SMS, push) and send them using a strategy.
+Notifications are informational messages that notify users about something that happened in your
+application. For example, in case of some employee scheduling application, you might need to send
+a "Shift has been created" notification.
 
-Notifications are defined through the `NotificationInterface`. Typically, concrete notifications
-would inherit `AbstractNotification` class, which provides some common basis.
+Notifications can be sent via different delivery channels, for example email, SMS, mobile push
+notifications, and similar.
 
-### Messages
+### Creating notifications
 
-`MessageInterface` implementations are generic objects containing information about a message that
-should be sent by the appropriate sender. At least, each message must provide recipients list
-and content that is to be sent. Recipients list is a collection of `ActorInterface` instances,
-each represented by name and a contact information, encapsulated in the `ContactInterface`
-implementation. Content is essentially a string, but it can be supplied to a message in form of a
-`ContentProviderInterface` implementation.
+Notifications are represented by the `NotificationInterface`. Each notification should provide its
+name, list of supported channels, as well as message object for some channel when it is being sent.
 
-Messages are sent using message `MessageSenderInterface` implementations.
+There's a `AbstractNotification` class, which provides some convenient basis to facilitate the
+creation of concrete implementations.
 
-Out of the box, Notify provides email, SMS and push message types, as well as their related message
-senders.
+### Channels / Messages
 
-### Strategies
+Out of the box, Notify provides sending notifications in form of email, SMS and mobile push messages.
 
-Strategies are `StrategyInterface` implementations, responsible for handling a notification, namely
-its messages. `SendStrategy` is a concrete, default Strategy implementation that sends notification
-messages using appropriate senders.
+`MessageInterface` implementations are objects that represent actual message to be sent over some
+channel and they are modeled in accordance with the type of a channel. Examples are `EmailMessage`,
+`SMSMessage`, etc. Typically, every message provides list of recipients and content that is to be
+sent. Messages are sent using `MessageSenderInterface` implementations.
+
+### Notify Strategies
+
+Component that how Notification should be handled are strategies. `DefaultStrategy` immediately sends
+notification messages using appropriate message senders.
 
 This concept allows defining custom handling strategies, for example some that will put notification
-messages into a background job.
+into a queue, in order to send it in a background job.
 
-## Example
+### Notification recipients
 
+In order to send a Notification using a strategy, recipients must also be provided. Recipients are
+defined using the `NotificationRecipientInterface` and it will typically be implemented by a class
+that represents user in your application.
+
+## Examples
+
+**Sample notification**
 ```php
 <?php
 
+namespace App\Notification;
+
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
-use Notify\Message\SMSMessage;
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Actor;
-use Notify\Contact\EmailContact;
-use Notify\Contact\PhoneContact;
-use Notify\Message\Options\Options;
-use Notify\Strategy\SendStrategy;
-use Notify\Message\Sender\NativeMailer;
-use Notify\Message\Sender\TwilioSMS;
+use App\Entity\Post;
+use App\Entity\Comment;
 
-final class SampleNotification extends AbstractNotification
+final class NewCommentNotification extends AbstractNotification
 {
-    public function getName()
+    private $post;
+
+    private $comment;
+
+    public function __construct(Post $post, Comment $comment)
     {
-        return 'Sample';
+        $this->post = $post;
+        $this->comment = $comment;
     }
 
-    public function getMessages()
+    public function createEmailMessage($channel, NotificationRecipientInterface $recipient)
     {
-        return [
-            new EmailMessage(
-                new Recipients([
-                    new Actor(new EmailContact('john@example.com'), 'John Doe'),
-                ]),
-                'Notification exercise',
-                'Some <strong>HTML</strong> notification content',
-                null,
-                new Options(['content_type' => 'text/html'])
-            ),
-            new SMSMessage(
-                new Recipients([
-                    new Actor(new PhoneContact('+12222222222'))
-                ]),
-                'test test test',
-                new Actor(new PhoneContact('+11111111111'))
-            )
-        ];
+        return new EmailMessage(
+            $this->createRecipients($recipient, $channel),
+            'New comment',
+            sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
+        );
     }
 }
-
-$defaultStrategy = new SendStrategy([
-    EmailMessage::class => new NativeMailer(),
-    SMSMessage::class => new TwilioSMS('token', 'id'),
-]);
-
-//set default strategy so that it do not have to be passed
-//with each and every notification __invoke() call.
-AbstractNotification::setDefaultStrategy($defaultStrategy);
-
-$notification = new SampleNotification();
-$notification();
-
 ```
 
-See [more examples](https://github.com/nikolaposa/notify/tree/master/examples).
+**Sending notifications**
+
+```php
+use Notify\Strategy\DefaultStrategy;
+use Notify\Strategy\ChannelHandler;
+use Notify\Message\Sender\NativeMailer;
+
+$newCommentNotification = new NewCommentNotification($post, $comment);
+
+$moderators = $this->getUserRepository()->getModerators();
+
+$notifyStrategy = new DefaultStrategy([
+    new ChannelHandler('Email', new NativeMailer()),
+]);
+$notifyStrategy->notify($moderators, $newCommentNotification);
+```
 
 ## Author
 

@@ -19,7 +19,10 @@ use Notify\NotificationInterface;
 interface StrategyInterface
 {
     /**
+     * @param array $notificationReceivers
      * @param NotificationInterface $notification
+     *
+     * @return void
      */
-    public function handle(NotificationInterface $notification);
+    public function notify(array $notificationReceivers, NotificationInterface $notification);
 }

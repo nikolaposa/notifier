@@ -12,82 +12,48 @@
 namespace Notify\Tests\Notification;
 
 use PHPUnit_Framework_TestCase;
-use Notify\GenericNotification;
-use Notify\Tests\TestAsset\Message\DummyMessage;
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Actor;
-use Notify\Contact\GenericContact;
-use Notify\Tests\TestAsset\Strategy\TestStrategy;
-use Notify\Message\MessageInterface;
-use Notify\Exception\NotificationStrategyNotSuppliedException;
-use Notify\AbstractNotification;
+use Notify\Tests\TestAsset\Notification\TestNotification;
+use Notify\Tests\TestAsset\Entity\User;
+use Notify\Contact\Contacts;
+use Notify\Contact\EmailContact;
+use Notify\Message\EmailMessage;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
 class NotificationTest extends PHPUnit_Framework_TestCase
 {
-    private $notification;
+    protected $notification;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->notification = new GenericNotification([
-            new DummyMessage(
-                new Recipients([
-                    new Actor(new GenericContact('test'))
-                ]),
-                'test1'
-            ),
-        ]);
+        $this->notification = new TestNotification();
     }
 
-    public function testGettingName()
+    public function testGettingSupportedChannels()
     {
-        $this->assertEquals('Generic', $this->notification->getName());
+        $supportedChannels = $this->notification->getSupportedChannels();
+
+        $this->assertEquals(['Email'], $supportedChannels);
     }
 
-    public function testGettingMessages()
+    public function testCheckingSupportedChannels()
     {
-        $this->assertNotEmpty($this->notification->getMessages());
+        $this->assertTrue($this->notification->isChannelSupported('Email'));
+        $this->assertFalse($this->notification->isChannelSupported('Foobar'));
     }
 
-    public function testMessagesHandledByStrategy()
+    public function testCreatingMessage()
     {
-        $strategy = new TestStrategy();
+        $emailMessage = $this->notification->getMessage(
+            'Email',
+            new User(new Contacts([
+                new EmailContact('test@example.com')
+            ]))
+        );
 
-        $notification = $this->notification;
-        $notification($strategy);
-
-        $messages = $strategy->getMessages();
-        $this->assertNotEmpty($messages);
-        $this->assertInstanceOf(MessageInterface::class, current($messages));
-        $this->assertSame($notification, $strategy->getNotification());
-    }
-
-    public function testExceptionIsRaisedIfStrategyNotSupplied()
-    {
-        $this->expectException(NotificationStrategyNotSuppliedException::class);
-        $this->expectExceptionMessage('Strategy for notification "' . GenericNotification::class . '" was not supplied');
-
-        $notification = $this->notification;
-        $notification();
-    }
-
-    public function testMessagesHandledByDefaultStrategy()
-    {
-        $strategy = new TestStrategy();
-        AbstractNotification::setDefaultStrategy($strategy);
-
-        $notification = $this->notification;
-        $notification();
-
-        $messages = $strategy->getMessages();
-        $this->assertNotEmpty($messages);
-        $this->assertInstanceOf(MessageInterface::class, current($messages));
-        $this->assertSame($notification, $strategy->getNotification());
-
-        AbstractNotification::resetDefaultStrategy();
+        $this->assertInstanceOf(EmailMessage::class, $emailMessage);
     }
 }
