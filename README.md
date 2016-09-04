@@ -30,8 +30,11 @@ notifications, and similar.
 Notifications are represented by the `NotificationInterface`. Each notification should provide its
 name, list of supported channels, as well as message object for some channel when it is being sent.
 
-There's a `AbstractNotification` class, which provides some convenient basis to facilitate the
-creation of concrete implementations.
+`AbstractNotification` facilitates notifications creation in terms of implementing
+`getSupportedChannels()` and `getMessage()` methods. In turn, you need to define message factory
+methods named in accordance with a pre-defined template, for example `createEmailMessage`, whereas
+`Email` is the name of a channel, which is dynamically reflected as a channel that it is supported
+by the particular notification.
 
 ### Channels / Messages
 
@@ -59,6 +62,7 @@ that represents user in your application.
 ## Examples
 
 **Sample notification**
+
 ```php
 <?php
 
@@ -91,12 +95,6 @@ final class NewCommentNotification extends AbstractNotification
     }
 }
 ```
-
-`AbstractNotification` facilitates notifications creation in terms of implementing
-`getSupportedChannels()` and `getMessage` methods. In turn, you need to define message factory
-methods named in accordance with a pre-defined template, for example `createEmailMessage`, whereas
-`Email` is the name of a channel, which is dynamically reflected as a channel that it is supported
-by this particular notification.
 
 **Sending notifications**
 
