@@ -36,30 +36,24 @@ abstract class AbstractSendStrategy implements StrategyInterface
     }
 
     /**
-     * @param array $notificationReceivers
+     * @param array $notificationRecipients
      * @param NotificationInterface $notification
      *
      * @return void
      */
-    protected function notifiyIndividually(array $notificationReceivers, NotificationInterface $notification)
+    protected function notifyIndividually(array $notificationRecipients, NotificationInterface $notification)
     {
-        foreach ($notificationReceivers as $notificationReceiver) {
-            /* @var $notificationReceiver NotificationRecipientInterface */
+        foreach ($notificationRecipients as $notificationRecipient) {
+            /* @var $notificationRecipient NotificationRecipientInterface */
 
             foreach ($notification->getSupportedChannels() as $channel) {
                 $channelHandler = $this->getChannelHandler($channel);
 
-                if (!$notificationReceiver->acceptsNotification($notification, $channel)) {
+                if (!$notificationRecipient->acceptsNotification($notification, $channel)) {
                     continue;
                 }
 
-                $messageSender = $channelHandler->getMessageSender();
-
-                $message = $notification->getMessage($channel, $notificationReceiver);
-
-                $this->sendMessage($messageSender, $message);
-
-                $notificationReceiver->onNotified($notification, $channel);
+                $this->sendNotificationMessage($notificationRecipient, $notification, $channelHandler);
             }
         }
     }
@@ -78,6 +72,21 @@ abstract class AbstractSendStrategy implements StrategyInterface
         }
 
         return $this->channelHandlers[$channel];
+    }
+
+    final protected function sendNotificationMessage(
+        NotificationRecipientInterface $notificationRecipient,
+        NotificationInterface $notification,
+        ChannelHandler $channelHandler
+    ) {
+        $channel = $channelHandler->getChannel();
+        $messageSender = $channelHandler->getMessageSender();
+
+        $message = $notification->getMessage($channel, $notificationRecipient);
+
+        $this->sendMessage($messageSender, $message);
+
+        $notificationRecipient->onNotified($notification, $channel);
     }
 
     /**

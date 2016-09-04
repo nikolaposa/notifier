@@ -21,8 +21,8 @@ final class DefaultStrategy extends AbstractSendStrategy
     /**
      * {@inheritdoc}
      */
-    public function notify(array $notificationReceivers, NotificationInterface $notification)
+    public function notify(array $notificationRecipients, NotificationInterface $notification)
     {
-        return $this->notifiyIndividually($notificationReceivers, $notification);
+        return $this->notifyIndividually($notificationRecipients, $notification);
     }
 }
