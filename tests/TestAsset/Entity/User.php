@@ -11,7 +11,7 @@
 
 namespace Notify\Tests\TestAsset\Entity;
 
-use Notify\NotificationReceiverInterface;
+use Notify\NotificationRecipientInterface;
 use Notify\Contact\Contacts;
 use Notify\NotificationInterface;
 use Notify\Contact\EmailContact;
@@ -21,7 +21,7 @@ use Notify\Contact\MobileDeviceContact;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class User implements NotificationReceiverInterface
+class User implements NotificationRecipientInterface
 {
     /**
      * @var Contacts
@@ -59,7 +59,10 @@ class User implements NotificationReceiverInterface
     public function getNotifyContact($channel, NotificationInterface $notification)
     {
         if (!isset(self::$channelContactTypeMap[$channel])) {
-            //@todo throw
+            throw new \RuntimeException(sprintf(
+                'User does not accept notifications through %s channel',
+                $channel
+            ));
         }
 
         $contactType = self::$channelContactTypeMap[$channel];
@@ -67,7 +70,10 @@ class User implements NotificationReceiverInterface
         $contact = $this->contacts->getOne($contactType);
 
         if (false === $contact) {
-            //@todo throw
+            throw new \RuntimeException(sprintf(
+                'User does not accept notifications through %s channel',
+                $channel
+            ));
         }
 
         return $contact;

@@ -12,6 +12,8 @@
 namespace Notify;
 
 use Notify\Exception\UnsupportedChannelException;
+use Notify\Message\Actor\Recipients;
+use Notify\Message\Actor\Actor;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -48,11 +50,11 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * {@inheritdoc}
      */
-    public function getMessage($channel, NotificationReceiverInterface $receiver)
+    public function getMessage($channel, NotificationRecipientInterface $recipient)
     {
         $messageFactory = $this->getMessageFactory($channel);
 
-        return $this->$messageFactory($channel, $receiver);
+        return $this->$messageFactory($channel, $recipient);
     }
 
     final protected function getMessageFactoryNames()
@@ -89,5 +91,12 @@ abstract class AbstractNotification implements NotificationInterface
                 $this->messageFactories[$channel] = $methodName;
             }
         }
+    }
+
+    protected function createRecipients(NotificationRecipientInterface $recipient, $channel)
+    {
+        return new Recipients([
+            new Actor($recipient->getNotifyContact($channel, $this)),
+        ]);
     }
 }

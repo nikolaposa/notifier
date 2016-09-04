@@ -11,7 +11,7 @@
 
 namespace Notify\Example;
 
-use Notify\NotificationReceiverInterface;
+use Notify\NotificationRecipientInterface;
 use Notify\Contact\EmailContact;
 use Notify\Contact\PhoneContact;
 use Notify\NotificationInterface;
@@ -26,7 +26,7 @@ use Notify\Message\Sender\TestMessageSender;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-final class User implements NotificationReceiverInterface
+final class User implements NotificationRecipientInterface
 {
     private $username;
 
@@ -204,23 +204,19 @@ final class NewCommentNotification extends AbstractNotification
         return 'New comment';
     }
 
-    public function createEmailMessage($channel, NotificationReceiverInterface $receiver)
+    public function createEmailMessage($channel, NotificationRecipientInterface $recipient)
     {
         return new EmailMessage(
-            new Recipients([
-                new Actor($receiver->getNotifyContact($channel, $this)),
-            ]),
+            $this->createRecipients($recipient, $channel),
             'New comment',
             sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
         );
     }
 
-    public function createSmsMessage($channel, NotificationReceiverInterface $receiver)
+    public function createSmsMessage($channel, NotificationRecipientInterface $recipient)
     {
         return new SMSMessage(
-            new Recipients([
-                new Actor($receiver->getNotifyContact($channel, $this)),
-            ]),
+            $this->createRecipients($recipient, $channel),
             sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
         );
     }

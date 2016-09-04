@@ -16,7 +16,7 @@ use Notify\Contact\ContactInterface;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface NotificationReceiverInterface
+interface NotificationRecipientInterface
 {
     /**
      * @param NotificationInterface $notification

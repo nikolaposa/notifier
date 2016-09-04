@@ -12,7 +12,7 @@
 namespace Notify\Strategy;
 
 use Notify\NotificationInterface;
-use Notify\NotificationReceiverInterface;
+use Notify\NotificationRecipientInterface;
 use Notify\Exception\UnhandledChannelException;
 use Notify\Message\Sender\MessageSenderInterface;
 use Notify\Message\MessageInterface;
@@ -44,7 +44,7 @@ abstract class AbstractSendStrategy implements StrategyInterface
     protected function notifiyIndividually(array $notificationReceivers, NotificationInterface $notification)
     {
         foreach ($notificationReceivers as $notificationReceiver) {
-            /* @var $notificationReceiver NotificationReceiverInterface */
+            /* @var $notificationReceiver NotificationRecipientInterface */
 
             foreach ($notification->getSupportedChannels() as $channel) {
                 $channelHandler = $this->getChannelHandler($channel);

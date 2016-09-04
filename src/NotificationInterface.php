@@ -37,9 +37,9 @@ interface NotificationInterface
 
     /**
      * @param string $channel
-     * @param NotificationReceiverInterface $receiver
+     * @param NotificationRecipientInterface $recipient
      *
      * @return MessageInterface
      */
-    public function getMessage($channel, NotificationReceiverInterface $receiver);
+    public function getMessage($channel, NotificationRecipientInterface $recipient);
 }

@@ -12,7 +12,7 @@
 namespace Notify\Tests\TestAsset\Notification;
 
 use Notify\AbstractNotification;
-use Notify\NotificationReceiverInterface;
+use Notify\NotificationRecipientInterface;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\Recipients;
 use Notify\Message\Actor\Actor;
@@ -27,11 +27,11 @@ class TestNotification extends AbstractNotification
         return 'Test';
     }
 
-    public function createEmailMessage($channel, NotificationReceiverInterface $receiver)
+    public function createEmailMessage($channel, NotificationRecipientInterface $recipient)
     {
         return new EmailMessage(
             new Recipients([
-                new Actor($receiver->getNotifyContact($channel, $this)),
+                new Actor($recipient->getNotifyContact($channel, $this)),
             ]),
             'Test notification',
             'test notification'
