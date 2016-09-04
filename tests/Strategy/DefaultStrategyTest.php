@@ -19,6 +19,7 @@ use Notify\Tests\TestAsset\Notification\TestNotification;
 use Notify\Tests\TestAsset\Entity\User;
 use Notify\Contact\Contacts;
 use Notify\Contact\EmailContact;
+use Notify\Exception\UnhandledChannelException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -52,5 +53,20 @@ class DefaultStrategyTest extends PHPUnit_Framework_TestCase
         $sentMessages = $this->messageSender->getMessages();
 
         $this->assertNotEmpty($sentMessages);
+    }
+
+    public function testExceptionIsRaisedInCaseOfUnhandledChannel()
+    {
+        $this->expectException(UnhandledChannelException::class);
+
+        $strategy = new DefaultStrategy([
+            new ChannelHandler('Foobar', $this->messageSender),
+        ]);
+
+        $strategy->notify([
+            new User(new Contacts([
+                new EmailContact('test@example.com')
+            ])),
+        ], new TestNotification());
     }
 }
