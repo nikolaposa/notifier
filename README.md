@@ -5,7 +5,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/nikolaposa/notify/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nikolaposa/notify/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/nikolaposa/notify/v/stable)](https://packagist.org/packages/nikolaposa/notify)
 
-PHP library which provides abstractions for creating notifications system in some application.
+PHP library which facilitates creation of a notifications system in some application.
 
 ## Installation
 
