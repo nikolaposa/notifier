@@ -92,6 +92,12 @@ final class NewCommentNotification extends AbstractNotification
 }
 ```
 
+`AbstractNotification` facilitates notifications creation in terms of implementing
+`getSupportedChannels()` and `getMessage` methods. In turn, you need to define message factory
+methods named in accordance with a pre-defined template, for example `createEmailMessage`, whereas
+`Email` is the name of a channel, which is dynamically reflected as a channel that it is supported
+by this particular notification.
+
 **Sending notifications**
 
 ```php
