@@ -19,6 +19,7 @@ use Notify\Tests\TestAsset\Notification\TestNotification;
 use Notify\Tests\TestAsset\Entity\User;
 use Notify\Contact\Contacts;
 use Notify\Contact\EmailContact;
+use Notify\Contact\PhoneContact;
 use Notify\Exception\UnhandledChannelException;
 
 /**
@@ -68,5 +69,22 @@ class DefaultStrategyTest extends PHPUnit_Framework_TestCase
                 new EmailContact('test@example.com')
             ])),
         ], new TestNotification());
+    }
+
+    public function testNotificationMessageNotSentIfRecipientDoesntAcceptRelatedChannel()
+    {
+        $strategy = new DefaultStrategy([
+            new ChannelHandler('Email', $this->messageSender),
+        ]);
+
+        $strategy->notify([
+            new User(new Contacts([
+                new PhoneContact('123456')
+            ])),
+        ], new TestNotification());
+
+        $sentMessages = $this->messageSender->getMessages();
+
+        $this->assertEmpty($sentMessages);
     }
 }
