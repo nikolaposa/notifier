@@ -85,10 +85,10 @@ final class NewCommentNotification extends AbstractNotification
         $this->comment = $comment;
     }
 
-    public function createEmailMessage($channel, NotificationRecipientInterface $recipient)
+    public function createEmailMessage(NotificationRecipientInterface $recipient)
     {
         return new EmailMessage(
-            $this->createRecipients($recipient, $channel),
+            $this->createRecipients($recipient, 'Email'),
             'New comment',
             sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
         );

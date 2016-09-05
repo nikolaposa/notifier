@@ -20,10 +20,10 @@ use Notify\Message\EmailMessage;
  */
 class TestNotification extends AbstractNotification
 {
-    public function createEmailMessage($channel, NotificationRecipientInterface $recipient)
+    public function createEmailMessage(NotificationRecipientInterface $recipient)
     {
         return new EmailMessage(
-            $this->createRecipients($recipient, $channel),
+            $this->createRecipients($recipient, 'Email'),
             'Test notification',
             'test notification'
         );

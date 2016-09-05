@@ -18,8 +18,6 @@ use Notify\NotificationInterface;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\SMSMessage;
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Actor;
 use Notify\Strategy\DefaultStrategy;
 use Notify\Strategy\ChannelHandler;
 use Notify\Message\Sender\TestMessageSender;
@@ -199,19 +197,19 @@ final class NewCommentNotification extends AbstractNotification
         $this->comment = $comment;
     }
 
-    public function createEmailMessage($channel, NotificationRecipientInterface $recipient)
+    public function createEmailMessage(NotificationRecipientInterface $recipient)
     {
         return new EmailMessage(
-            $this->createRecipients($recipient, $channel),
+            $this->createRecipients($recipient, 'Email'),
             'New comment',
             sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
         );
     }
 
-    public function createSmsMessage($channel, NotificationRecipientInterface $recipient)
+    public function createSmsMessage(NotificationRecipientInterface $recipient)
     {
         return new SMSMessage(
-            $this->createRecipients($recipient, $channel),
+            $this->createRecipients($recipient, 'Sms'),
             sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
         );
     }
