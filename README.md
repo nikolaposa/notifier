@@ -47,8 +47,8 @@ sent. Messages are sent using `MessageSenderInterface` implementations.
 
 ### Notify Strategies
 
-Component that how Notification should be handled are strategies. `DefaultStrategy` immediately sends
-notification messages using appropriate message senders.
+Component that how Notification should be handled are strategies. `DefaultNotifyStrategy` immediately
+sends notification messages using appropriate message senders.
 
 This concept allows defining custom handling strategies, for example some that will put notification
 into a queue, in order to send it in a background job.
@@ -100,7 +100,7 @@ final class NewCommentNotification extends AbstractNotification
 **Sending notifications**
 
 ```php
-use Notify\Strategy\DefaultStrategy;
+use Notify\Strategy\DefaultNotifyStrategy;
 use Notify\Strategy\ChannelHandler;
 use Notify\Message\Sender\NativeMailer;
 
@@ -108,7 +108,7 @@ $newCommentNotification = new NewCommentNotification($post, $comment);
 
 $moderators = $this->getUserRepository()->getModerators();
 
-$notifyStrategy = new DefaultStrategy([
+$notifyStrategy = new DefaultNotifyStrategy([
     new ChannelHandler('Email', new NativeMailer()),
 ]);
 $notifyStrategy->notify($moderators, $newCommentNotification);

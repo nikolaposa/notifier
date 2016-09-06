@@ -20,7 +20,7 @@ use Notify\Message\MessageInterface;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-abstract class AbstractSendStrategy implements StrategyInterface
+abstract class AbstractSendStrategy implements NotifyStrategyInterface
 {
     /**
      * @var ChannelHandler[]

@@ -16,13 +16,13 @@ use Notify\NotificationInterface;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class DefaultStrategy extends AbstractSendStrategy
+interface NotifyStrategyInterface
 {
     /**
-     * {@inheritdoc}
+     * @param array $notificationRecipients
+     * @param NotificationInterface $notification
+     *
+     * @return void
      */
-    public function notify(array $notificationRecipients, NotificationInterface $notification)
-    {
-        return $this->notifyIndividually($notificationRecipients, $notification);
-    }
+    public function notify(array $notificationRecipients, NotificationInterface $notification);
 }

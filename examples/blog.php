@@ -19,7 +19,7 @@ use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\SMSMessage;
 use Notify\Message\Actor\Recipients;
-use Notify\Strategy\DefaultStrategy;
+use Notify\Strategy\DefaultNotifyStrategy;
 use Notify\Strategy\ChannelHandler;
 use Notify\Message\Sender\TestMessageSender;
 
@@ -224,7 +224,7 @@ $post->comment($comment);
 
 $defaultMessageSender = new TestMessageSender();
 
-$notifyStrategy = new DefaultStrategy([
+$notifyStrategy = new DefaultNotifyStrategy([
     new ChannelHandler('Email', $defaultMessageSender),
     new ChannelHandler('Sms', $defaultMessageSender),
 ]);

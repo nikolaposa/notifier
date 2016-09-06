@@ -12,7 +12,7 @@
 namespace Notify\Tests\Strategy;
 
 use PHPUnit_Framework_TestCase;
-use Notify\Strategy\DefaultStrategy;
+use Notify\Strategy\DefaultNotifyStrategy;
 use Notify\Strategy\ChannelHandler;
 use Notify\Message\Sender\TestMessageSender;
 use Notify\Tests\TestAsset\Notification\TestNotification;
@@ -25,7 +25,7 @@ use Notify\Exception\UnhandledChannelException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class DefaultStrategyTest extends PHPUnit_Framework_TestCase
+class DefaultNotifyStrategyTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var TestMessageSender
@@ -41,7 +41,7 @@ class DefaultStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSendingNotification()
     {
-        $strategy = new DefaultStrategy([
+        $strategy = new DefaultNotifyStrategy([
             new ChannelHandler('Email', $this->messageSender),
         ]);
 
@@ -60,7 +60,7 @@ class DefaultStrategyTest extends PHPUnit_Framework_TestCase
     {
         $this->expectException(UnhandledChannelException::class);
 
-        $strategy = new DefaultStrategy([
+        $strategy = new DefaultNotifyStrategy([
             new ChannelHandler('Foobar', $this->messageSender),
         ]);
 
@@ -73,7 +73,7 @@ class DefaultStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testNotificationMessageNotSentIfRecipientDoesntAcceptRelatedChannel()
     {
-        $strategy = new DefaultStrategy([
+        $strategy = new DefaultNotifyStrategy([
             new ChannelHandler('Email', $this->messageSender),
         ]);
 
