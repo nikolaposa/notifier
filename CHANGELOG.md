@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## 3.0.0 - 2016-09-06
 
 ### Backwards-incompatible changes
 - Channels concept for notifications and notify strategies
@@ -13,5 +13,3 @@ All notable changes to this project will be documented in this file.
 
 ## 2.2.x
 This release is abandoned, please consider upgrading to 3.x.
-
-[Unreleased]: https://github.com/nikolaposa/notify/compare/2.2.0...HEAD
