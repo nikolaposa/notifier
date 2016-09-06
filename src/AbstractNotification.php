@@ -54,7 +54,9 @@ abstract class AbstractNotification implements NotificationInterface
     {
         $messageFactory = $this->getMessageFactory($channel);
 
-        return $this->$messageFactory($recipient);
+        $messageRecipients = $this->createMessageRecipients($recipient, $channel);
+
+        return $this->$messageFactory($messageRecipients);
     }
 
     final protected function getMessageFactoryNames()
@@ -93,7 +95,7 @@ abstract class AbstractNotification implements NotificationInterface
         }
     }
 
-    protected function createRecipients(NotificationRecipientInterface $recipient, $channel)
+    protected function createMessageRecipients(NotificationRecipientInterface $recipient, $channel)
     {
         return new Recipients([
             new Actor($recipient->getNotifyContact($channel, $this)),

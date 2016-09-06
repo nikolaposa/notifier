@@ -69,9 +69,10 @@ that represents user in your application.
 namespace App\Notification;
 
 use Notify\AbstractNotification;
-use Notify\Message\EmailMessage;
 use App\Entity\Post;
 use App\Entity\Comment;
+use Notify\Message\EmailMessage;
+use Notify\Message\Actor\Recipients;
 
 final class NewCommentNotification extends AbstractNotification
 {
@@ -85,10 +86,10 @@ final class NewCommentNotification extends AbstractNotification
         $this->comment = $comment;
     }
 
-    public function createEmailMessage(NotificationRecipientInterface $recipient)
+    protected function createEmailMessage(Recipients $messageRecipients)
     {
         return new EmailMessage(
-            $this->createRecipients($recipient, 'Email'),
+            $messageRecipients,
             'New comment',
             sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
         );

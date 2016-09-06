@@ -12,18 +12,18 @@
 namespace Notify\Tests\TestAsset\Notification;
 
 use Notify\AbstractNotification;
-use Notify\NotificationRecipientInterface;
 use Notify\Message\EmailMessage;
+use Notify\Message\Actor\Recipients;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
 class TestNotification extends AbstractNotification
 {
-    public function createEmailMessage(NotificationRecipientInterface $recipient)
+    protected function createEmailMessage(Recipients $messageRecipients)
     {
         return new EmailMessage(
-            $this->createRecipients($recipient, 'Email'),
+            $messageRecipients,
             'Test notification',
             'test notification'
         );
