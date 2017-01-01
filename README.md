@@ -123,4 +123,4 @@ $notifyStrategy->notify($moderators, $newCommentNotification);
 
 ## Copyright and license
 
-Copyright 2016 Nikola Poša. Released under MIT License - see the `LICENSE` file for details.
+Copyright 2017 Nikola Poša. Released under MIT License - see the `LICENSE` file for details.
