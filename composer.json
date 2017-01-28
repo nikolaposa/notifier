@@ -3,6 +3,12 @@
     "description": "Abstractions for modeling and implementing application notifications functionality",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "notify",
+        "notification",
+        "email",
+        "sms"
+    ],
     "authors": [
         {
             "name": "Nikola Poša",
