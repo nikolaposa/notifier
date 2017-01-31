@@ -4,6 +4,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nikolaposa/notify/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nikolaposa/notify/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/nikolaposa/notify/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nikolaposa/notify/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/nikolaposa/notify/v/stable)](https://packagist.org/packages/nikolaposa/notify)
+[![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat-square)](https://github.com/php-pds/skeleton)
 
 PHP library which facilitates creation of a notifications system in some application.
 
