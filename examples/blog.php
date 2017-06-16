@@ -18,7 +18,6 @@ use Notify\Message\EmailMessage;
 use Notify\Message\SMSMessage;
 use Notify\Recipients;
 use Notify\Notifier;
-use Notify\Strategy\ChannelHandler;
 use Notify\Tests\TestAsset\Message\TestMessageSender;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -85,9 +84,9 @@ final class User implements RecipientInterface
     {
         switch ($channel) {
             case 'email':
-                return new $this->email;
+                return $this->email;
             case 'sms':
-                return new $this->phoneNumber;
+                return $this->phoneNumber;
             default:
                 throw new \RuntimeException(sprintf(
                     'User does not accept notifications through %s channel',
@@ -203,19 +202,23 @@ final class NewCommentNotification extends AbstractNotification
 
     protected function createEmailMessage(Recipients $messageRecipients)
     {
-        return new EmailMessage(
-            $messageRecipients,
-            'New comment',
-            sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
-        );
+        return [
+            new EmailMessage(
+                $messageRecipients,
+                'New comment',
+                sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
+            ),
+        ];
     }
 
     protected function createSmsMessage(Recipients $recipients)
     {
-        return new SMSMessage(
-            $recipients,
-            sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
-        );
+        return [
+            new SMSMessage(
+                $recipients,
+                sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
+            )
+        ];
     }
 }
 
@@ -228,8 +231,8 @@ $post->comment($comment);
 $defaultMessageSender = new TestMessageSender();
 
 $notifyStrategy = new Notifier([
-    new ChannelHandler('email', $defaultMessageSender),
-    new ChannelHandler('sms', $defaultMessageSender),
+    'email' => $defaultMessageSender,
+    'sms' => $defaultMessageSender,
 ]);
 
 $newCommentNotification = new NewCommentNotification($post, $comment);
