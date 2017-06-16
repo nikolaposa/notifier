@@ -1,10 +1,10 @@
 # Notify
 
-[![Build Status](https://travis-ci.org/nikolaposa/notify.svg?branch=master)](https://travis-ci.org/nikolaposa/notify)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nikolaposa/notify/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nikolaposa/notify/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/nikolaposa/notify/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nikolaposa/notify/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/nikolaposa/notify/v/stable)](https://packagist.org/packages/nikolaposa/notify)
-[![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg)](https://github.com/php-pds/skeleton)
+[![Build Status][ico-build]][link-build]
+[![Code Quality][ico-code-quality]][link-code-quality]
+[![Code Coverage][ico-code-coverage]][link-code-coverage]
+[![Latest Version][ico-version]][link-packagist]
+[![PDS Skeleton][ico-pds]][link-pds]
 
 PHP library which facilitates creation of a notifications system in some application.
 
@@ -109,3 +109,21 @@ $notifier->notify($moderators, $newCommentNotification);
 ## License
 
 Released under MIT License - see the [License File](LICENSE) for details.
+
+
+[ico-version]: https://img.shields.io/packagist/v/nikolaposa/notify.svg
+[ico-build]: https://travis-ci.org/nikolaposa/notify.svg?branch=master
+[ico-code-coverage]: https://img.shields.io/scrutinizer/coverage/g/nikolaposa/notify.svg
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/nikolaposa/notify.svg
+[ico-pds]: https://img.shields.io/badge/pds-skeleton-blue.svg
+
+[link-monolog]: https://github.com/Seldaek/monolog
+[link-container-interop]: https://github.com/container-interop/container-interop
+[link-examples]: examples
+[link-packagist]: https://packagist.org/packages/nikolaposa/notify
+[link-build]: https://travis-ci.org/nikolaposa/notify
+[link-code-coverage]: https://scrutinizer-ci.com/g/nikolaposa/notify/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/nikolaposa/notify
+[link-pds]: https://github.com/php-pds/skeleton
+[link-author]: https://github.com/nikolaposa
+[link-contributors]: ../../contributors
