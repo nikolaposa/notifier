@@ -11,29 +11,26 @@
 
 namespace Notify\Tests\Message;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Notify\Message\PushMessage;
-use Notify\Message\MessageInterface;
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Actor\Actor;
-use Notify\Contact\MobileDeviceContact;
-use Notify\Message\Options\Options;
+use Notify\Message\Options;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class PushMessageTest extends PHPUnit_Framework_TestCase
+class PushMessageTest extends TestCase
 {
     public function testCreatingPushWithRequiredArguments()
     {
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('Token1'))
+                new Actor('Token1')
             ]),
             'test test test'
         );
 
-        $this->assertInstanceOf(MessageInterface::class, $message);
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertInstanceOf(Options::class, $message->getOptions());
@@ -43,13 +40,12 @@ class PushMessageTest extends PHPUnit_Framework_TestCase
     {
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('Token1'))
+                new Actor('Token1')
             ]),
             'test test test',
             new Options(['sound' => 'example'])
         );
 
-        $this->assertInstanceOf(MessageInterface::class, $message);
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertInstanceOf(Options::class, $message->getOptions());

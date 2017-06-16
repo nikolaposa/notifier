@@ -11,18 +11,21 @@
 
 namespace Notify\Tests\Notification;
 
-use PHPUnit_Framework_TestCase;
+use Notify\Recipients;
+use Notify\NotificationInterface;
+use PHPUnit\Framework\TestCase;
 use Notify\Tests\TestAsset\Notification\TestNotification;
 use Notify\Tests\TestAsset\Entity\User;
-use Notify\Contact\Contacts;
-use Notify\Contact\EmailContact;
 use Notify\Message\EmailMessage;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class NotificationTest extends PHPUnit_Framework_TestCase
+class NotificationTest extends TestCase
 {
+    /**
+     * @var NotificationInterface
+     */
     protected $notification;
 
     protected function setUp()
@@ -36,23 +39,21 @@ class NotificationTest extends PHPUnit_Framework_TestCase
     {
         $supportedChannels = $this->notification->getSupportedChannels();
 
-        $this->assertEquals(['Email'], $supportedChannels);
-    }
-
-    public function testCheckingSupportedChannels()
-    {
-        $this->assertTrue($this->notification->isChannelSupported('Email'));
-        $this->assertFalse($this->notification->isChannelSupported('Foobar'));
+        $this->assertEquals(['email'], $supportedChannels);
     }
 
     public function testCreatingMessage()
     {
-        $emailMessage = $this->notification->getMessage(
-            'Email',
-            new User(new Contacts([
-                new EmailContact('test@example.com')
-            ]))
+        $emailMessages = $this->notification->getMessages(
+            'email',
+            new Recipients([
+                new User([
+                    'email' => 'test@example.com'
+                ])
+            ])
         );
+
+        $emailMessage = current($emailMessages);
 
         $this->assertInstanceOf(EmailMessage::class, $emailMessage);
     }

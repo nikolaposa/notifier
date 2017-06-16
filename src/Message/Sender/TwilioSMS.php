@@ -11,7 +11,6 @@
 
 namespace Notify\Message\Sender;
 
-use Notify\Message\MessageInterface;
 use Notify\Message\SMSMessage;
 use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
@@ -63,7 +62,7 @@ final class TwilioSMS implements MessageSenderInterface
     /**
      * {@inheritdoc}
      */
-    public function send(MessageInterface $message)
+    public function send($message)
     {
         $this->setMessage($message);
 
@@ -80,7 +79,7 @@ final class TwilioSMS implements MessageSenderInterface
         }
     }
 
-    private function setMessage(MessageInterface $message)
+    private function setMessage($message)
     {
         if (!$message instanceof SMSMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
@@ -96,14 +95,14 @@ final class TwilioSMS implements MessageSenderInterface
     private function buildPayload()
     {
         return [
-            'From' => $this->message->getSender()->getContact()->getValue(),
+            'From' => $this->message->getSender()->getContact(),
             'Body' => $this->message->getContent(),
         ];
     }
 
     private function addPayloadTo(array $payload, ActorInterface $recipient)
     {
-        $payload['To'] = $recipient->getContact()->getValue();
+        $payload['To'] = $recipient->getContact();
 
         return $payload;
     }

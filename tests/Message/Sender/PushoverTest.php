@@ -11,23 +11,22 @@
 
 namespace Notify\Tests\Message\Sender;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Notify\Message\Sender\Pushover;
 use GuzzleHttp\ClientInterface;
 use Notify\Message\PushMessage;
-use Notify\Contact\MobileDeviceContact;
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use GuzzleHttp\Psr7\Response;
-use Notify\Message\Options\Options;
+use Notify\Message\Options;
 use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class PushoverTest extends PHPUnit_Framework_TestCase
+class PushoverTest extends TestCase
 {
     private function getPushover(ClientInterface $httpClient = null)
     {
@@ -36,7 +35,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
     private function getHttpClientWithSuccessResponse(PushMessage $message)
     {
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
 
         $i = 0;
         foreach ($message->getRecipients() as $recipient) {
@@ -62,15 +61,15 @@ class PushoverTest extends PHPUnit_Framework_TestCase
                             return false;
                         }
 
-                        if ($options['form_params']['token'] != 'token') {
+                        if ($options['form_params']['token'] !== 'token') {
                             return false;
                         }
 
-                        if ($options['form_params']['user'] != $recipient->getContact()->getValue()) {
+                        if ($options['form_params']['user'] !== $recipient->getContact()) {
                             return false;
                         }
 
-                        if ($options['form_params']['message'] != $message->getContent()) {
+                        if ($options['form_params']['message'] !== $message->getContent()) {
                             return false;
                         }
 
@@ -85,7 +84,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
     private function getHttpClientWithErrorResponse()
     {
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->will($this->returnValue(new Response(403)));
@@ -97,7 +96,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
     {
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111'))
+                new Actor('11111111111')
             ]),
             'test test test'
         );
@@ -109,9 +108,9 @@ class PushoverTest extends PHPUnit_Framework_TestCase
     {
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111')),
-                new Actor(new MobileDeviceContact('22222222222')),
-                new Actor(new MobileDeviceContact('33333333333'))
+                new Actor('11111111111'),
+                new Actor('22222222222'),
+                new Actor('33333333333')
             ]),
             'test test test'
         );
@@ -123,7 +122,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
     {
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111'))
+                new Actor('11111111111')
             ]),
             'test test test',
             new Options([
@@ -132,15 +131,15 @@ class PushoverTest extends PHPUnit_Framework_TestCase
             ])
         );
 
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->with(
                 $this->equalTo('POST'),
                 $this->stringContains(Pushover::API_BASE_URL),
                 $this->callback(function ($options) {
-                    return $options['form_params']['title'] == 'test'
-                        && $options['form_params']['sound'] == 'example';
+                    return $options['form_params']['title'] === 'test'
+                        && $options['form_params']['sound'] === 'example';
                 })
             )
             ->will($this->returnValue(new Response(200)));
@@ -152,7 +151,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
     {
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111'))
+                new Actor('11111111111')
             ]),
             'test test test',
             new Options([
@@ -163,7 +162,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
             ])
         );
 
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->with(
@@ -171,7 +170,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
                 $this->stringContains(Pushover::API_BASE_URL),
                 $this->callback(function ($options) {
                     return isset($options['form_params']['device'])
-                        && $options['form_params']['device'] == 'iphone,nexus5';
+                        && $options['form_params']['device'] === 'iphone,nexus5';
                 })
             )
             ->will($this->returnValue(new Response(200)));
@@ -185,20 +184,20 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111'))
+                new Actor('11111111111')
             ]),
             $content
         );
 
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->with(
                 $this->equalTo('POST'),
                 $this->stringContains(Pushover::API_BASE_URL),
                 $this->callback(function ($options) use ($content) {
-                    return $options['form_params']['message'] != $content
-                        && strlen($options['form_params']['message']) == Pushover::MESSAGE_LIMIT;
+                    return $options['form_params']['message'] !== $content
+                        && strlen($options['form_params']['message']) === Pushover::MESSAGE_LIMIT;
                 })
             )
             ->will($this->returnValue(new Response(200)));
@@ -213,20 +212,20 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111'))
+                new Actor('11111111111')
             ]),
             $content,
             new Options(['title' => $title])
         );
 
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->with(
                 $this->equalTo('POST'),
                 $this->stringContains(Pushover::API_BASE_URL),
                 $this->callback(function ($options) {
-                    return strlen($options['form_params']['message'] . $options['form_params']['title']) == Pushover::MESSAGE_LIMIT;
+                    return strlen($options['form_params']['message'] . $options['form_params']['title']) === Pushover::MESSAGE_LIMIT;
                 })
             )
             ->will($this->returnValue(new Response(200)));
@@ -241,7 +240,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
         $message = new PushMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111'))
+                new Actor('11111111111')
             ]),
             'test test test'
         );
@@ -255,7 +254,7 @@ class PushoverTest extends PHPUnit_Framework_TestCase
 
         $message = new DummyMessage(
             new Recipients([
-                new Actor(new MobileDeviceContact('11111111111'))
+                new Actor('11111111111')
             ]),
             'test test test'
         );

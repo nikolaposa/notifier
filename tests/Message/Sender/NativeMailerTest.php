@@ -11,13 +11,12 @@
 
 namespace Notify\Tests\Message\Sender;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Notify\Message\Sender\NativeMailer;
 use Notify\Message\EmailMessage;
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Actor\Actor;
-use Notify\Contact\EmailContact;
-use Notify\Message\Options\Options;
+use Notify\Message\Options;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
@@ -25,7 +24,7 @@ use Notify\Message\Sender\Exception\RuntimeException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class NativeMailerTest extends PHPUnit_Framework_TestCase
+class NativeMailerTest extends TestCase
 {
     /**
      * @var array
@@ -60,8 +59,8 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Actor(new EmailContact('test1@example.com'), 'Test1'),
-                new Actor(new EmailContact('test2@example.com'), 'Test2'),
+                new Actor('test1@example.com', 'Test1'),
+                new Actor('test2@example.com', 'Test2'),
             ]),
             'Test',
             'test test test'
@@ -85,7 +84,7 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
 
         $message = new DummyMessage(
             new Recipients([
-                new Actor(new EmailContact('test1@example.com'))
+                new Actor('test1@example.com')
             ]),
             'test test test'
         );
@@ -97,8 +96,8 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Actor(new EmailContact('test1@example.com')),
-                new Actor(new EmailContact('test2@example.com')),
+                new Actor('test1@example.com'),
+                new Actor('test2@example.com'),
             ]),
             'Test',
             'test test test'
@@ -116,8 +115,8 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Actor(new EmailContact('test1@example.com')),
-                new Actor(new EmailContact('test2@example.com')),
+                new Actor('test1@example.com'),
+                new Actor('test2@example.com'),
             ]),
             'Test',
             'test test test',
@@ -139,11 +138,11 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
     {
         $message = new EmailMessage(
             new Recipients([
-                new Actor(new EmailContact('test1@example.com')),
+                new Actor('test1@example.com'),
             ]),
             'Test',
             'test test test',
-            new Actor(new EmailContact('john.doe@example.com'))
+            new Actor('john.doe@example.com')
         );
 
         $this->getMailer()->send($message);
@@ -160,8 +159,8 @@ class NativeMailerTest extends PHPUnit_Framework_TestCase
 
         $message = new EmailMessage(
             new Recipients([
-                new Actor(new EmailContact('test1@example.com')),
-                new Actor(new EmailContact('test2@example.com')),
+                new Actor('test1@example.com'),
+                new Actor('test2@example.com'),
             ]),
             'Test',
             'test test test'

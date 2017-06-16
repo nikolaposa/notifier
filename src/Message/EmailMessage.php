@@ -11,69 +11,71 @@
 
 namespace Notify\Message;
 
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Content\ContentProviderInterface;
+use Notify\Recipients;
 use Notify\Message\Actor\ActorInterface;
-use Notify\Message\Options\Options;
-use Notify\Message\Options\EmailOptions;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class EmailMessage extends AbstractMessage implements
-    HasSubjectInterface,
-    HasSenderInterface,
-    HasOptionsInterface
+class EmailMessage extends AbstractMessage
 {
-    use HasSenderTrait;
-    use HasOptionsTrait;
-
     /**
      * @var string
      */
     protected $subject;
 
     /**
+     * @var ActorInterface
+     */
+    protected $from;
+
+    /**
+     * @var Options
+     */
+    protected $options;
+
+    /**
      * @param Recipients $recipients
      * @param string $subject
-     * @param string|ContentProviderInterface $content
-     * @param ActorInterface $sender
+     * @param string $content
+     * @param ActorInterface $from
      * @param $options
      */
     public function __construct(
         Recipients $recipients,
         $subject,
         $content,
-        ActorInterface $sender = null,
-        $options = null
+        ActorInterface $from = null,
+        Options $options = null
     ) {
         parent::__construct($recipients, $content);
 
         $this->subject = $subject;
-        $this->sender = $sender;
-
-        $options = $this->handleDeprecatedOptions($options);
-
+        $this->from = $from;
         $this->options = $options;
-    }
-
-    private function handleDeprecatedOptions($options)
-    {
-        if (null !== $options && $options instanceof EmailOptions) {
-            $options = new Options([
-                'content_type' => $options->getContentType(),
-                'encoding' => $options->getEncoding(),
-                'headers' => $options->getHeaders(),
-                'parameters' => $options->getParameters(),
-                'html' => $options->getContentType() == 'text/html',
-            ]);
-        }
-
-        return $options;
     }
 
     public function getSubject()
     {
         return $this->subject;
+    }
+
+    public function getFrom()
+    {
+        return $this->from;
+    }
+
+    public function hasFrom()
+    {
+        return $this->from !== null;
+    }
+    
+    public function getOptions()
+    {
+        if (null === $this->options) {
+            $this->options = new Options([]);
+        }
+
+        return $this->options;
     }
 }

@@ -11,12 +11,11 @@
 
 namespace Notify\Tests\Message\Sender;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Notify\Message\Sender\TwilioSMS;
 use GuzzleHttp\ClientInterface;
 use Notify\Message\SMSMessage;
-use Notify\Contact\PhoneContact;
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use GuzzleHttp\Psr7\Response;
@@ -27,7 +26,7 @@ use Notify\Message\Sender\Exception\RuntimeException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class TwilioSMSTest extends PHPUnit_Framework_TestCase
+class TwilioSMSTest extends TestCase
 {
     private function getTwilioSMS(ClientInterface $httpClient = null)
     {
@@ -36,7 +35,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
 
     private function getHttpClientWithSuccessResponse(SMSMessage $message)
     {
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
 
         $i = 0;
         foreach ($message->getRecipients() as $recipient) {
@@ -64,11 +63,11 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
                             return false;
                         }
 
-                        if ($options['json']['From'] != $message->getSender()->getContact()->getValue()) {
+                        if ($options['json']['From'] != $message->getSender()->getContact()) {
                             return false;
                         }
 
-                        if ($options['json']['To'] != $recipient->getContact()->getValue()) {
+                        if ($options['json']['To'] != $recipient->getContact()) {
                             return false;
                         }
 
@@ -87,7 +86,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
 
     private function getHttpClientWithInvalidResponse()
     {
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->will($this->returnValue(new Response(500, [], 'invalid json response')));
@@ -97,7 +96,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
 
     private function getHttpClientWithErrorResponse()
     {
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->will($this->returnValue(new Response(403, [], '{"message":"Queue overflow", "code":30001}')));
@@ -109,10 +108,10 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
     {
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->getTwilioSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
@@ -122,12 +121,12 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
     {
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222')),
-                new Actor(new PhoneContact('+13333333333')),
-                new Actor(new PhoneContact('+14444444444'))
+                new Actor('+12222222222'),
+                new Actor('+13333333333'),
+                new Actor('+14444444444')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->getTwilioSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
@@ -140,10 +139,10 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
 
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->getTwilioSMS($this->getHttpClientWithInvalidResponse())->send($message);
@@ -157,10 +156,10 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
 
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->getTwilioSMS($this->getHttpClientWithErrorResponse())->send($message);
@@ -172,7 +171,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
 
         $message = new DummyMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test'
         );
@@ -187,7 +186,7 @@ class TwilioSMSTest extends PHPUnit_Framework_TestCase
 
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test'
         );

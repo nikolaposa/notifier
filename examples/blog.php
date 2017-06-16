@@ -11,21 +11,19 @@
 
 namespace Notify\Example;
 
-use Notify\NotificationRecipientInterface;
-use Notify\Contact\EmailContact;
-use Notify\Contact\PhoneContact;
+use Notify\RecipientInterface;
 use Notify\NotificationInterface;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\SMSMessage;
-use Notify\Message\Actor\Recipients;
-use Notify\Strategy\DefaultNotifyStrategy;
+use Notify\Recipients;
+use Notify\Notifier;
 use Notify\Strategy\ChannelHandler;
-use Notify\Message\Sender\TestMessageSender;
+use Notify\Tests\TestAsset\Message\TestMessageSender;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-final class User implements NotificationRecipientInterface
+final class User implements RecipientInterface
 {
     private $username;
 
@@ -78,19 +76,19 @@ final class User implements NotificationRecipientInterface
         return $this->phoneNumber;
     }
 
-    public function acceptsNotification(NotificationInterface $notification, $channel)
+    public function getRecipientName() : string
     {
-        return in_array($channel, ['Email', 'Sms']);
+        return $this->username;
     }
 
-    public function getNotifyContact($channel, NotificationInterface $notification)
+    public function getRecipientContact(string $channel, NotificationInterface $notification) : string
     {
         switch ($channel) {
-            case 'Email' :
-                return new EmailContact($this->email);
-            case 'Sms' :
-                return new PhoneContact($this->phoneNumber);
-            default :
+            case 'email':
+                return new $this->email;
+            case 'sms':
+                return new $this->phoneNumber;
+            default:
                 throw new \RuntimeException(sprintf(
                     'User does not accept notifications through %s channel',
                     $channel
@@ -98,7 +96,12 @@ final class User implements NotificationRecipientInterface
         }
     }
 
-    public function onNotified(NotificationInterface $notification, $channel)
+    public function acceptsNotification(NotificationInterface $notification, string $channel) : bool
+    {
+        return in_array($channel, ['email', 'sms'], true);
+    }
+
+    public function onNotified(NotificationInterface $notification, string $channel)
     {
         $this->notified[get_class($notification)][$channel] = true;
     }
@@ -224,9 +227,9 @@ $post->comment($comment);
 
 $defaultMessageSender = new TestMessageSender();
 
-$notifyStrategy = new DefaultNotifyStrategy([
-    new ChannelHandler('Email', $defaultMessageSender),
-    new ChannelHandler('Sms', $defaultMessageSender),
+$notifyStrategy = new Notifier([
+    new ChannelHandler('email', $defaultMessageSender),
+    new ChannelHandler('sms', $defaultMessageSender),
 ]);
 
 $newCommentNotification = new NewCommentNotification($post, $comment);

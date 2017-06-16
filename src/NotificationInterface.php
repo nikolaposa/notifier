@@ -11,7 +11,8 @@
 
 namespace Notify;
 
-use Notify\Message\MessageInterface;
+use Notify\Exception\UnsupportedChannelException;
+use Notify\Recipients;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -25,16 +26,11 @@ interface NotificationInterface
 
     /**
      * @param string $channel
+     * @param Recipients $recipients
      *
-     * @return bool
-     */
-    public function isChannelSupported($channel);
-
-    /**
-     * @param string $channel
-     * @param NotificationRecipientInterface $recipient
+     * @throws UnsupportedChannelException
      *
-     * @return MessageInterface
+     * @return array One or more message objects.
      */
-    public function getMessage($channel, NotificationRecipientInterface $recipient);
+    public function getMessages(string $channel, Recipients $recipients) : array;
 }

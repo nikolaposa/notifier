@@ -12,8 +12,7 @@
 namespace Notify;
 
 use Notify\Exception\UnsupportedChannelException;
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Actor\Actor;
+use Notify\Recipients;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -23,40 +22,18 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * @var array
      */
-    private $messageFactories = null;
+    private $messageFactories;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedChannels()
     {
         return $this->getMessageFactoryNames();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isChannelSupported($channel)
-    {
-        try {
-            $this->getMessageFactory($channel);
-        } catch (UnsupportedChannelException $ex) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMessage($channel, NotificationRecipientInterface $recipient)
+    public function getMessages(string $channel, Recipients $recipients) : array
     {
         $messageFactory = $this->getMessageFactory($channel);
 
-        $messageRecipients = $this->createMessageRecipients($recipient, $channel);
-
-        return $this->$messageFactory($messageRecipients);
+        return $this->$messageFactory($recipients);
     }
 
     final protected function getMessageFactoryNames()
@@ -66,7 +43,7 @@ abstract class AbstractNotification implements NotificationInterface
         return array_keys($this->messageFactories);
     }
 
-    final protected function getMessageFactory($channel)
+    final protected function getMessageFactory(string $channel)
     {
         $this->initMessageFactories();
 
@@ -79,7 +56,7 @@ abstract class AbstractNotification implements NotificationInterface
 
     final protected function initMessageFactories()
     {
-        if (!is_null($this->messageFactories)) {
+        if (null !== $this->messageFactories) {
             return;
         }
 
@@ -89,16 +66,9 @@ abstract class AbstractNotification implements NotificationInterface
             $matches = [];
 
             if (preg_match('/^create(?P<channel>.+)Message$/', $methodName, $matches)) {
-                $channel = $matches['channel'];
+                $channel = strtolower($matches['channel']);
                 $this->messageFactories[$channel] = $methodName;
             }
         }
-    }
-
-    protected function createMessageRecipients(NotificationRecipientInterface $recipient, $channel)
-    {
-        return new Recipients([
-            new Actor($recipient->getNotifyContact($channel, $this)),
-        ]);
     }
 }

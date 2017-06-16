@@ -11,7 +11,6 @@
 
 namespace Notify\Message\Sender;
 
-use Notify\Message\MessageInterface;
 use Notify\Message\Sender\Exception\UnsupportedMessageException;
 
 /**
@@ -20,11 +19,11 @@ use Notify\Message\Sender\Exception\UnsupportedMessageException;
 interface MessageSenderInterface
 {
     /**
-     * @param MessageInterface $message
+     * @param object $message
      *
      * @throws UnsupportedMessageException
      *
      * @return void
      */
-    public function send(MessageInterface $message);
+    public function send($message);
 }

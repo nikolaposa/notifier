@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Notify package.
  *
  * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
@@ -9,27 +9,18 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message;
-
-use Notify\Message\Actor\ActorInterface;
+namespace Notify;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-trait HasSenderTrait
+interface NotifierInterface
 {
     /**
-     * @var ActorInterface
+     * @param array $notificationRecipients
+     * @param NotificationInterface $notification
+     *
+     * @return void
      */
-    protected $sender;
-
-    public function getSender()
-    {
-        return $this->sender;
-    }
-
-    public function hasSender()
-    {
-        return $this->sender !== null;
-    }
+    public function notify(array $notificationRecipients, NotificationInterface $notification);
 }

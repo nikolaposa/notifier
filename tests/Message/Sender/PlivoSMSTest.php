@@ -11,12 +11,11 @@
 
 namespace Notify\Tests\Message\Sender;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Notify\Message\Sender\PlivoSMS;
 use GuzzleHttp\ClientInterface;
 use Notify\Message\SMSMessage;
-use Notify\Contact\PhoneContact;
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use GuzzleHttp\Psr7\Response;
@@ -27,7 +26,7 @@ use Notify\Message\Sender\Exception\RuntimeException;
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class PlivoSMSTest extends PHPUnit_Framework_TestCase
+class PlivoSMSTest extends TestCase
 {
     private function getPlivoSMS(ClientInterface $httpClient = null)
     {
@@ -36,7 +35,7 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
 
     private function getHttpClientWithSuccessResponse(SMSMessage $message)
     {
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->with(
@@ -61,13 +60,13 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
                         return false;
                     }
 
-                    if ($options['json']['src'] != $message->getSender()->getContact()->getValue()) {
+                    if ($options['json']['src'] !== $message->getSender()->getContact()) {
                         return false;
                     }
 
                     $to = [];
                     foreach ($message->getRecipients() as $recipient) {
-                        $to[] = $recipient->getContact()->getValue();
+                        $to[] = $recipient->getContact();
                     }
 
                     if ($options['json']['dst'] != implode('<', $to)) {
@@ -88,7 +87,7 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
 
     private function getHttpClientWithErrorResponse()
     {
-        $httpClient = $this->getMock(ClientInterface::class);
+        $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->once())
             ->method('request')
             ->will($this->returnValue(new Response(403)));
@@ -100,10 +99,10 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
     {
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->getPlivoSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
@@ -113,12 +112,12 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
     {
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222')),
-                new Actor(new PhoneContact('+13333333333')),
-                new Actor(new PhoneContact('+14444444444'))
+                new Actor('+12222222222'),
+                new Actor('+13333333333'),
+                new Actor('+14444444444')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->getPlivoSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
@@ -131,10 +130,10 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
 
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->getPlivoSMS($this->getHttpClientWithErrorResponse())->send($message);
@@ -146,7 +145,7 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
 
         $message = new DummyMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test'
         );
@@ -161,7 +160,7 @@ class PlivoSMSTest extends PHPUnit_Framework_TestCase
 
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test'
         );

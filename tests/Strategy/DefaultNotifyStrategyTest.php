@@ -11,21 +11,17 @@
 
 namespace Notify\Tests\Strategy;
 
-use PHPUnit_Framework_TestCase;
-use Notify\Strategy\DefaultNotifyStrategy;
-use Notify\Strategy\ChannelHandler;
-use Notify\Message\Sender\TestMessageSender;
+use PHPUnit\Framework\TestCase;
+use Notify\Notifier;
+use Notify\Tests\TestAsset\Message\TestMessageSender;
 use Notify\Tests\TestAsset\Notification\TestNotification;
 use Notify\Tests\TestAsset\Entity\User;
-use Notify\Contact\Contacts;
-use Notify\Contact\EmailContact;
-use Notify\Contact\PhoneContact;
 use Notify\Exception\UnhandledChannelException;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class DefaultNotifyStrategyTest extends PHPUnit_Framework_TestCase
+class DefaultNotifyStrategyTest extends TestCase
 {
     /**
      * @var TestMessageSender
@@ -41,14 +37,14 @@ class DefaultNotifyStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSendingNotification()
     {
-        $strategy = new DefaultNotifyStrategy([
-            new ChannelHandler('Email', $this->messageSender),
+        $strategy = new Notifier([
+            'email' => $this->messageSender,
         ]);
 
         $strategy->notify([
-            new User(new Contacts([
-                new EmailContact('test@example.com')
-            ])),
+            new User([
+                'email' => 'test@example.com'
+            ]),
         ], new TestNotification());
 
         $sentMessages = $this->messageSender->getMessages();
@@ -60,31 +56,31 @@ class DefaultNotifyStrategyTest extends PHPUnit_Framework_TestCase
     {
         $this->expectException(UnhandledChannelException::class);
 
-        $strategy = new DefaultNotifyStrategy([
-            new ChannelHandler('Foobar', $this->messageSender),
+        $strategy = new Notifier([
+            'foobar' => $this->messageSender,
         ]);
 
         $strategy->notify([
-            new User(new Contacts([
-                new EmailContact('test@example.com')
-            ])),
+            new User([
+                'email' => 'test@example.com'
+            ]),
         ], new TestNotification());
     }
 
     public function testNotificationMessageNotSentIfRecipientDoesntAcceptRelatedChannel()
     {
-        $strategy = new DefaultNotifyStrategy([
-            new ChannelHandler('Email', $this->messageSender),
+        $strategy = new Notifier([
+            'email' => $this->messageSender,
         ]);
 
         $strategy->notify([
-            new User(new Contacts([
-                new PhoneContact('123456')
-            ])),
+            new User([
+                'phone' => '123456'
+            ]),
         ], new TestNotification());
 
         $sentMessages = $this->messageSender->getMessages();
-
+        
         $this->assertEmpty($sentMessages);
     }
 }

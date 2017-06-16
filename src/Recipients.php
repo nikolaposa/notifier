@@ -1,12 +1,12 @@
 <?php
 
-namespace Notify\Message\Actor;
+namespace Notify;
 
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
 use JsonSerializable;
-use Notify\Exception\InvalidArgumentException;
+use Notify\Message\Actor\ActorInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -16,27 +16,11 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
     /**
      * @var ActorInterface[]
      */
-    private $recipients = [];
+    private $recipients;
 
     public function __construct(array $recipients)
     {
-        foreach ($recipients as $recipient) {
-            self::validateRecipient($recipient);
-
-            $this->recipients[] = $recipient;
-        }
-    }
-
-    private static function validateRecipient($recipient)
-    {
-        if (!$recipient instanceof ActorInterface) {
-            throw new InvalidArgumentException(sprintf(
-                '%s expects array of %s instances, %s given',
-                __METHOD__,
-                ActorInterface::class,
-                is_object($recipient) ? get_class($recipient) : gettype($recipient)
-            ));
-        }
+        $this->recipients = $recipients;
     }
 
     public function count()

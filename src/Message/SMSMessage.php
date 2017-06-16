@@ -11,18 +11,21 @@
 
 namespace Notify\Message;
 
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Content\ContentProviderInterface;
 use Notify\Message\Actor\ActorInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class SMSMessage extends AbstractMessage implements HasSenderInterface
+class SMSMessage extends AbstractMessage
 {
     const CONTENT_LENGTH_LIMIT = 160;
 
-    use HasSenderTrait;
+    /**
+     * @var ActorInterface
+     */
+    protected $sender;
 
     /**
      * @param Recipients $recipients
@@ -41,7 +44,7 @@ class SMSMessage extends AbstractMessage implements HasSenderInterface
 
     public function getContent()
     {
-        $content = $this->loadContent();
+        $content = $this->content;
 
         return strlen($content) > self::CONTENT_LENGTH_LIMIT
             ? substr($content, 0, self::CONTENT_LENGTH_LIMIT)
@@ -50,6 +53,16 @@ class SMSMessage extends AbstractMessage implements HasSenderInterface
 
     public function getRawContent()
     {
-        return $this->loadContent();
+        return $this->content;
+    }
+
+    public function getSender()
+    {
+        return $this->sender;
+    }
+
+    public function hasSender()
+    {
+        return $this->sender !== null;
     }
 }

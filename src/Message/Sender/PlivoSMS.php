@@ -11,7 +11,6 @@
 
 namespace Notify\Message\Sender;
 
-use Notify\Message\MessageInterface;
 use Notify\Message\SMSMessage;
 use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
@@ -63,7 +62,7 @@ final class PlivoSMS implements MessageSenderInterface
     /**
      * {@inheritdoc}
      */
-    public function send(MessageInterface $message)
+    public function send($message)
     {
         $this->setMessage($message);
 
@@ -74,7 +73,7 @@ final class PlivoSMS implements MessageSenderInterface
         $this->validateResponse($response);
     }
 
-    private function setMessage(MessageInterface $message)
+    private function setMessage($message)
     {
         if (!$message instanceof SMSMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
@@ -98,7 +97,7 @@ final class PlivoSMS implements MessageSenderInterface
 
     private function buildPayloadSourceString()
     {
-        return $this->message->getSender()->getContact()->getValue();
+        return $this->message->getSender()->getContact();
     }
 
     private function buildPayloadDestinationString()
@@ -106,7 +105,7 @@ final class PlivoSMS implements MessageSenderInterface
         $dst = [];
         foreach ($this->message->getRecipients() as $recipient) {
             /* @var $recipient ActorInterface */
-            $dst[] = $recipient->getContact()->getValue();
+            $dst[] = $recipient->getContact();
         }
 
         return implode('<', $dst);

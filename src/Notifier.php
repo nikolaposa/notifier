@@ -9,15 +9,18 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\Content;
+namespace Notify;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface ContentProviderInterface
+final class Notifier extends AbstractNotifier
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getContent();
+    public function notify(array $notificationRecipients, NotificationInterface $notification)
+    {
+        $this->notifyIndividually($notificationRecipients, $notification);
+    }
 }

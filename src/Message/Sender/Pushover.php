@@ -11,7 +11,6 @@
 
 namespace Notify\Message\Sender;
 
-use Notify\Message\MessageInterface;
 use Notify\Message\PushMessage;
 use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
@@ -58,7 +57,7 @@ final class Pushover implements MessageSenderInterface
     /**
      * {@inheritdoc}
      */
-    public function send(MessageInterface $message)
+    public function send($message)
     {
         if (!$message instanceof PushMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
@@ -116,7 +115,7 @@ final class Pushover implements MessageSenderInterface
 
     private function addPayloadUser(array $payload, ActorInterface $recipient)
     {
-        $payload['user'] = $recipient->getContact()->getValue();
+        $payload['user'] = $recipient->getContact();
 
         return $payload;
     }

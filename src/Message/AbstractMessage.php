@@ -11,15 +11,12 @@
 
 namespace Notify\Message;
 
-use Notify\Message\Actor\Recipients;
-use Notify\Message\Content\ContentProviderInterface;
-use Notify\Exception\InvalidArgumentException;
-use JsonSerializable;
+use Notify\Recipients;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-abstract class AbstractMessage implements MessageInterface, JsonSerializable
+abstract class AbstractMessage
 {
     /**
      * @var Recipients
@@ -27,21 +24,13 @@ abstract class AbstractMessage implements MessageInterface, JsonSerializable
     protected $recipients;
 
     /**
-     * @var string|ContentProviderInterface
+     * @var string
      */
     protected $content;
 
-    public function __construct(Recipients $recipients, $content)
+    public function __construct(Recipients $recipients, string $content)
     {
         $this->recipients = $recipients;
-
-        if (!(is_string($content) || $content instanceof ContentProviderInterface)) {
-            throw new InvalidArgumentException(sprintf(
-                'Message content should be either string or %s instance',
-                ContentProviderInterface::class
-            ));
-        }
-
         $this->content = $content;
     }
 
@@ -52,25 +41,6 @@ abstract class AbstractMessage implements MessageInterface, JsonSerializable
 
     public function getContent()
     {
-        return $this->loadContent();
-    }
-
-    /**
-     * @return string
-     */
-    protected function loadContent()
-    {
-        if ($this->content instanceof ContentProviderInterface) {
-            $this->content = $this->content->getContent();
-        }
-
         return $this->content;
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'recipients' => $this->getRecipients(),
-        ];
     }
 }

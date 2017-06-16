@@ -11,28 +11,31 @@
 
 namespace Notify;
 
-use Notify\Contact\ContactInterface;
-
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-interface NotificationRecipientInterface
+interface RecipientInterface
 {
+    /**
+     * @return string
+     */
+    public function getRecipientName() : string;
+
+    /**
+     * @param string $channel
+     * @param NotificationInterface $notification
+     *
+     * @return string
+     */
+    public function getRecipientContact(string $channel, NotificationInterface $notification) : string;
+
     /**
      * @param NotificationInterface $notification
      * @param string $channel
      *
      * @return bool
      */
-    public function acceptsNotification(NotificationInterface $notification, $channel);
-
-    /**
-     * @param string $channel
-     * @param NotificationInterface $notification
-     *
-     * @return ContactInterface
-     */
-    public function getNotifyContact($channel, NotificationInterface $notification);
+    public function acceptsNotification(NotificationInterface $notification, string $channel) : bool;
 
     /**
      * @param NotificationInterface $notification
@@ -40,5 +43,5 @@ interface NotificationRecipientInterface
      *
      * @return void
      */
-    public function onNotified(NotificationInterface $notification, $channel);
+    public function onNotified(NotificationInterface $notification, string $channel);
 }

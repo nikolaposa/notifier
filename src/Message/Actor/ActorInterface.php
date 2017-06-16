@@ -11,15 +11,13 @@
 
 namespace Notify\Message\Actor;
 
-use Notify\Contact\ContactInterface;
-
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
 interface ActorInterface
 {
     /**
-     * @return ContactInterface
+     * @return string
      */
     public function getContact();
 }

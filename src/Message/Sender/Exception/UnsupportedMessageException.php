@@ -13,14 +13,13 @@ namespace Notify\Message\Sender\Exception;
 
 use LogicException;
 use Notify\Message\Sender\MessageSenderInterface;
-use Notify\Message\MessageInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
 class UnsupportedMessageException extends LogicException implements ExceptionInterface
 {
-    public static function fromMessageSenderAndMessage(MessageSenderInterface $messageSender, MessageInterface $message)
+    public static function fromMessageSenderAndMessage(MessageSenderInterface $messageSender, $message)
     {
         return new self(sprintf(
             '%s does not support %s messages',

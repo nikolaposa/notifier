@@ -13,7 +13,7 @@ namespace Notify\Tests\TestAsset\Notification;
 
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -22,10 +22,12 @@ class TestNotification extends AbstractNotification
 {
     protected function createEmailMessage(Recipients $messageRecipients)
     {
-        return new EmailMessage(
-            $messageRecipients,
-            'Test notification',
-            'test notification'
-        );
+        return [
+            new EmailMessage(
+                $messageRecipients,
+                'Test notification',
+                'test notification'
+            )
+        ];
     }
 }

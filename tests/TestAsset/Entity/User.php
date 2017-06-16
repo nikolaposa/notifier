@@ -11,20 +11,16 @@
 
 namespace Notify\Tests\TestAsset\Entity;
 
-use Notify\NotificationRecipientInterface;
-use Notify\Contact\Contacts;
+use Notify\RecipientInterface;
 use Notify\NotificationInterface;
-use Notify\Contact\EmailContact;
-use Notify\Contact\PhoneContact;
-use Notify\Contact\MobileDeviceContact;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class User implements NotificationRecipientInterface
+class User implements RecipientInterface
 {
     /**
-     * @var Contacts
+     * @var array
      */
     private $contacts;
 
@@ -33,53 +29,34 @@ class User implements NotificationRecipientInterface
      */
     private $notified = [];
 
-    /**
-     * @var array
-     */
-    private static $channelContactTypeMap = [
-        'Email' => EmailContact::class,
-        'Sms' => PhoneContact::class,
-        'Push' => MobileDeviceContact::class,
-    ];
-
-    public function __construct(Contacts $contacts)
+    public function __construct(array $contacts)
     {
         $this->contacts = $contacts;
     }
 
-    public function acceptsNotification(NotificationInterface $notification, $channel)
+    public function getRecipientName() : string
     {
-        if (!isset(self::$channelContactTypeMap[$channel])) {
-            return false;
-        }
-
-        return $this->contacts->has(self::$channelContactTypeMap[$channel]);
+        return 'John Doe';
     }
 
-    public function getNotifyContact($channel, NotificationInterface $notification)
+    public function getRecipientContact(string $channel, NotificationInterface $notification) : string
     {
-        if (!isset(self::$channelContactTypeMap[$channel])) {
+        if (!array_key_exists($channel, $this->contacts)) {
             throw new \RuntimeException(sprintf(
                 'User does not accept notifications through %s channel',
                 $channel
             ));
         }
 
-        $contactType = self::$channelContactTypeMap[$channel];
-
-        $contact = $this->contacts->getOne($contactType);
-
-        if (false === $contact) {
-            throw new \RuntimeException(sprintf(
-                'User does not accept notifications through %s channel',
-                $channel
-            ));
-        }
-
-        return $contact;
+        return $this->contacts[$channel];
     }
 
-    public function onNotified(NotificationInterface $notification, $channel)
+    public function acceptsNotification(NotificationInterface $notification, string $channel) : bool
+    {
+        return array_key_exists($channel, $this->contacts);
+    }
+
+    public function onNotified(NotificationInterface $notification, string $channel)
     {
         $this->notified[get_class($notification)][$channel] = true;
     }

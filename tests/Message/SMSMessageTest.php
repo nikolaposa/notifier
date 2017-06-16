@@ -11,32 +11,27 @@
 
 namespace Notify\Tests\Message;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Notify\Message\SMSMessage;
-use Notify\Message\MessageInterface;
-use Notify\Message\HasSenderInterface;
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Actor\Actor;
-use Notify\Contact\PhoneContact;
 use Notify\Message\Actor\ActorInterface;
 
 /**
  *
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class SMSMessageTest extends PHPUnit_Framework_TestCase
+class SMSMessageTest extends TestCase
 {
     public function testCreatingSmsWithRequiredArguments()
     {
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test'
         );
 
-        $this->assertInstanceOf(MessageInterface::class, $message);
-        $this->assertInstanceOf(HasSenderInterface::class, $message);
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertNull($message->getSender());
@@ -46,14 +41,12 @@ class SMSMessageTest extends PHPUnit_Framework_TestCase
     {
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             'test test test',
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
-        $this->assertInstanceOf(MessageInterface::class, $message);
-        $this->assertInstanceOf(HasSenderInterface::class, $message);
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertInstanceOf(ActorInterface::class, $message->getSender());
@@ -65,10 +58,10 @@ class SMSMessageTest extends PHPUnit_Framework_TestCase
 
         $message = new SMSMessage(
             new Recipients([
-                new Actor(new PhoneContact('+12222222222'))
+                new Actor('+12222222222')
             ]),
             $content,
-            new Actor(new PhoneContact('+11111111111'))
+            new Actor('+11111111111')
         );
 
         $this->assertEquals($content, $message->getRawContent());

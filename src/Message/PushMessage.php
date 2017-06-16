@@ -11,29 +11,40 @@
 
 namespace Notify\Message;
 
-use Notify\Message\Actor\Recipients;
+use Notify\Recipients;
 use Notify\Message\Content\ContentProviderInterface;
-use Notify\Message\Options\OptionsInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-class PushMessage extends AbstractMessage implements HasOptionsInterface
+class PushMessage extends AbstractMessage
 {
-    use HasOptionsTrait;
+    /**
+     * @var Options
+     */
+    protected $options;
 
     /**
      * @param Recipients $recipients
      * @param string|ContentProviderInterface $content
-     * @param OptionsInterface $options
+     * @param Options $options
      */
     public function __construct(
         Recipients $recipients,
         $content,
-        OptionsInterface $options = null
+        Options $options = null
     ) {
         parent::__construct($recipients, $content);
 
         $this->options = $options;
+    }
+
+    public function getOptions()
+    {
+        if (null === $this->options) {
+            $this->options = new Options([]);
+        }
+
+        return $this->options;
     }
 }

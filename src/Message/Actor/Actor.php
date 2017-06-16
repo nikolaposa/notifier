@@ -11,15 +11,13 @@
 
 namespace Notify\Message\Actor;
 
-use Notify\Contact\ContactInterface;
-
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
 class Actor implements ActorInterface, HasNameInterface
 {
     /**
-     * @var ContactInterface
+     * @var string
      */
     private $contact;
 
@@ -28,7 +26,7 @@ class Actor implements ActorInterface, HasNameInterface
      */
     private $name;
 
-    public function __construct(ContactInterface $contact, $name = null)
+    public function __construct($contact, $name = null)
     {
         $this->contact = $contact;
         $this->name = $name;
@@ -47,9 +45,9 @@ class Actor implements ActorInterface, HasNameInterface
     public function __toString()
     {
         if (null !== ($name = $this->getName())) {
-            return $name . ' <' . $this->getContact()->getValue() . '>';
+            return $name . ' <' . $this->getContact() . '>';
         }
 
-        return $this->getContact()->getValue();
+        return $this->getContact();
     }
 }

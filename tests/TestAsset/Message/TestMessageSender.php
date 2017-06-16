@@ -9,9 +9,9 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\Sender;
+namespace Notify\Tests\TestAsset\Message;
 
-use Notify\Message\MessageInterface;
+use Notify\Message\Sender\MessageSenderInterface;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
@@ -19,19 +19,16 @@ use Notify\Message\MessageInterface;
 final class TestMessageSender implements MessageSenderInterface
 {
     /**
-     * @var MessageInterface[]
+     * @var object[]
      */
     private $messages = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function send(MessageInterface $message)
+    public function send($message)
     {
         $this->messages[] = $message;
     }
 
-    public function getMessages()
+    public function getMessages() : array
     {
         return $this->messages;
     }

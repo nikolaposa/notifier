@@ -11,7 +11,6 @@
 
 namespace Notify\Message\Sender;
 
-use Notify\Message\MessageInterface;
 use Notify\Message\EmailMessage;
 use Notify\Message\Actor\ActorInterface;
 use Notify\Message\Sender\Exception\UnsupportedMessageException;
@@ -54,7 +53,7 @@ final class NativeMailer implements MessageSenderInterface
     /**
      * {@inheritdoc}
      */
-    public function send(MessageInterface $message)
+    public function send($message)
     {
         if (!$message instanceof EmailMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
@@ -84,7 +83,7 @@ final class NativeMailer implements MessageSenderInterface
     private function buildMailTo()
     {
         $recipientsString = array_map(function (ActorInterface $recipient) {
-            $to = $recipient->getContact()->getValue();
+            $to = $recipient->getContact();
 
             if ($recipient->getName() !== '') {
                 $to = $recipient->getName() . ' <' . $to . '>';
@@ -116,15 +115,15 @@ final class NativeMailer implements MessageSenderInterface
 
         $headers .= 'Content-type: ' . $contentType . '; charset=' . $options->get('encoding', 'utf-8') . "\r\n";
 
-        if ($contentType == 'text/html' && false === strpos($headers, 'MIME-Version:')) {
+        if ($contentType === 'text/html' && false === strpos($headers, 'MIME-Version:')) {
             $headers .= "MIME-Version: 1.0\r\n";
         }
 
-        if ($this->message->hasSender()) {
-            $sender = $this->message->getSender();
+        if ($this->message->hasFrom()) {
+            $sender = $this->message->getFrom();
 
-            $headers .= 'From: ' . $sender->getContact()->getValue() . "\r\n" .
-                'Reply-To: ' . $sender->getContact()->getValue() . "\r\n" .
+            $headers .= 'From: ' . $sender->getContact() . "\r\n" .
+                'Reply-To: ' . $sender->getContact() . "\r\n" .
                 'X-Mailer: PHP/' . phpversion();
         }
 

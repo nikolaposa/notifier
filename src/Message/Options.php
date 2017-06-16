@@ -9,12 +9,12 @@
  * located at the package root folder.
  */
 
-namespace Notify\Message\Options;
+namespace Notify\Message;
 
 /**
  * @author Nikola Posa <posa.nikola@gmail.com>
  */
-final class Options implements OptionsInterface
+class Options
 {
     /**
      * @var array
