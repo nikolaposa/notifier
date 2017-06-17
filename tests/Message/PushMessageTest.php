@@ -14,29 +14,25 @@ class PushMessageTest extends TestCase
     public function testCreatingPushWithRequiredArguments()
     {
         $message = new PushMessage(
-            [
-                new Actor('Token1')
-            ],
+            new Actor('Token1'),
             'test test test'
         );
 
-        $this->assertCount(1, $message->getRecipients());
-        $this->assertEquals('test test test', $message->getContent());
+        $this->assertEquals('Token1', $message->getUser()->getContact());
+        $this->assertEquals('test test test', $message->getMessage());
         $this->assertInstanceOf(Options::class, $message->getOptions());
     }
 
     public function testCreatingPushWithAllArguments()
     {
         $message = new PushMessage(
-            [
-                new Actor('Token1')
-            ],
+            new Actor('Token1'),
             'test test test',
             new Options(['sound' => 'example'])
         );
 
-        $this->assertCount(1, $message->getRecipients());
-        $this->assertEquals('test test test', $message->getContent());
+        $this->assertEquals('Token1', $message->getUser()->getContact());
+        $this->assertEquals('test test test', $message->getMessage());
         $this->assertInstanceOf(Options::class, $message->getOptions());
     }
 }

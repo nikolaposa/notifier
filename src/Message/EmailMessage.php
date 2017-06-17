@@ -6,9 +6,19 @@ namespace Notify\Message;
 
 use Notify\Message\Actor\ActorInterface;
 
-class EmailMessage extends AbstractMessage
+class EmailMessage
 {
     use HasOptionsTrait;
+
+    /**
+     * @var ActorInterface[]
+     */
+    protected $to;
+
+    /**
+     * @var string
+     */
+    protected $body;
 
     /**
      * @var string
@@ -21,17 +31,27 @@ class EmailMessage extends AbstractMessage
     protected $from;
 
     public function __construct(
-        array $recipients,
+        array $to,
         string $subject,
-        string $content,
+        string $body,
         ActorInterface $from = null,
         Options $options = null
     ) {
-        parent::__construct($recipients, $content);
-
+        $this->to = $to;
+        $this->body = $body;
         $this->subject = $subject;
         $this->from = $from;
         $this->options = $options;
+    }
+
+    public function getTo() : array
+    {
+        return $this->to;
+    }
+
+    public function getBody() : string
+    {
+        return $this->body;
     }
 
     public function getSubject() : string

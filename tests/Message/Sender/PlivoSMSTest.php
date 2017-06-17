@@ -53,17 +53,11 @@ class PlivoSMSTest extends TestCase
                         return false;
                     }
 
-                    $to = [];
-                    foreach ($message->getRecipients() as $recipient) {
-                        /* @var $recipient \Notify\Message\Actor\ActorInterface */
-                        $to[] = $recipient->getContact();
-                    }
-
-                    if ($options['json']['dst'] != implode('<', $to)) {
+                    if ($options['json']['dst'] !== $message->getTo()->getContact()) {
                         return false;
                     }
 
-                    if ($options['json']['text'] != $message->getContent()) {
+                    if ($options['json']['text'] != $message->getText()) {
                         return false;
                     }
 
@@ -88,24 +82,7 @@ class PlivoSMSTest extends TestCase
     public function testSendSuccess()
     {
         $message = new SMSMessage(
-            [
-                new Actor('+12222222222')
-            ],
-            'test test test',
-            new Actor('+11111111111')
-        );
-
-        $this->getPlivoSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
-    }
-
-    public function testMultiSendSuccess()
-    {
-        $message = new SMSMessage(
-            [
-                new Actor('+12222222222'),
-                new Actor('+13333333333'),
-                new Actor('+14444444444')
-            ],
+            new Actor('+12222222222'),
             'test test test',
             new Actor('+11111111111')
         );
@@ -119,9 +96,7 @@ class PlivoSMSTest extends TestCase
         $this->expectExceptionMessage('SMS not sent');
 
         $message = new SMSMessage(
-            [
-                new Actor('+12222222222')
-            ],
+            new Actor('+12222222222'),
             'test test test',
             new Actor('+11111111111')
         );
@@ -149,9 +124,7 @@ class PlivoSMSTest extends TestCase
         $this->expectExceptionMessage('Message sender is missing');
 
         $message = new SMSMessage(
-            [
-                new Actor('+12222222222')
-            ],
+            new Actor('+12222222222'),
             'test test test'
         );
 

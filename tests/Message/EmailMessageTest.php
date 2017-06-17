@@ -22,9 +22,9 @@ class EmailMessageTest extends TestCase
             'test test test'
         );
 
-        $this->assertCount(1, $message->getRecipients());
+        $this->assertCount(1, $message->getTo());
         $this->assertEquals('Test', $message->getSubject());
-        $this->assertEquals('test test test', $message->getContent());
+        $this->assertEquals('test test test', $message->getBody());
         $this->assertNull($message->getFrom());
         $this->assertInstanceOf(Options::class, $message->getOptions());
     }
@@ -41,9 +41,9 @@ class EmailMessageTest extends TestCase
             new Options(['html' => true])
         );
 
-        $this->assertCount(1, $message->getRecipients());
+        $this->assertCount(1, $message->getTo());
         $this->assertEquals('Test', $message->getSubject());
-        $this->assertEquals('test test test', $message->getContent());
+        $this->assertEquals('test test test', $message->getBody());
         $this->assertInstanceOf(ActorInterface::class, $message->getFrom());
         $this->assertInstanceOf(Options::class, $message->getOptions());
     }

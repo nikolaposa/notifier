@@ -4,17 +4,39 @@ declare(strict_types=1);
 
 namespace Notify\Message;
 
-class PushMessage extends AbstractMessage
+use Notify\Message\Actor\ActorInterface;
+
+class PushMessage
 {
     use HasOptionsTrait;
 
+    /**
+     * @var ActorInterface
+     */
+    protected $user;
+
+    /**
+     * @var string
+     */
+    protected $message;
+
     public function __construct(
-        array $recipients,
-        string $content,
+        ActorInterface $user,
+        string $message,
         Options $options = null
     ) {
-        parent::__construct($recipients, $content);
-
+        $this->user = $user;
+        $this->message = $message;
         $this->options = $options;
+    }
+
+    public function getUser() : ActorInterface
+    {
+        return $this->user;
+    }
+    
+    public function getMessage() : string
+    {
+        return $this->message;
     }
 }

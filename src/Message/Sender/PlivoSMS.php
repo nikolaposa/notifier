@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Notify\Message\Sender;
 
 use Notify\Message\SMSMessage;
-use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
@@ -92,19 +91,12 @@ final class PlivoSMS implements MessageSenderInterface
 
     private function buildPayloadDestinationString()
     {
-        $dst = [];
-
-        foreach ($this->message->getRecipients() as $recipient) {
-            /* @var $recipient ActorInterface */
-            $dst[] = $recipient->getContact();
-        }
-
-        return implode('<', $dst);
+        return $this->message->getTo()->getContact();
     }
 
     private function buildPayloadText()
     {
-        return $this->message->getContent();
+        return $this->message->getText();
     }
 
     private function executeApiRequest(array $payload)

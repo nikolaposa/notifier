@@ -26,45 +26,40 @@ class PushoverTest extends TestCase
     {
         $httpClient = $this->createMock(ClientInterface::class);
 
-        $i = 0;
-        foreach ($message->getRecipients() as $recipient) {
-            /* @var $recipient \Notify\Message\Actor\ActorInterface */
+        $httpClient->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->equalTo('POST'),
+                $this->stringContains(Pushover::API_BASE_URL),
+                $this->callback(function ($options) use ($message) {
+                    if (!is_array($options)) {
+                        return false;
+                    }
 
-            $httpClient->expects($this->at($i++))
-                ->method('request')
-                ->with(
-                    $this->equalTo('POST'),
-                    $this->stringContains(Pushover::API_BASE_URL),
-                    $this->callback(function ($options) use ($message, $recipient) {
-                        if (!is_array($options)) {
-                            return false;
-                        }
+                    if (!isset($options['form_params'])) {
+                        return false;
+                    }
 
-                        if (!isset($options['form_params'])) {
-                            return false;
-                        }
+                    if (!isset($options['form_params']['token'], $options['form_params']['user'], $options['form_params']['message'])) {
+                        return false;
+                    }
 
-                        if (!isset($options['form_params']['token'], $options['form_params']['user'], $options['form_params']['message'])) {
-                            return false;
-                        }
+                    if ($options['form_params']['token'] !== 'token') {
+                        return false;
+                    }
 
-                        if ($options['form_params']['token'] !== 'token') {
-                            return false;
-                        }
+                    if ($options['form_params']['user'] !== $message->getUser()->getContact()) {
+                        return false;
+                    }
 
-                        if ($options['form_params']['user'] !== $recipient->getContact()) {
-                            return false;
-                        }
+                    if ($options['form_params']['message'] !== $message->getMessage()) {
+                        return false;
+                    }
 
-                        if ($options['form_params']['message'] !== $message->getContent()) {
-                            return false;
-                        }
-
-                        return true;
-                    })
-                )
-                ->will($this->returnValue(new Response(200)));
-        }
+                    return true;
+                })
+            )
+            ->will($this->returnValue(new Response(200)));
 
         return $httpClient;
     }
@@ -82,23 +77,7 @@ class PushoverTest extends TestCase
     public function testSendSuccess()
     {
         $message = new PushMessage(
-            [
-                new Actor('11111111111')
-            ],
-            'test test test'
-        );
-
-        $this->getPushover($this->getHttpClientWithSuccessResponse($message))->send($message);
-    }
-
-    public function testMultiSendSuccess()
-    {
-        $message = new PushMessage(
-            [
-                new Actor('11111111111'),
-                new Actor('22222222222'),
-                new Actor('33333333333')
-            ],
+            new Actor('11111111111'),
             'test test test'
         );
 
@@ -108,9 +87,7 @@ class PushoverTest extends TestCase
     public function testSendingWithOptions()
     {
         $message = new PushMessage(
-            [
-                new Actor('11111111111')
-            ],
+            new Actor('11111111111'),
             'test test test',
             new Options([
                 'title' => 'test',
@@ -137,9 +114,7 @@ class PushoverTest extends TestCase
     public function testSendingDeviceOption()
     {
         $message = new PushMessage(
-            [
-                new Actor('11111111111')
-            ],
+            new Actor('11111111111'),
             'test test test',
             new Options([
                 'device' => [
@@ -170,9 +145,7 @@ class PushoverTest extends TestCase
         $content = str_pad('test', 600, ' test');
 
         $message = new PushMessage(
-            [
-                new Actor('11111111111')
-            ],
+            new Actor('11111111111'),
             $content
         );
 
@@ -198,9 +171,7 @@ class PushoverTest extends TestCase
         $title = str_pad('title', 200, ' title');
 
         $message = new PushMessage(
-            [
-                new Actor('11111111111')
-            ],
+            new Actor('11111111111'),
             $content,
             new Options(['title' => $title])
         );
@@ -226,9 +197,7 @@ class PushoverTest extends TestCase
         $this->expectExceptionMessage('Push message not sent');
 
         $message = new PushMessage(
-            [
-                new Actor('11111111111')
-            ],
+            new Actor('11111111111'),
             'test test test'
         );
 

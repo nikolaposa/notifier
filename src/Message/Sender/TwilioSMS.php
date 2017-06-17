@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Notify\Message\Sender;
 
 use Notify\Message\SMSMessage;
-use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
@@ -55,15 +54,9 @@ final class TwilioSMS implements MessageSenderInterface
 
         $payload = $this->buildPayload();
 
-        foreach ($this->message->getRecipients() as $recipient) {
-            /* @var $recipient ActorInterface */
+        $response = $this->executeApiRequest($payload);
 
-            $payload = $this->addPayloadTo($payload, $recipient);
-
-            $response = $this->executeApiRequest($payload);
-
-            $this->validateResponse($response);
-        }
+        $this->validateResponse($response);
     }
 
     private function setMessage($message)
@@ -82,16 +75,10 @@ final class TwilioSMS implements MessageSenderInterface
     private function buildPayload()
     {
         return [
+            'To' => $this->message->getTo()->getContact(),
+            'Body' => $this->message->getText(),
             'From' => $this->message->getFrom()->getContact(),
-            'Body' => $this->message->getContent(),
         ];
-    }
-
-    private function addPayloadTo(array $payload, ActorInterface $recipient)
-    {
-        $payload['To'] = $recipient->getContact();
-
-        return $payload;
     }
 
     private function executeApiRequest(array $payload)

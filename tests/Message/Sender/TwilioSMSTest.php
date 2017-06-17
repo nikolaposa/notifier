@@ -26,51 +26,46 @@ class TwilioSMSTest extends TestCase
     {
         $httpClient = $this->createMock(ClientInterface::class);
 
-        $i = 0;
-        foreach ($message->getRecipients() as $recipient) {
-            /* @var $recipient \Notify\Message\Actor\ActorInterface */
-            
-            $httpClient->expects($this->at($i++))
-                ->method('request')
-                ->with(
-                    $this->equalTo('POST'),
-                    $this->callback(function ($url) {
-                        return preg_match('[' . TwilioSMS::API_BASE_URL . '|id]', $url);
-                    }),
-                    $this->callback(function ($options) use ($message, $recipient) {
-                        if (!is_array($options)) {
-                            return false;
-                        }
+        $httpClient->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->equalTo('POST'),
+                $this->callback(function ($url) {
+                    return preg_match('[' . TwilioSMS::API_BASE_URL . '|id]', $url);
+                }),
+                $this->callback(function ($options) use ($message) {
+                    if (!is_array($options)) {
+                        return false;
+                    }
 
-                        if (!isset($options['auth'])) {
-                            return false;
-                        }
+                    if (!isset($options['auth'])) {
+                        return false;
+                    }
 
-                        if (!isset($options['json'])) {
-                            return false;
-                        }
+                    if (!isset($options['json'])) {
+                        return false;
+                    }
 
-                        if (!isset($options['json']['From'], $options['json']['To'], $options['json']['Body'])) {
-                            return false;
-                        }
+                    if (!isset($options['json']['From'], $options['json']['To'], $options['json']['Body'])) {
+                        return false;
+                    }
 
-                        if ($options['json']['From'] !== $message->getFrom()->getContact()) {
-                            return false;
-                        }
+                    if ($options['json']['From'] !== $message->getFrom()->getContact()) {
+                        return false;
+                    }
 
-                        if ($options['json']['To'] !== $recipient->getContact()) {
-                            return false;
-                        }
+                    if ($options['json']['To'] !== $message->getTo()->getContact()) {
+                        return false;
+                    }
 
-                        if ($options['json']['Body'] !== $message->getContent()) {
-                            return false;
-                        }
+                    if ($options['json']['Body'] !== $message->getText()) {
+                        return false;
+                    }
 
-                        return true;
-                    })
-                )
-                ->will($this->returnValue(new Response(204)));
-        }
+                    return true;
+                })
+            )
+            ->will($this->returnValue(new Response(204)));
 
         return $httpClient;
     }
@@ -98,24 +93,7 @@ class TwilioSMSTest extends TestCase
     public function testSendSuccess()
     {
         $message = new SMSMessage(
-            [
-                new Actor('+12222222222')
-            ],
-            'test test test',
-            new Actor('+11111111111')
-        );
-
-        $this->getTwilioSMS($this->getHttpClientWithSuccessResponse($message))->send($message);
-    }
-
-    public function testMultiSendSuccess()
-    {
-        $message = new SMSMessage(
-            [
-                new Actor('+12222222222'),
-                new Actor('+13333333333'),
-                new Actor('+14444444444')
-            ],
+            new Actor('+12222222222'),
             'test test test',
             new Actor('+11111111111')
         );
@@ -129,9 +107,7 @@ class TwilioSMSTest extends TestCase
         $this->expectExceptionMessage('SMS not sent');
 
         $message = new SMSMessage(
-            [
-                new Actor('+12222222222')
-            ],
+            new Actor('+12222222222'),
             'test test test',
             new Actor('+11111111111')
         );
@@ -146,9 +122,7 @@ class TwilioSMSTest extends TestCase
         $this->expectExceptionCode(30001);
 
         $message = new SMSMessage(
-            [
-                new Actor('+12222222222')
-            ],
+            new Actor('+12222222222'),
             'test test test',
             new Actor('+11111111111')
         );
@@ -176,9 +150,7 @@ class TwilioSMSTest extends TestCase
         $this->expectExceptionMessage('Message sender is missing');
 
         $message = new SMSMessage(
-            [
-                new Actor('+12222222222')
-            ],
+            new Actor('+12222222222'),
             'test test test'
         );
 

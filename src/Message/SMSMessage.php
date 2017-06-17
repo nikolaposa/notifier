@@ -6,9 +6,19 @@ namespace Notify\Message;
 
 use Notify\Message\Actor\ActorInterface;
 
-class SMSMessage extends AbstractMessage
+class SMSMessage
 {
     const CONTENT_LENGTH_LIMIT = 160;
+
+    /**
+     * @var ActorInterface
+     */
+    protected $to;
+
+    /**
+     * @var string
+     */
+    protected $text;
 
     /**
      * @var ActorInterface
@@ -16,27 +26,32 @@ class SMSMessage extends AbstractMessage
     protected $from;
 
     public function __construct(
-        array $recipients,
-        string $content,
+        ActorInterface $to,
+        string $text,
         ActorInterface $from = null
     ) {
-        parent::__construct($recipients, $content);
-
+        $this->to = $to;
+        $this->text = $text;
         $this->from = $from;
     }
-
-    public function getContent() : string
+    
+    public function getTo() : ActorInterface
     {
-        $content = $this->content;
-
-        return strlen($content) > self::CONTENT_LENGTH_LIMIT
-            ? substr($content, 0, self::CONTENT_LENGTH_LIMIT)
-            : $content;
+        return $this->to;
     }
 
-    public function getRawContent() : string
+    public function getText() : string
     {
-        return $this->content;
+        $text = $this->text;
+
+        return strlen($text) > self::CONTENT_LENGTH_LIMIT
+            ? substr($text, 0, self::CONTENT_LENGTH_LIMIT)
+            : $text;
+    }
+
+    public function getRawText() : string
+    {
+        return $this->text;
     }
 
     public function getFrom()

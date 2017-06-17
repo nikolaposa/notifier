@@ -69,7 +69,7 @@ final class NativeMailer implements MessageSenderInterface
 
     private function buildMailTo()
     {
-        $recipientsString = array_map(function (ActorInterface $recipient) {
+        $toString = array_map(function (ActorInterface $recipient) {
             $to = $recipient->getContact();
 
             if ($recipient->getName() !== '') {
@@ -77,9 +77,9 @@ final class NativeMailer implements MessageSenderInterface
             }
 
             return $to;
-        }, $this->message->getRecipients());
+        }, $this->message->getTo());
 
-        return implode(',', $recipientsString);
+        return implode(',', $toString);
     }
 
     private function buildMailSubject()
@@ -89,7 +89,7 @@ final class NativeMailer implements MessageSenderInterface
 
     private function buildMailMessage()
     {
-        return wordwrap($this->message->getContent(), $this->maxColumnWidth);
+        return wordwrap($this->message->getBody(), $this->maxColumnWidth);
     }
 
     private function buildMailHeaders()

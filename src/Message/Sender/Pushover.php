@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Notify\Message\Sender;
 
 use Notify\Message\PushMessage;
-use Notify\Message\Actor\ActorInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
@@ -54,20 +53,15 @@ final class Pushover implements MessageSenderInterface
 
         $payload = $this->buildPayload();
 
-        foreach ($this->message->getRecipients() as $recipient) {
-            /* @var $recipient ActorInterface */
+        $response = $this->executeApiRequest($payload);
 
-            $payload = $this->addPayloadUser($payload, $recipient);
-
-            $response = $this->executeApiRequest($payload);
-
-            $this->validateResponse($response);
-        }
+        $this->validateResponse($response);
     }
 
     private function buildPayload()
     {
         return array_merge($this->buildPayloadOptions(), [
+            'user' => $this->buildPayloadUser(),
             'message' => $this->buildPayloadMessageString(),
         ]);
     }
@@ -85,7 +79,7 @@ final class Pushover implements MessageSenderInterface
 
     private function buildPayloadMessageString()
     {
-        $message = $this->message->getContent();
+        $message = $this->message->getMessage();
 
         $messageLimit = self::MESSAGE_LIMIT;
 
@@ -100,11 +94,9 @@ final class Pushover implements MessageSenderInterface
         return $message;
     }
 
-    private function addPayloadUser(array $payload, ActorInterface $recipient)
+    private function buildPayloadUser()
     {
-        $payload['user'] = $recipient->getContact();
-
-        return $payload;
+        return $this->message->getUser()->getContact();
     }
 
     private function executeApiRequest(array $payload)
