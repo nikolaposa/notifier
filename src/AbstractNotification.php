@@ -21,14 +21,14 @@ abstract class AbstractNotification implements NotificationInterface
 
     public function getMessage(string $channel, RecipientInterface $recipient)
     {
+        $messageFactory = $this->getMessageFactory($channel);
+        
         $recipients = [
             new Actor(
                 $recipient->getRecipientContact($channel),
                 $recipient->getRecipientName()
             ),
         ];
-
-        $messageFactory = $this->getMessageFactory($channel);
 
         return $this->$messageFactory($recipients);
     }
