@@ -15,11 +15,11 @@ interface NotificationInterface
 
     /**
      * @param string $channel
-     * @param array $recipients
+     * @param RecipientInterface $recipient
      *
      * @throws UnsupportedChannelException
      *
      * @return object
      */
-    public function getMessage(string $channel, array $recipients);
+    public function getMessage(string $channel, RecipientInterface $recipient);
 }

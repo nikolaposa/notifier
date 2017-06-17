@@ -21,22 +21,18 @@ final class Notifier implements NotifierInterface
 
     public function notify(Recipients $recipients, NotificationInterface $notification)
     {
-        foreach ($notification->getSupportedChannels() as $channel) {
-            $messageSender = $this->getMessageSender($channel);
-            $notificationDerivative = new NotificationDerivative($channel, $notification);
+        foreach ($recipients as $recipient) {
+            /* @var $recipient RecipientInterface */
 
-            $recipients = $recipients->filter($notificationDerivative);
+            foreach ($notification->getSupportedChannels() as $channel) {
+                $messageSender = $this->getMessageSender($channel);
 
-            if ($recipients->isEmpty()) {
-                return;
-            }
+                if (! $recipient->shouldReceive($notification, $channel)) {
+                    continue;
+                }
 
-            $message = $notification->getMessage($channel, $recipients->toMessageRecipients($notificationDerivative));
-            $messageSender->send($message);
-
-            foreach ($recipients as $recipient) {
-                /* @var $recipient RecipientInterface */
-                $recipient->onNotified($notificationDerivative);
+                $message = $notification->getMessage($channel, $recipient);
+                $messageSender->send($message);
             }
         }
     }

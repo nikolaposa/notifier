@@ -11,7 +11,7 @@
 
 namespace Notify\Example;
 
-use Notify\NotificationDerivative;
+use Notify\NotificationInterface;
 use Notify\RecipientInterface;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
@@ -33,8 +33,6 @@ final class User implements RecipientInterface
     private $email;
 
     private $phoneNumber;
-
-    private $notified = [];
 
     public function __construct(
         $username,
@@ -75,10 +73,8 @@ final class User implements RecipientInterface
         return $this->phoneNumber;
     }
 
-    public function getRecipientContact(NotificationDerivative $notificationDerivative) : string
+    public function getRecipientContact(string $channel) : string
     {
-        $channel = $notificationDerivative->getChannel();
-
         switch ($channel) {
             case 'email':
                 return $this->email;
@@ -97,19 +93,9 @@ final class User implements RecipientInterface
         return $this->username;
     }
 
-    public function shouldBeNotified(NotificationDerivative $notificationDerivative) : bool
+    public function shouldReceive(NotificationInterface $notification, string $channel) : bool
     {
-        $channel = $notificationDerivative->getChannel();
-
         return in_array($channel, ['email', 'sms'], true);
-    }
-
-    public function onNotified(NotificationDerivative $notificationDerivative)
-    {
-        $channel = $notificationDerivative->getChannel();
-        $notification = $notificationDerivative->getNotification();
-
-        $this->notified[get_class($notification)][$channel] = true;
     }
 }
 

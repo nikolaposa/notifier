@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Notify;
 
 use Notify\Exception\UnsupportedChannelException;
+use Notify\Message\Actor\Actor;
 
 abstract class AbstractNotification implements NotificationInterface
 {
@@ -18,8 +19,15 @@ abstract class AbstractNotification implements NotificationInterface
         return $this->getMessageFactoryNames();
     }
 
-    public function getMessage(string $channel, array $recipients)
+    public function getMessage(string $channel, RecipientInterface $recipient)
     {
+        $recipients = [
+            new Actor(
+                $recipient->getRecipientContact($channel),
+                $recipient->getRecipientName()
+            ),
+        ];
+
         $messageFactory = $this->getMessageFactory($channel);
 
         return $this->$messageFactory($recipients);

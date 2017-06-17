@@ -64,15 +64,13 @@ final class NewCommentNotification extends AbstractNotification
         $this->comment = $comment;
     }
 
-    protected function createEmailMessages(array $recipients)
+    protected function createEmailMessage(array $recipients)
     {
-        return [
-            new EmailMessage(
-                $recipients,
-                'New comment',
-                sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
-            )
-        ];
+        return new EmailMessage(
+           $recipients,
+           'New comment',
+           sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
+       );
     }
 }
 ```
