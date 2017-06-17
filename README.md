@@ -24,31 +24,23 @@ Notifications can be sent via different delivery channels, for example email, SM
 
 ### Creating notifications
 
-Notifications are represented by the `NotificationInterface`. Each notification should provide its name, list of supported channels, as well as message object for some channel when it is being sent.
+Notifications are represented by the `NotificationInterface`. Each notification should provide list of supported channels, as well as message object for some channel when it is to be sent.
 
-`AbstractNotification` facilitates notifications creation in terms of implementing `getSupportedChannels()` and `getMessages()` methods. In turn, you need to define message factory methods named in accordance with a pre-defined template, for example `createEmailMessage`, whereas `Email` is the name of a channel, which is normalized and dynamically reflected as a channel that it is supported by the particular notification.
+`AbstractNotification` facilitates notifications creation in terms of implementing `getSupportedChannels()` and `getMessage()` methods. In turn, you need to define message factory methods named in accordance with a pre-defined template, for example `createEmailMessage`, whereas `email` is the name of a channel, which is dynamically reflected as a channel that it is supported by the particular notification.
 
 ### Channels / Messages
 
-Out of the box, Notify provides sending notifications in form of email, SMS and mobile push messages.
-
-`MessageInterface` implementations are objects that represent actual message to be sent over some channel and they are modeled in accordance with the type of a channel. Examples are `EmailMessage`, `SMSMessage`, etc. Typically, every message provides list of recipients and content that is to be
-sent. Messages are sent using `MessageSenderInterface` implementations.
+Out of the box, Notify enables for sending notifications via email, SMS and mobile push channels, by providing appropriate message objects and corresponding sender implementations. Examples are `EmailMessage`, `SMSMessage`, etc. Typically, every message provides list of recipients and content. Messages are sent using `MessageSenderInterface` implementations.
 
 ### Notifier
 
-`NotiferInterface` is a component that performs actual sending of the Notification object. `Notifier` immediately sends notification messages using appropriate message senders.
+`NotiferInterface` is a central component that performs actual sending of the Notification object. Default implementation - `Notifier`, immediately sends notification messages using provided message senders.
 
 This concept allows defining custom handling strategies, for example some that will put notification into a queue, in order to send it in a background job.
-
-### Notification recipients
-
-In order to send a Notification using a strategy, recipients must also be provided. Recipients are defined using the `NotificationRecipientInterface` and it will typically be implemented by a class that represents user in your application.
 
 ## Examples
 
 **Sample notification**
-
 ```php
 <?php
 
@@ -72,11 +64,11 @@ final class NewCommentNotification extends AbstractNotification
         $this->comment = $comment;
     }
 
-    protected function createEmailMessages(Recipients $messageRecipients)
+    protected function createEmailMessages(array $recipients)
     {
         return [
             new EmailMessage(
-                $messageRecipients,
+                $recipients,
                 'New comment',
                 sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
             )
@@ -86,10 +78,10 @@ final class NewCommentNotification extends AbstractNotification
 ```
 
 **Sending notifications**
-
 ```php
 use Notify\Message\Sender\NativeMailer;
 use Notify\Notifier;
+use Notify\Recipients;
 
 $newCommentNotification = new NewCommentNotification($post, $comment);
 
@@ -98,7 +90,7 @@ $moderators = $this->getUserRepository()->getModerators();
 $notifier = new Notifier([
     'email' => new NativeMailer(),
 ]);
-$notifier->notify($moderators, $newCommentNotification);
+$notifier->notify(Recipients::fromArray($moderators), $newCommentNotification);
 ```
 
 ## Credits

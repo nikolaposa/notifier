@@ -11,8 +11,8 @@
 
 namespace Notify\Example;
 
+use Notify\NotificationDerivative;
 use Notify\RecipientInterface;
-use Notify\NotificationInterface;
 use Notify\AbstractNotification;
 use Notify\Message\EmailMessage;
 use Notify\Message\SMSMessage;
@@ -75,13 +75,10 @@ final class User implements RecipientInterface
         return $this->phoneNumber;
     }
 
-    public function getRecipientName() : string
+    public function getRecipientContact(NotificationDerivative $notificationDerivative) : string
     {
-        return $this->username;
-    }
+        $channel = $notificationDerivative->getChannel();
 
-    public function getRecipientContact(string $channel, NotificationInterface $notification) : string
-    {
         switch ($channel) {
             case 'email':
                 return $this->email;
@@ -95,13 +92,23 @@ final class User implements RecipientInterface
         }
     }
 
-    public function acceptsNotification(NotificationInterface $notification, string $channel) : bool
+    public function getRecipientName() : string
     {
+        return $this->username;
+    }
+
+    public function shouldBeNotified(NotificationDerivative $notificationDerivative) : bool
+    {
+        $channel = $notificationDerivative->getChannel();
+
         return in_array($channel, ['email', 'sms'], true);
     }
 
-    public function onNotified(NotificationInterface $notification, string $channel)
+    public function onNotified(NotificationDerivative $notificationDerivative)
     {
+        $channel = $notificationDerivative->getChannel();
+        $notification = $notificationDerivative->getNotification();
+
         $this->notified[get_class($notification)][$channel] = true;
     }
 }
@@ -200,25 +207,21 @@ final class NewCommentNotification extends AbstractNotification
         $this->comment = $comment;
     }
 
-    protected function createEmailMessage(Recipients $messageRecipients)
+    protected function createEmailMessage(array $recipients)
     {
-        return [
-            new EmailMessage(
-                $messageRecipients,
-                'New comment',
-                sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
-            ),
-        ];
+        return new EmailMessage(
+            $recipients,
+            'New comment',
+            sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
+        );
     }
 
-    protected function createSmsMessage(Recipients $recipients)
+    protected function createSmsMessage(array $recipients)
     {
-        return [
-            new SMSMessage(
-                $recipients,
-                sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
-            )
-        ];
+        return new SMSMessage(
+            $recipients,
+            sprintf('You have a new comment on your "%s" blog post', $this->post->getTitle())
+        );
     }
 }
 
@@ -238,9 +241,9 @@ $notifyStrategy = new Notifier([
 $newCommentNotification = new NewCommentNotification($post, $comment);
 
 $notifyStrategy->notify(
-    [
+    Recipients::fromArray([
         $author
-    ],
+    ]),
     $newCommentNotification
 );
 

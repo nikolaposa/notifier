@@ -7,10 +7,10 @@ namespace Notify;
 interface NotifierInterface
 {
     /**
-     * @param array $notificationRecipients
+     * @param Recipients $recipients
      * @param NotificationInterface $notification
      *
      * @return void
      */
-    public function notify(array $notificationRecipients, NotificationInterface $notification);
+    public function notify(Recipients $recipients, NotificationInterface $notification);
 }

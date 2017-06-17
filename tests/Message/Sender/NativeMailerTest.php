@@ -7,7 +7,6 @@ namespace Notify\Tests\Message\Sender;
 use PHPUnit\Framework\TestCase;
 use Notify\Message\Sender\NativeMailer;
 use Notify\Message\EmailMessage;
-use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Message\Options;
 use Notify\Tests\TestAsset\Message\DummyMessage;
@@ -48,10 +47,10 @@ class NativeMailerTest extends TestCase
     public function testSendWithDefaultOptions()
     {
         $message = new EmailMessage(
-            new Recipients([
+            [
                 new Actor('test1@example.com', 'Test1'),
                 new Actor('test2@example.com', 'Test2'),
-            ]),
+            ],
             'Test',
             'test test test'
         );
@@ -73,9 +72,9 @@ class NativeMailerTest extends TestCase
         $this->expectException(UnsupportedMessageException::class);
 
         $message = new DummyMessage(
-            new Recipients([
+            [
                 new Actor('test1@example.com')
-            ]),
+            ],
             'test test test'
         );
 
@@ -85,10 +84,10 @@ class NativeMailerTest extends TestCase
     public function testEmailContentWordWrap()
     {
         $message = new EmailMessage(
-            new Recipients([
+            [
                 new Actor('test1@example.com'),
                 new Actor('test2@example.com'),
-            ]),
+            ],
             'Test',
             'test test test'
         );
@@ -104,10 +103,10 @@ class NativeMailerTest extends TestCase
     public function testCustomEmailContentType()
     {
         $message = new EmailMessage(
-            new Recipients([
+            [
                 new Actor('test1@example.com'),
                 new Actor('test2@example.com'),
-            ]),
+            ],
             'Test',
             'test test test',
             null,
@@ -127,9 +126,9 @@ class NativeMailerTest extends TestCase
     public function testEmailSenderHeaders()
     {
         $message = new EmailMessage(
-            new Recipients([
+            [
                 new Actor('test1@example.com'),
-            ]),
+            ],
             'Test',
             'test test test',
             new Actor('john.doe@example.com')
@@ -148,10 +147,10 @@ class NativeMailerTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $message = new EmailMessage(
-            new Recipients([
+            [
                 new Actor('test1@example.com'),
                 new Actor('test2@example.com'),
-            ]),
+            ],
             'Test',
             'test test test'
         );

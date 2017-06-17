@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Notify\Message;
 
-use Notify\Recipients;
 use Notify\Message\Actor\ActorInterface;
 
 class EmailMessage extends AbstractMessage
@@ -22,7 +21,7 @@ class EmailMessage extends AbstractMessage
     protected $from;
 
     public function __construct(
-        Recipients $recipients,
+        array $recipients,
         string $subject,
         string $content,
         ActorInterface $from = null,

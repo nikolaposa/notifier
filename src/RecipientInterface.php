@@ -7,31 +7,28 @@ namespace Notify;
 interface RecipientInterface
 {
     /**
+     * @param NotificationDerivative $notificationDerivative
+     *
+     * @return string
+     */
+    public function getRecipientContact(NotificationDerivative $notificationDerivative) : string;
+
+    /**
      * @return string
      */
     public function getRecipientName() : string;
 
     /**
-     * @param string $channel
-     * @param NotificationInterface $notification
-     *
-     * @return string
-     */
-    public function getRecipientContact(string $channel, NotificationInterface $notification) : string;
-
-    /**
-     * @param NotificationInterface $notification
-     * @param string $channel
+     * @param NotificationDerivative $notificationDerivative
      *
      * @return bool
      */
-    public function acceptsNotification(NotificationInterface $notification, string $channel) : bool;
+    public function shouldBeNotified(NotificationDerivative $notificationDerivative) : bool;
 
     /**
-     * @param NotificationInterface $notification
-     * @param string $channel
+     * @param NotificationDerivative $notificationDerivative
      *
      * @return void
      */
-    public function onNotified(NotificationInterface $notification, string $channel);
+    public function onNotified(NotificationDerivative $notificationDerivative);
 }

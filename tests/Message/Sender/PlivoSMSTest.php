@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Notify\Message\Sender\PlivoSMS;
 use GuzzleHttp\ClientInterface;
 use Notify\Message\SMSMessage;
-use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use GuzzleHttp\Psr7\Response;
@@ -89,9 +88,9 @@ class PlivoSMSTest extends TestCase
     public function testSendSuccess()
     {
         $message = new SMSMessage(
-            new Recipients([
+            [
                 new Actor('+12222222222')
-            ]),
+            ],
             'test test test',
             new Actor('+11111111111')
         );
@@ -102,11 +101,11 @@ class PlivoSMSTest extends TestCase
     public function testMultiSendSuccess()
     {
         $message = new SMSMessage(
-            new Recipients([
+            [
                 new Actor('+12222222222'),
                 new Actor('+13333333333'),
                 new Actor('+14444444444')
-            ]),
+            ],
             'test test test',
             new Actor('+11111111111')
         );
@@ -120,9 +119,9 @@ class PlivoSMSTest extends TestCase
         $this->expectExceptionMessage('SMS not sent');
 
         $message = new SMSMessage(
-            new Recipients([
+            [
                 new Actor('+12222222222')
-            ]),
+            ],
             'test test test',
             new Actor('+11111111111')
         );
@@ -135,9 +134,9 @@ class PlivoSMSTest extends TestCase
         $this->expectException(UnsupportedMessageException::class);
 
         $message = new DummyMessage(
-            new Recipients([
+            [
                 new Actor('+12222222222')
-            ]),
+            ],
             'test test test'
         );
 
@@ -150,9 +149,9 @@ class PlivoSMSTest extends TestCase
         $this->expectExceptionMessage('Message sender is missing');
 
         $message = new SMSMessage(
-            new Recipients([
+            [
                 new Actor('+12222222222')
-            ]),
+            ],
             'test test test'
         );
 

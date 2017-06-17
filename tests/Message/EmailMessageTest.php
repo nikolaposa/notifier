@@ -6,7 +6,6 @@ namespace Notify\Tests\Message;
 
 use PHPUnit\Framework\TestCase;
 use Notify\Message\EmailMessage;
-use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Message\Actor\ActorInterface;
 use Notify\Message\Options;
@@ -16,14 +15,14 @@ class EmailMessageTest extends TestCase
     public function testCreatingEmailWithRequiredArguments()
     {
         $message = new EmailMessage(
-            new Recipients([
+            [
                 new Actor('john@example.com', 'Test')
-            ]),
+            ],
             'Test',
             'test test test'
         );
 
-        $this->assertInstanceOf(Recipients::class, $message->getRecipients());
+        $this->assertCount(1, $message->getRecipients());
         $this->assertEquals('Test', $message->getSubject());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertNull($message->getFrom());
@@ -33,16 +32,16 @@ class EmailMessageTest extends TestCase
     public function testCreatingEmailWithAllArguments()
     {
         $message = new EmailMessage(
-            new Recipients([
+            [
                 new Actor('john@example.com', 'Test')
-            ]),
+            ],
             'Test',
             'test test test',
             new Actor('test@example.com', 'Test'),
             new Options(['html' => true])
         );
 
-        $this->assertInstanceOf(Recipients::class, $message->getRecipients());
+        $this->assertCount(1, $message->getRecipients());
         $this->assertEquals('Test', $message->getSubject());
         $this->assertEquals('test test test', $message->getContent());
         $this->assertInstanceOf(ActorInterface::class, $message->getFrom());

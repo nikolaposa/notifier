@@ -77,7 +77,7 @@ final class NativeMailer implements MessageSenderInterface
             }
 
             return $to;
-        }, $this->message->getRecipients()->toArray());
+        }, $this->message->getRecipients());
 
         return implode(',', $recipientsString);
     }

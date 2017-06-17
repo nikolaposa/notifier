@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Notify\Message;
 
-use Notify\Recipients;
+use Notify\Message\Actor\ActorInterface;
 
 abstract class AbstractMessage
 {
     /**
-     * @var Recipients
+     * @var ActorInterface[]
      */
     protected $recipients;
 
@@ -18,13 +18,13 @@ abstract class AbstractMessage
      */
     protected $content;
 
-    public function __construct(Recipients $recipients, string $content)
+    public function __construct(array $recipients, string $content)
     {
         $this->recipients = $recipients;
         $this->content = $content;
     }
 
-    public function getRecipients() : Recipients
+    public function getRecipients() : array
     {
         return $this->recipients;
     }

@@ -18,7 +18,7 @@ abstract class AbstractNotification implements NotificationInterface
         return $this->getMessageFactoryNames();
     }
 
-    public function getMessages(string $channel, Recipients $recipients) : array
+    public function getMessage(string $channel, array $recipients)
     {
         $messageFactory = $this->getMessageFactory($channel);
 

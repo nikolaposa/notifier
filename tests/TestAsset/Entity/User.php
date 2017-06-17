@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Notify\Tests\TestAsset\Entity;
 
+use Notify\NotificationDerivative;
 use Notify\RecipientInterface;
-use Notify\NotificationInterface;
 
 class User implements RecipientInterface
 {
@@ -24,13 +24,10 @@ class User implements RecipientInterface
         $this->contacts = $contacts;
     }
 
-    public function getRecipientName() : string
+    public function getRecipientContact(NotificationDerivative $notificationDerivative) : string
     {
-        return 'John Doe';
-    }
+        $channel = $notificationDerivative->getChannel();
 
-    public function getRecipientContact(string $channel, NotificationInterface $notification) : string
-    {
         if (!array_key_exists($channel, $this->contacts)) {
             throw new \RuntimeException(sprintf(
                 'User does not accept notifications through %s channel',
@@ -41,13 +38,23 @@ class User implements RecipientInterface
         return $this->contacts[$channel];
     }
 
-    public function acceptsNotification(NotificationInterface $notification, string $channel) : bool
+    public function getRecipientName() : string
     {
+        return 'John Doe';
+    }
+
+    public function shouldBeNotified(NotificationDerivative $notificationDerivative) : bool
+    {
+        $channel = $notificationDerivative->getChannel();
+
         return array_key_exists($channel, $this->contacts);
     }
 
-    public function onNotified(NotificationInterface $notification, string $channel)
+    public function onNotified(NotificationDerivative $notificationDerivative)
     {
+        $channel = $notificationDerivative->getChannel();
+        $notification = $notificationDerivative->getNotification();
+
         $this->notified[get_class($notification)][$channel] = true;
     }
 }

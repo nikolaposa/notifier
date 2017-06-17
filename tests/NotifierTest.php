@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Notify\Tests\Strategy;
+namespace Notify\Tests;
 
+use Notify\Recipients;
 use PHPUnit\Framework\TestCase;
 use Notify\Notifier;
 use Notify\Tests\TestAsset\Message\TestMessageSender;
@@ -31,11 +32,11 @@ class NotifierTest extends TestCase
             'email' => $this->messageSender,
         ]);
 
-        $notifier->notify([
+        $notifier->notify(Recipients::fromArray([
             new User([
                 'email' => 'test@example.com'
             ]),
-        ], new TestNotification());
+        ]), new TestNotification());
 
         $sentMessages = $this->messageSender->getMessages();
 
@@ -50,11 +51,11 @@ class NotifierTest extends TestCase
             'foobar' => $this->messageSender,
         ]);
 
-        $notifier->notify([
+        $notifier->notify(Recipients::fromArray([
             new User([
                 'email' => 'test@example.com'
             ]),
-        ], new TestNotification());
+        ]), new TestNotification());
     }
 
     public function testNotificationMessageNotSentIfRecipientDoesntAcceptRelatedChannel()
@@ -63,11 +64,11 @@ class NotifierTest extends TestCase
             'email' => $this->messageSender,
         ]);
 
-        $notifier->notify([
+        $notifier->notify(Recipients::fromArray([
             new User([
                 'phone' => '123456'
             ]),
-        ], new TestNotification());
+        ]), new TestNotification());
 
         $sentMessages = $this->messageSender->getMessages();
         

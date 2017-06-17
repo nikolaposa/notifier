@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Notify\Message;
 
-use Notify\Recipients;
 use Notify\Message\Actor\ActorInterface;
 
 class SMSMessage extends AbstractMessage
@@ -17,7 +16,7 @@ class SMSMessage extends AbstractMessage
     protected $from;
 
     public function __construct(
-        Recipients $recipients,
+        array $recipients,
         string $content,
         ActorInterface $from = null
     ) {

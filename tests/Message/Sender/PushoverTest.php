@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Notify\Message\Sender\Pushover;
 use GuzzleHttp\ClientInterface;
 use Notify\Message\PushMessage;
-use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Tests\TestAsset\Message\DummyMessage;
 use GuzzleHttp\Psr7\Response;
@@ -83,9 +82,9 @@ class PushoverTest extends TestCase
     public function testSendSuccess()
     {
         $message = new PushMessage(
-            new Recipients([
+            [
                 new Actor('11111111111')
-            ]),
+            ],
             'test test test'
         );
 
@@ -95,11 +94,11 @@ class PushoverTest extends TestCase
     public function testMultiSendSuccess()
     {
         $message = new PushMessage(
-            new Recipients([
+            [
                 new Actor('11111111111'),
                 new Actor('22222222222'),
                 new Actor('33333333333')
-            ]),
+            ],
             'test test test'
         );
 
@@ -109,9 +108,9 @@ class PushoverTest extends TestCase
     public function testSendingWithOptions()
     {
         $message = new PushMessage(
-            new Recipients([
+            [
                 new Actor('11111111111')
-            ]),
+            ],
             'test test test',
             new Options([
                 'title' => 'test',
@@ -138,9 +137,9 @@ class PushoverTest extends TestCase
     public function testSendingDeviceOption()
     {
         $message = new PushMessage(
-            new Recipients([
+            [
                 new Actor('11111111111')
-            ]),
+            ],
             'test test test',
             new Options([
                 'device' => [
@@ -171,9 +170,9 @@ class PushoverTest extends TestCase
         $content = str_pad('test', 600, ' test');
 
         $message = new PushMessage(
-            new Recipients([
+            [
                 new Actor('11111111111')
-            ]),
+            ],
             $content
         );
 
@@ -199,9 +198,9 @@ class PushoverTest extends TestCase
         $title = str_pad('title', 200, ' title');
 
         $message = new PushMessage(
-            new Recipients([
+            [
                 new Actor('11111111111')
-            ]),
+            ],
             $content,
             new Options(['title' => $title])
         );
@@ -227,9 +226,9 @@ class PushoverTest extends TestCase
         $this->expectExceptionMessage('Push message not sent');
 
         $message = new PushMessage(
-            new Recipients([
+            [
                 new Actor('11111111111')
-            ]),
+            ],
             'test test test'
         );
 
@@ -241,9 +240,9 @@ class PushoverTest extends TestCase
         $this->expectException(UnsupportedMessageException::class);
 
         $message = new DummyMessage(
-            new Recipients([
+            [
                 new Actor('11111111111')
-            ]),
+            ],
             'test test test'
         );
 

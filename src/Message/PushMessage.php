@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Notify\Message;
 
-use Notify\Recipients;
-
 class PushMessage extends AbstractMessage
 {
     use HasOptionsTrait;
 
     public function __construct(
-        Recipients $recipients,
+        array $recipients,
         string $content,
         Options $options = null
     ) {

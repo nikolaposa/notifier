@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Notify\Tests\Notification;
+namespace Notify\Tests;
 
-use Notify\Recipients;
+use Notify\Message\Actor\Actor;
 use Notify\NotificationInterface;
 use PHPUnit\Framework\TestCase;
 use Notify\Tests\TestAsset\Notification\TestNotification;
-use Notify\Tests\TestAsset\Entity\User;
 use Notify\Message\EmailMessage;
 
 class NotificationTest extends TestCase
@@ -34,16 +33,12 @@ class NotificationTest extends TestCase
 
     public function testCreatingMessage()
     {
-        $emailMessages = $this->notification->getMessages(
+        $emailMessage = $this->notification->getMessage(
             'email',
-            new Recipients([
-                new User([
-                    'email' => 'test@example.com'
-                ])
-            ])
+            [
+                new Actor('test@example.com'),
+            ]
         );
-
-        $emailMessage = current($emailMessages);
 
         $this->assertInstanceOf(EmailMessage::class, $emailMessage);
     }
