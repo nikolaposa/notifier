@@ -29,12 +29,7 @@ class Options
 
         return $this->options[$name];
     }
-
-    public function set($name, $value)
-    {
-        $this->options[$name] = $value;
-    }
-
+    
     public function toArray() : array
     {
         return $this->options;

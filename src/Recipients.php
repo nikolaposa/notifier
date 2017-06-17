@@ -48,11 +48,6 @@ class Recipients implements Countable, IteratorAggregate
         }));
     }
 
-    public function toArray() : array
-    {
-        return $this->recipients;
-    }
-
     public function toMessageRecipients(NotificationDerivative $notificationDerivative) : array
     {
         return array_map(function (RecipientInterface $recipient) use ($notificationDerivative) {
