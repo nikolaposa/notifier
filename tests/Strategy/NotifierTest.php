@@ -1,13 +1,6 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Tests\Strategy;
 
@@ -18,10 +11,7 @@ use Notify\Tests\TestAsset\Notification\TestNotification;
 use Notify\Tests\TestAsset\Entity\User;
 use Notify\Exception\UnhandledChannelException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
-class DefaultNotifyStrategyTest extends TestCase
+class NotifierTest extends TestCase
 {
     /**
      * @var TestMessageSender
@@ -37,11 +27,11 @@ class DefaultNotifyStrategyTest extends TestCase
 
     public function testSendingNotification()
     {
-        $strategy = new Notifier([
+        $notifier = new Notifier([
             'email' => $this->messageSender,
         ]);
 
-        $strategy->notify([
+        $notifier->notify([
             new User([
                 'email' => 'test@example.com'
             ]),
@@ -56,11 +46,11 @@ class DefaultNotifyStrategyTest extends TestCase
     {
         $this->expectException(UnhandledChannelException::class);
 
-        $strategy = new Notifier([
+        $notifier = new Notifier([
             'foobar' => $this->messageSender,
         ]);
 
-        $strategy->notify([
+        $notifier->notify([
             new User([
                 'email' => 'test@example.com'
             ]),
@@ -69,11 +59,11 @@ class DefaultNotifyStrategyTest extends TestCase
 
     public function testNotificationMessageNotSentIfRecipientDoesntAcceptRelatedChannel()
     {
-        $strategy = new Notifier([
+        $notifier = new Notifier([
             'email' => $this->messageSender,
         ]);
 
-        $strategy->notify([
+        $notifier->notify([
             new User([
                 'phone' => '123456'
             ]),

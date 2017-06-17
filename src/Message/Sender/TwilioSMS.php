@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message\Sender;
 
@@ -20,9 +13,6 @@ use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\IncompleteMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 final class TwilioSMS implements MessageSenderInterface
 {
     const API_BASE_URL = 'https://api.twilio.com';
@@ -59,9 +49,6 @@ final class TwilioSMS implements MessageSenderInterface
         $this->httpClient = $httpClient;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function send($message)
     {
         $this->setMessage($message);
@@ -81,11 +68,11 @@ final class TwilioSMS implements MessageSenderInterface
 
     private function setMessage($message)
     {
-        if (!$message instanceof SMSMessage) {
+        if (! $message instanceof SMSMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
         }
 
-        if (!$message->hasSender()) {
+        if (! $message->hasFrom()) {
             throw new IncompleteMessageException('Message sender is missing');
         }
 
@@ -95,7 +82,7 @@ final class TwilioSMS implements MessageSenderInterface
     private function buildPayload()
     {
         return [
-            'From' => $this->message->getSender()->getContact(),
+            'From' => $this->message->getFrom()->getContact(),
             'Body' => $this->message->getContent(),
         ];
     }
@@ -127,7 +114,7 @@ final class TwilioSMS implements MessageSenderInterface
             return;
         }
 
-        $error = json_decode($response->getBody(), true);
+        $error = json_decode((string) $response->getBody(), true);
 
         if (null === $error) {
             throw new RuntimeException('SMS not sent');

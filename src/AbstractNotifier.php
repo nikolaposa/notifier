@@ -1,22 +1,12 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify;
 
 use Notify\Exception\UnhandledChannelException;
 use Notify\Message\Sender\MessageSenderInterface;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 abstract class AbstractNotifier implements NotifierInterface
 {
     /**
@@ -28,13 +18,7 @@ abstract class AbstractNotifier implements NotifierInterface
     {
         $this->messageSenders = $messageSenders;
     }
-
-    /**
-     * @param array $recipients
-     * @param NotificationInterface $notification
-     *
-     * @return void
-     */
+    
     protected function notifyIndividually(array $recipients, NotificationInterface $notification)
     {
         foreach ($notification->getSupportedChannels() as $channel) {
@@ -44,7 +28,7 @@ abstract class AbstractNotifier implements NotifierInterface
                 return $recipient->acceptsNotification($notification, $channel);
             });
 
-            if (empty($recipients)) {
+            if (0 === count($recipients)) {
                 return;
             }
 
@@ -55,6 +39,7 @@ abstract class AbstractNotifier implements NotifierInterface
             }
 
             foreach ($recipients as $recipient) {
+                /* @var $recipient RecipientInterface */
                 $recipient->onNotified($notification, $channel);
             }
         }

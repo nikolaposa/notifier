@@ -1,21 +1,11 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message;
 
 use Notify\Recipients;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 abstract class AbstractMessage
 {
     /**
@@ -34,12 +24,12 @@ abstract class AbstractMessage
         $this->content = $content;
     }
 
-    public function getRecipients()
+    public function getRecipients() : Recipients
     {
         return $this->recipients;
     }
 
-    public function getContent()
+    public function getContent() : string
     {
         return $this->content;
     }

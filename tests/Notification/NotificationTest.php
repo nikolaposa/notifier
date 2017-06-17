@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Tests\Notification;
 
@@ -18,9 +11,6 @@ use Notify\Tests\TestAsset\Notification\TestNotification;
 use Notify\Tests\TestAsset\Entity\User;
 use Notify\Message\EmailMessage;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class NotificationTest extends TestCase
 {
     /**

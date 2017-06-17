@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Notify;
 
 use Countable;
@@ -8,9 +10,6 @@ use ArrayIterator;
 use JsonSerializable;
 use Notify\Message\Actor\ActorInterface;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class Recipients implements Countable, IteratorAggregate, JsonSerializable
 {
     /**
@@ -30,7 +29,7 @@ class Recipients implements Countable, IteratorAggregate, JsonSerializable
 
     public function isEmpty()
     {
-        return empty($this->recipients);
+        return (0 === $this->count());
     }
 
     public function getIterator()

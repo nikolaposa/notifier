@@ -1,22 +1,11 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify;
 
 use Notify\Exception\UnsupportedChannelException;
-use Notify\Recipients;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 abstract class AbstractNotification implements NotificationInterface
 {
     /**
@@ -24,7 +13,7 @@ abstract class AbstractNotification implements NotificationInterface
      */
     private $messageFactories;
 
-    public function getSupportedChannels()
+    public function getSupportedChannels() : array
     {
         return $this->getMessageFactoryNames();
     }
@@ -47,7 +36,7 @@ abstract class AbstractNotification implements NotificationInterface
     {
         $this->initMessageFactories();
 
-        if (!isset($this->messageFactories[$channel])) {
+        if (! array_key_exists($channel, $this->messageFactories)) {
             throw UnsupportedChannelException::forNotificationAndChannel($this, $channel);
         }
 

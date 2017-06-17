@@ -1,30 +1,15 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Exception;
 
-use RuntimeException;
 use Notify\NotificationInterface;
+use RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class UnsupportedChannelException extends RuntimeException implements ExceptionInterface
 {
-    /**
-     * @param NotificationInterface $notification
-     * @param string $channel
-     * @return self
-     */
-    public static function forNotificationAndChannel(NotificationInterface $notification, $channel)
+    public static function forNotificationAndChannel(NotificationInterface $notification, string $channel)
     {
         return new self(sprintf(
             '"%s" notification cannot be sent through "%s" channel',

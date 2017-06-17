@@ -1,19 +1,9 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class Options
 {
     /**
@@ -26,14 +16,14 @@ class Options
         $this->options = $options;
     }
 
-    public function has($name)
+    public function has($name) : bool
     {
         return array_key_exists($name, $this->options);
     }
 
     public function get($name, $default = null)
     {
-        if (!$this->has($name)) {
+        if (! $this->has($name)) {
             return $default;
         }
 
@@ -45,7 +35,7 @@ class Options
         $this->options[$name] = $value;
     }
 
-    public function toArray()
+    public function toArray() : array
     {
         return $this->options;
     }

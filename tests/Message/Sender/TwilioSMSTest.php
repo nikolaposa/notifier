@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Tests\Message\Sender;
 
@@ -23,9 +16,6 @@ use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\IncompleteMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class TwilioSMSTest extends TestCase
 {
     private function getTwilioSMS(ClientInterface $httpClient = null)
@@ -39,6 +29,8 @@ class TwilioSMSTest extends TestCase
 
         $i = 0;
         foreach ($message->getRecipients() as $recipient) {
+            /* @var $recipient \Notify\Message\Actor\ActorInterface */
+            
             $httpClient->expects($this->at($i++))
                 ->method('request')
                 ->with(
@@ -59,19 +51,19 @@ class TwilioSMSTest extends TestCase
                             return false;
                         }
 
-                        if (!isset($options['json']['From']) || !isset($options['json']['To']) || !isset($options['json']['Body'])) {
+                        if (!isset($options['json']['From'], $options['json']['To'], $options['json']['Body'])) {
                             return false;
                         }
 
-                        if ($options['json']['From'] != $message->getSender()->getContact()) {
+                        if ($options['json']['From'] !== $message->getFrom()->getContact()) {
                             return false;
                         }
 
-                        if ($options['json']['To'] != $recipient->getContact()) {
+                        if ($options['json']['To'] !== $recipient->getContact()) {
                             return false;
                         }
 
-                        if ($options['json']['Body'] != $message->getContent()) {
+                        if ($options['json']['Body'] !== $message->getContent()) {
                             return false;
                         }
 

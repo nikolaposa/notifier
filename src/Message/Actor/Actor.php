@@ -1,20 +1,10 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message\Actor;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
-class Actor implements ActorInterface, HasNameInterface
+class Actor implements ActorInterface
 {
     /**
      * @var string
@@ -22,17 +12,17 @@ class Actor implements ActorInterface, HasNameInterface
     private $contact;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $name;
 
-    public function __construct($contact, $name = null)
+    public function __construct(string $contact, string $name = null)
     {
         $this->contact = $contact;
         $this->name = $name;
     }
 
-    public function getContact()
+    public function getContact() : string
     {
         return $this->contact;
     }
@@ -40,14 +30,5 @@ class Actor implements ActorInterface, HasNameInterface
     public function getName()
     {
         return $this->name;
-    }
-
-    public function __toString()
-    {
-        if (null !== ($name = $this->getName())) {
-            return $name . ' <' . $this->getContact() . '>';
-        }
-
-        return $this->getContact();
     }
 }

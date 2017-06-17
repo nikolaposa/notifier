@@ -1,13 +1,6 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message\Sender;
 
@@ -16,9 +9,6 @@ use Notify\Message\Actor\ActorInterface;
 use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 final class NativeMailer implements MessageSenderInterface
 {
     const DEFAULT_MAX_COLUMN_WIDTH = 70;
@@ -50,12 +40,9 @@ final class NativeMailer implements MessageSenderInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function send($message)
     {
-        if (!$message instanceof EmailMessage) {
+        if (! $message instanceof EmailMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
         }
 

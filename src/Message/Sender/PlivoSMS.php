@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message\Sender;
 
@@ -20,9 +13,6 @@ use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\IncompleteMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 final class PlivoSMS implements MessageSenderInterface
 {
     const API_BASE_URL = 'https://api.plivo.com';
@@ -75,11 +65,11 @@ final class PlivoSMS implements MessageSenderInterface
 
     private function setMessage($message)
     {
-        if (!$message instanceof SMSMessage) {
+        if (! $message instanceof SMSMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
         }
 
-        if (!$message->hasSender()) {
+        if (! $message->hasFrom()) {
             throw new IncompleteMessageException('Message sender is missing');
         }
 
@@ -97,12 +87,13 @@ final class PlivoSMS implements MessageSenderInterface
 
     private function buildPayloadSourceString()
     {
-        return $this->message->getSender()->getContact();
+        return $this->message->getFrom()->getContact();
     }
 
     private function buildPayloadDestinationString()
     {
         $dst = [];
+
         foreach ($this->message->getRecipients() as $recipient) {
             /* @var $recipient ActorInterface */
             $dst[] = $recipient->getContact();

@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Tests\Message;
 
@@ -17,10 +10,6 @@ use Notify\Recipients;
 use Notify\Message\Actor\Actor;
 use Notify\Message\Actor\ActorInterface;
 
-/**
- *
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class SMSMessageTest extends TestCase
 {
     public function testCreatingSmsWithRequiredArguments()
@@ -34,7 +23,7 @@ class SMSMessageTest extends TestCase
 
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('test test test', $message->getContent());
-        $this->assertNull($message->getSender());
+        $this->assertNull($message->getFrom());
     }
 
     public function testCreatingSmsWithAllArguments()
@@ -49,7 +38,7 @@ class SMSMessageTest extends TestCase
 
         $this->assertInstanceOf(Recipients::class, $message->getRecipients());
         $this->assertEquals('test test test', $message->getContent());
-        $this->assertInstanceOf(ActorInterface::class, $message->getSender());
+        $this->assertInstanceOf(ActorInterface::class, $message->getFrom());
     }
 
     public function testLimitingSmsContentLength()

@@ -1,23 +1,12 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message;
 
 use Notify\Recipients;
-use Notify\Message\Content\ContentProviderInterface;
 use Notify\Message\Actor\ActorInterface;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class SMSMessage extends AbstractMessage
 {
     const CONTENT_LENGTH_LIMIT = 160;
@@ -25,24 +14,19 @@ class SMSMessage extends AbstractMessage
     /**
      * @var ActorInterface
      */
-    protected $sender;
+    protected $from;
 
-    /**
-     * @param Recipients $recipients
-     * @param string|ContentProviderInterface $content
-     * @param ActorInterface $sender
-     */
     public function __construct(
         Recipients $recipients,
-        $content,
-        ActorInterface $sender = null
+        string $content,
+        ActorInterface $from = null
     ) {
         parent::__construct($recipients, $content);
 
-        $this->sender = $sender;
+        $this->from = $from;
     }
 
-    public function getContent()
+    public function getContent() : string
     {
         $content = $this->content;
 
@@ -51,18 +35,18 @@ class SMSMessage extends AbstractMessage
             : $content;
     }
 
-    public function getRawContent()
+    public function getRawContent() : string
     {
         return $this->content;
     }
 
-    public function getSender()
+    public function getFrom()
     {
-        return $this->sender;
+        return $this->from;
     }
 
-    public function hasSender()
+    public function hasFrom() : bool
     {
-        return $this->sender !== null;
+        return null !== $this->from;
     }
 }

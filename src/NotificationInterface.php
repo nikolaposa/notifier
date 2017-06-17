@@ -1,28 +1,17 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify;
 
 use Notify\Exception\UnsupportedChannelException;
-use Notify\Recipients;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 interface NotificationInterface
 {
     /**
      * @return array
      */
-    public function getSupportedChannels();
+    public function getSupportedChannels() : array;
 
     /**
      * @param string $channel

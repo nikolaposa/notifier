@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Tests\Message\Sender;
 
@@ -23,9 +16,6 @@ use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\IncompleteMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class PlivoSMSTest extends TestCase
 {
     private function getPlivoSMS(ClientInterface $httpClient = null)
@@ -56,16 +46,17 @@ class PlivoSMSTest extends TestCase
                         return false;
                     }
 
-                    if (!isset($options['json']['src']) || !isset($options['json']['dst']) || !isset($options['json']['text'])) {
+                    if (!isset($options['json']['src'], $options['json']['dst'], $options['json']['text'])) {
                         return false;
                     }
 
-                    if ($options['json']['src'] !== $message->getSender()->getContact()) {
+                    if ($options['json']['src'] !== $message->getFrom()->getContact()) {
                         return false;
                     }
 
                     $to = [];
                     foreach ($message->getRecipients() as $recipient) {
+                        /* @var $recipient \Notify\Message\Actor\ActorInterface */
                         $to[] = $recipient->getContact();
                     }
 

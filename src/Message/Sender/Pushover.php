@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message\Sender;
 
@@ -19,9 +12,6 @@ use Psr\Http\Message\ResponseInterface;
 use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 final class Pushover implements MessageSenderInterface
 {
     const API_BASE_URL = 'https://api.pushover.net';
@@ -53,13 +43,10 @@ final class Pushover implements MessageSenderInterface
 
         $this->httpClient = $httpClient;
     }
-
-    /**
-     * {@inheritdoc}
-     */
+    
     public function send($message)
     {
-        if (!$message instanceof PushMessage) {
+        if (! $message instanceof PushMessage) {
             throw UnsupportedMessageException::fromMessageSenderAndMessage($this, $message);
         }
 

@@ -1,24 +1,16 @@
 <?php
 
-/**
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Message;
 
 use Notify\Recipients;
 use Notify\Message\Actor\ActorInterface;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class EmailMessage extends AbstractMessage
 {
+    use HasOptionsTrait;
+
     /**
      * @var string
      */
@@ -29,22 +21,10 @@ class EmailMessage extends AbstractMessage
      */
     protected $from;
 
-    /**
-     * @var Options
-     */
-    protected $options;
-
-    /**
-     * @param Recipients $recipients
-     * @param string $subject
-     * @param string $content
-     * @param ActorInterface $from
-     * @param $options
-     */
     public function __construct(
         Recipients $recipients,
-        $subject,
-        $content,
+        string $subject,
+        string $content,
         ActorInterface $from = null,
         Options $options = null
     ) {
@@ -55,7 +35,7 @@ class EmailMessage extends AbstractMessage
         $this->options = $options;
     }
 
-    public function getSubject()
+    public function getSubject() : string
     {
         return $this->subject;
     }
@@ -65,17 +45,8 @@ class EmailMessage extends AbstractMessage
         return $this->from;
     }
 
-    public function hasFrom()
+    public function hasFrom() : bool
     {
-        return $this->from !== null;
-    }
-    
-    public function getOptions()
-    {
-        if (null === $this->options) {
-            $this->options = new Options([]);
-        }
-
-        return $this->options;
+        return null !== $this->from;
     }
 }

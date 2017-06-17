@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Notify package.
- *
- * Copyright (c) Nikola Posa <posa.nikola@gmail.com>
- *
- * For full copyright and license information, please refer to the LICENSE file,
- * located at the package root folder.
- */
+declare(strict_types=1);
 
 namespace Notify\Tests\Message\Sender;
 
@@ -23,9 +16,6 @@ use Notify\Message\Options;
 use Notify\Message\Sender\Exception\UnsupportedMessageException;
 use Notify\Message\Sender\Exception\RuntimeException;
 
-/**
- * @author Nikola Posa <posa.nikola@gmail.com>
- */
 class PushoverTest extends TestCase
 {
     private function getPushover(ClientInterface $httpClient = null)
@@ -39,6 +29,8 @@ class PushoverTest extends TestCase
 
         $i = 0;
         foreach ($message->getRecipients() as $recipient) {
+            /* @var $recipient \Notify\Message\Actor\ActorInterface */
+
             $httpClient->expects($this->at($i++))
                 ->method('request')
                 ->with(
@@ -53,11 +45,7 @@ class PushoverTest extends TestCase
                             return false;
                         }
 
-                        if (
-                            !isset($options['form_params']['token'])
-                            || !isset($options['form_params']['user'])
-                            || !isset($options['form_params']['message'])
-                        ) {
+                        if (!isset($options['form_params']['token'], $options['form_params']['user'], $options['form_params']['message'])) {
                             return false;
                         }
 
