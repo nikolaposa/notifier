@@ -41,7 +41,7 @@ final class Notifier implements NotifierInterface
         }
     }
 
-    final protected function getMessageSender(string $channel) : MessageSenderInterface
+    private function getMessageSender(string $channel) : MessageSenderInterface
     {
         if (! array_key_exists($channel, $this->messageSenders)) {
             throw UnhandledChannelException::forChannel($channel);
