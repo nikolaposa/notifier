@@ -101,10 +101,10 @@ $notifier->notify(Recipients::fromArray($moderators), $newCommentNotification);
 Released under MIT License - see the [License File](LICENSE) for details.
 
 
-[ico-version]: https://img.shields.io/packagist/v/nikolaposa/notify.svg
+[ico-version]: https://poser.pugx.org/nikolaposa/notify/v/stable
 [ico-build]: https://travis-ci.org/nikolaposa/notify.svg?branch=master
-[ico-code-coverage]: https://img.shields.io/scrutinizer/coverage/g/nikolaposa/notify.svg
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/nikolaposa/notify.svg
+[ico-code-coverage]: https://scrutinizer-ci.com/g/nikolaposa/notify/badges/coverage.png?b=master
+[ico-code-quality]: https://scrutinizer-ci.com/g/nikolaposa/notify/badges/quality-score.png?b=master
 [ico-pds]: https://img.shields.io/badge/pds-skeleton-blue.svg
 
 [link-monolog]: https://github.com/Seldaek/monolog
