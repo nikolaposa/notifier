@@ -1,10 +1,10 @@
 {
-    "name": "nikolaposa/notify",
-    "description": "Abstractions for modeling and implementing application notifications functionality",
+    "name": "nikolaposa/notifier",
+    "description": "Extensible library for building notifications and sending them via different delivery channels",
     "type": "library",
     "license": "MIT",
     "keywords": [
-        "notify",
+        "notifier",
         "notification",
         "email",
         "sms"
@@ -13,7 +13,7 @@
         {
             "name": "Nikola Poša",
             "email": "posa.nikola@gmail.com",
-            "homepage": "http://www.nikolaposa.in.rs"
+            "homepage": "https://www.nikolaposa.in.rs"
         }
     ],
     "require": {
