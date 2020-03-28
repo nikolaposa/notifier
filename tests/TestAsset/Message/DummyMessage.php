@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Notify\Tests\TestAsset\Message;
+namespace Notifier\Tests\TestAsset\Message;
 
-use Notify\Message\Actor\ActorInterface;
+use Notifier\Message\Actor\ActorInterface;
 
 final class DummyMessage
 {

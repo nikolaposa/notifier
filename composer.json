@@ -26,12 +26,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Notify\\": "src/"
+            "Notifier\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Notify\\Tests\\": "tests/"
+            "Notifier\\Tests\\": "tests/"
         }
     },
     "scripts": {

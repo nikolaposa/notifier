@@ -42,53 +42,51 @@ This concept allows defining custom handling strategies, for example some that w
 
 **Sample notification**
 ```php
-<?php
+namespace App\Model;
 
-namespace App\Notification;
+use Notifier\Channel\Email\EmailMessage;
+use Notifier\Channel\Sms\SmsMessage;
+use Notifier\Notification\EmailNotification;
+use Notifier\Notification\SmsNotification;
+use Notifier\Recipient\Recipient;
 
-use Notify\AbstractNotification;
-use App\Entity\Post;
-use App\Entity\Comment;
-use Notify\Message\EmailMessage;
-use Notify\Message\Actor\Recipients;
-
-final class NewCommentNotification extends AbstractNotification
+class TodoExpiredNotification implements EmailNotification, SmsNotification
 {
-    private $post;
+    /** @var Todo */
+    protected $todo;
 
-    private $comment;
-
-    public function __construct(Post $post, Comment $comment)
+    public function __construct(Todo $todo)
     {
-        $this->post = $post;
-        $this->comment = $comment;
+        $this->todo = $todo;
     }
 
-    protected function createEmailMessage(array $recipients)
+    public function toEmailMessage(Recipient $recipient): EmailMessage
     {
-        return new EmailMessage(
-           $recipients,
-           'New comment',
-           sprintf('%s left a new comment on your "%s" blog post', $this->comment->getAuthorName(), $this->post->getTitle())
-       );
+        return (new EmailMessage())
+            ->subject('Todo expired')
+            ->body('Todo:' . $this->todo->getText() . ' has expired');
+    }
+
+    public function toSmsMessage(Recipient $recipient): SmsMessage
+    {
+        return (new SmsMessage())
+            ->text('Todo:' . $this->todo->getText() . ' has expired');
     }
 }
 ```
 
 **Sending notifications**
 ```php
-use Notify\Message\Sender\NativeMailer;
-use Notify\Notifier;
-use Notify\Recipients;
+use Notifier\Channel\ChannelManager;
+use Notifier\Channel\Email\SimpleEmailNotificationSender;
+use Notifier\Notifier;
+use Notifier\Recipient\Recipients;
 
-$newCommentNotification = new NewCommentNotification($post, $comment);
+$notifier = new Notifier(new ChannelManager([
+    'email' => new SimpleEmailNotificationSender(),
+]));
 
-$moderators = $this->getUserRepository()->getModerators();
-
-$notifier = new Notifier([
-    'email' => new NativeMailer(),
-]);
-$notifier->notify(Recipients::fromArray($moderators), $newCommentNotification);
+$notifier->send(new TodoExpiredNotification($todo), new Recipients($user));
 ```
 
 ## Credits

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Notify\Tests;
+namespace Notifier\Tests;
 
-use Notify\Recipients;
+use Notifier\Recipient\Recipients;
 use PHPUnit\Framework\TestCase;
-use Notify\Notifier;
-use Notify\Tests\TestAsset\Message\TestMessageSender;
-use Notify\Tests\TestAsset\Notification\TestNotification;
-use Notify\Tests\TestAsset\Entity\User;
-use Notify\Exception\UnhandledChannelException;
+use Notifier\Notifier;
+use Notifier\Tests\TestAsset\Message\TestNotificationSender;
+use Notifier\Tests\TestAsset\Notification\TestNotification;
+use Notifier\Tests\TestAsset\Model\User;
+use Notifier\Exception\UnhandledChannelNotifierException;
 
 class NotifierTest extends TestCase
 {
     /**
-     * @var TestMessageSender
+     * @var TestNotificationSender
      */
     private $messageSender;
 
@@ -23,7 +23,7 @@ class NotifierTest extends TestCase
     {
         parent::setUp();
 
-        $this->messageSender = new TestMessageSender();
+        $this->messageSender = new TestNotificationSender();
     }
 
     public function testSendingNotification()
@@ -45,7 +45,7 @@ class NotifierTest extends TestCase
 
     public function testExceptionIsRaisedInCaseOfUnhandledChannel()
     {
-        $this->expectException(UnhandledChannelException::class);
+        $this->expectException(UnhandledChannelNotifierException::class);
 
         $notifier = new Notifier([
             'foobar' => $this->messageSender,

@@ -2,47 +2,36 @@
 
 declare(strict_types=1);
 
-namespace Notify;
+namespace Notifier;
 
-use Notify\Exception\UnhandledChannelException;
-use Notify\Message\Sender\MessageSenderInterface;
+use Notifier\Channel\ChannelManager;
+use Notifier\Notification\Notification;
+use Notifier\Recipient\Recipient;
+use Notifier\Recipient\Recipients;
 
-final class Notifier implements NotifierInterface
+class Notifier
 {
-    /**
-     * @var array
-     */
-    private $messageSenders;
+    /** @var ChannelManager */
+    protected $channelManager;
 
-    public function __construct(array $messageSenders)
+    public function __construct(ChannelManager $channelManager)
     {
-        $this->messageSenders = $messageSenders;
+        $this->channelManager = $channelManager;
     }
 
-    public function notify(Recipients $recipients, NotificationInterface $notification)
+    public function send(Notification $notification, Recipients $recipients): void
     {
+        $channels = $notification->getSupportedChannels();
+
         foreach ($recipients as $recipient) {
-            /* @var $recipient RecipientInterface */
-
-            foreach ($notification->getSupportedChannels() as $channel) {
-                $messageSender = $this->getMessageSender($channel);
-
-                if (! $recipient->shouldReceive($notification, $channel)) {
-                    continue;
-                }
-
-                $message = $notification->getMessage($channel, $recipient);
-                $messageSender->send($message);
+            foreach ($channels as $channel) {
+                $this->doSend($notification, $recipient, $channel);
             }
         }
     }
 
-    private function getMessageSender(string $channel) : MessageSenderInterface
+    private function doSend(Notification $notification, Recipient $recipient, string $channel): void
     {
-        if (! array_key_exists($channel, $this->messageSenders)) {
-            throw UnhandledChannelException::forChannel($channel);
-        }
-
-        return $this->messageSenders[$channel];
+        $this->channelManager->getSender($channel)->send($notification, $recipient);
     }
 }
