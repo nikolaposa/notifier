@@ -13,7 +13,7 @@ PHP library which facilitates creation of a notifications system in some applica
 The preferred method of installation is via [Composer](http://getcomposer.org/). Run the following command to install the latest version of a package and add it to your project's `composer.json`:
 
 ```bash
-composer require nikolaposa/notify
+composer require nikolaposa/notifier
 ```
 
 ## Theory of operation
