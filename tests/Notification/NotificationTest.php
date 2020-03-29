@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Notifier\Tests\Notification;
 
+use Notifier\Channel\Email\EmailChannel;
+use Notifier\Channel\Sms\SmsChannel;
 use Notifier\Recipient\Recipient;
 use Notifier\Tests\TestAsset\Model\Todo;
 use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;
@@ -24,8 +26,8 @@ class NotificationTest extends TestCase
 
         $this->notification = new TodoExpiredNotification(new Todo('Test'));
         $this->recipient = new User('John Doe', [
-            'email' => 'john@example.com',
-            'sms' => '+123456789',
+            EmailChannel::NAME => 'john@example.com',
+            SmsChannel::NAME => '+123456789',
         ]);
     }
 

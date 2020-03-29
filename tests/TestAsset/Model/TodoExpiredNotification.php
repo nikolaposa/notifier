@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Notifier\Tests\TestAsset\Model;
 
+use Notifier\Channel\Email\EmailChannel;
 use Notifier\Channel\Email\EmailMessage;
+use Notifier\Channel\Sms\SmsChannel;
 use Notifier\Channel\Sms\SmsMessage;
 use Notifier\Channel\Email\EmailNotification;
 use Notifier\Channel\Sms\SmsNotification;
@@ -22,7 +24,7 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
 
     public function getSupportedChannels(): array
     {
-        return ['email', 'sms'];
+        return [EmailChannel::NAME, SmsChannel::NAME];
     }
 
     public function toEmailMessage(Recipient $recipient): EmailMessage
