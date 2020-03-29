@@ -6,8 +6,8 @@ namespace Notifier\Tests\TestAsset\Model;
 
 use Notifier\Channel\Email\EmailMessage;
 use Notifier\Channel\Sms\SmsMessage;
-use Notifier\Notification\EmailNotification;
-use Notifier\Notification\SmsNotification;
+use Notifier\Channel\Email\EmailNotification;
+use Notifier\Channel\Sms\SmsNotification;
 use Notifier\Recipient\Recipient;
 
 class TodoExpiredNotification implements EmailNotification, SmsNotification

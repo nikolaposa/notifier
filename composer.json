@@ -1,6 +1,6 @@
 {
     "name": "nikolaposa/notifier",
-    "description": "Extensible library for building notifications and sending them via different delivery channels",
+    "description": "Extensible library for building notifications and sending them via different delivery channels.",
     "type": "library",
     "license": "MIT",
     "keywords": [

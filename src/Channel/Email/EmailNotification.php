@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Notifier\Notification;
+namespace Notifier\Channel\Email;
 
-use Notifier\Channel\Email\EmailMessage;
+use Notifier\Notification\Notification;
 use Notifier\Recipient\Recipient;
 
 interface EmailNotification extends Notification

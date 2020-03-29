@@ -6,7 +6,6 @@ namespace Notifier\Channel\Email;
 
 use Notifier\Channel\Exception\SendingNotificationFailed;
 use Notifier\Channel\NotificationSender;
-use Notifier\Notification\EmailNotification;
 use Notifier\Notification\Notification;
 use Notifier\Recipient\Recipient;
 

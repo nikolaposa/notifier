@@ -9,7 +9,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Notifier\Channel\NotificationSender;
 use Notifier\Notification\Notification;
-use Notifier\Notification\SmsNotification;
 use Notifier\Recipient\Recipient;
 use Notifier\Channel\Exception\SendingNotificationFailed;
 

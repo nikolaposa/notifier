@@ -9,9 +9,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use Notifier\Channel\NotificationSender;
 use Notifier\Notification\Notification;
-use Notifier\Notification\PushNotification;
 use Notifier\Recipient\Recipient;
-use Psr\Http\Message\ResponseInterface;
 use Notifier\Channel\Exception\SendingNotificationFailed;
 
 final class PushoverNotificationSender implements NotificationSender

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Notifier\Notification;
+namespace Notifier\Channel\Sms;
 
-use Notifier\Channel\Sms\SmsMessage;
+use Notifier\Notification\Notification;
 use Notifier\Recipient\Recipient;
 
 interface SmsNotification extends Notification
