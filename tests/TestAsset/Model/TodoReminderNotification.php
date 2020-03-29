@@ -27,6 +27,6 @@ class TodoReminderNotification implements EmailNotification
     {
         return (new EmailMessage())
             ->subject('Todo reminder')
-            ->body('Reminder for todo:' . $this->todo->getText());
+            ->body('Reminder for todo: ' . $this->todo->getText());
     }
 }

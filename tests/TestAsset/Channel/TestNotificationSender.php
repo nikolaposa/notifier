@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Notifier\Tests\TestAsset\Message;
+namespace Notifier\Tests\TestAsset\Channel;
 
 use Notifier\Channel\NotificationSender;
 use Notifier\Notification\Notification;

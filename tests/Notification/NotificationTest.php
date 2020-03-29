@@ -4,62 +4,49 @@ declare(strict_types=1);
 
 namespace Notifier\Tests;
 
-use Notifier\Exception\UnsupportedChannelNotifierException;
 use Notifier\Notification\Notification;
+use Notifier\Recipient\Recipient;
+use Notifier\Tests\TestAsset\Model\Todo;
+use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;
 use Notifier\Tests\TestAsset\Model\User;
 use PHPUnit\Framework\TestCase;
-use Notifier\Tests\TestAsset\Notification\TestNotification;
-use Notifier\Channel\Email\EmailMessage;
 
 class NotificationTest extends TestCase
 {
-    /**
-     * @var Notification
-     */
+    /** @var Notification|TodoExpiredNotification */
     protected $notification;
+
+    /** @var Recipient */
+    protected $recipient;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->notification = new TestNotification();
+        $this->notification = new TodoExpiredNotification(new Todo('Test'));
+        $this->recipient = new User('John Doe', [
+            'email' => 'john@example.com',
+            'sms' => '+123456789',
+        ]);
     }
 
-    public function testGettingSupportedChannels()
+    /**
+     * @test
+     */
+    public function it_provides_supported_channels(): void
     {
         $supportedChannels = $this->notification->getSupportedChannels();
 
-        $this->assertEquals(['email'], $supportedChannels);
+        $this->assertSame(['email', 'sms'], $supportedChannels);
     }
 
-    public function testCreatingMessage()
+    /**
+     * @test
+     */
+    public function it_builds_channel_specific_message(): void
     {
-        $emailMessage = $this->notification->getMessage(
-            'email',
-            new User([
-                'email' => 'test@example.com',
-            ])
-        );
+        $emailMessage = $this->notification->toEmailMessage($this->recipient);
 
-        $this->assertInstanceOf(EmailMessage::class, $emailMessage);
-    }
-
-    public function testCreatingMessageRaisesExceptionIfChannelIsNotSupported()
-    {
-        try {
-            $this->notification->getMessage(
-                'sms',
-                new User([
-                    'email' => 'test@example.com',
-                ])
-            );
-
-            $this->fail('Exception should have been raised');
-        } catch (UnsupportedChannelNotifierException $ex) {
-            $this->assertEquals(
-                "Notify\\Tests\\TestAsset\\Notification\\TestNotification notification cannot be sent through 'sms' channel",
-                $ex->getMessage()
-            );
-        }
+        $this->assertSame('Todo: Test has expired', $emailMessage->body);
     }
 }

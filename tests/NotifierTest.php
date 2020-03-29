@@ -7,12 +7,12 @@ namespace Notifier\Tests;
 use Notifier\Channel\ChannelManager;
 use Notifier\Channel\NotificationSender;
 use Notifier\Recipient\Recipients;
+use Notifier\Tests\TestAsset\Channel\TestNotificationSender;
 use Notifier\Tests\TestAsset\Model\Todo;
 use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;
 use Notifier\Tests\TestAsset\Model\TodoReminderNotification;
 use PHPUnit\Framework\TestCase;
 use Notifier\Notifier;
-use Notifier\Tests\TestAsset\Message\TestNotificationSender;
 use Notifier\Tests\TestAsset\Model\User;
 
 class NotifierTest extends TestCase

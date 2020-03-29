@@ -29,12 +29,12 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
     {
         return (new EmailMessage())
             ->subject('Todo expired')
-            ->body('Todo:' . $this->todo->getText() . ' has expired');
+            ->body('Todo: ' . $this->todo->getText() . ' has expired');
     }
 
     public function toSmsMessage(Recipient $recipient): SmsMessage
     {
         return (new SmsMessage())
-            ->text('Todo:' . $this->todo->getText() . ' has expired');
+            ->text('Todo: ' . $this->todo->getText() . ' has expired');
     }
 }
