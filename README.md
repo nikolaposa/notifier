@@ -74,6 +74,11 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
     {
         $this->todo = $todo;
     }
+    
+    public function getSupportedChannels(): array
+    {
+        return ['email', 'sms'];
+    }
 
     public function toEmailMessage(Recipient $recipient): EmailMessage
     {

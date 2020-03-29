@@ -21,13 +21,13 @@ class User implements Recipient
         $this->contacts = $contacts;
     }
 
-    public function getRecipientName(): string
-    {
-        return $this->name;
-    }
-
     public function getRecipientContact(string $channel, Notification $notification): ?string
     {
         return $this->contacts[$channel] ?? null;
+    }
+
+    public function getRecipientName(): string
+    {
+        return $this->name;
     }
 }

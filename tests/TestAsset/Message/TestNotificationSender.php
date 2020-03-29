@@ -5,19 +5,21 @@ declare(strict_types=1);
 namespace Notifier\Tests\TestAsset\Message;
 
 use Notifier\Channel\NotificationSender;
+use Notifier\Notification\Notification;
+use Notifier\Recipient\Recipient;
 
 final class TestNotificationSender implements NotificationSender
 {
-    /** @var object[] */
-    private $messages = [];
+    /** @var Notification[] */
+    private $notifications = [];
 
-    public function send($message)
+    public function send(Notification $notification, Recipient $recipient): void
     {
-        $this->messages[] = $message;
+        $this->notifications[] = $notification;
     }
 
-    public function getMessages() : array
+    public function getNotifications(): array
     {
-        return $this->messages;
+        return $this->notifications;
     }
 }

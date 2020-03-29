@@ -4,74 +4,71 @@ declare(strict_types=1);
 
 namespace Notifier\Tests;
 
+use Notifier\Channel\ChannelManager;
+use Notifier\Channel\NotificationSender;
 use Notifier\Recipient\Recipients;
+use Notifier\Tests\TestAsset\Model\Todo;
+use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;
+use Notifier\Tests\TestAsset\Model\TodoReminderNotification;
 use PHPUnit\Framework\TestCase;
 use Notifier\Notifier;
 use Notifier\Tests\TestAsset\Message\TestNotificationSender;
-use Notifier\Tests\TestAsset\Notification\TestNotification;
 use Notifier\Tests\TestAsset\Model\User;
-use Notifier\Exception\UnhandledChannelNotifierException;
 
 class NotifierTest extends TestCase
 {
-    /**
-     * @var TestNotificationSender
-     */
-    private $messageSender;
+    /** @var Notifier */
+    protected $notifier;
+
+    /** @var NotificationSender|TestNotificationSender */
+    protected $notificationSender;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->messageSender = new TestNotificationSender();
+        $this->notificationSender = new TestNotificationSender();
+        $this->notifier = new Notifier(new ChannelManager([
+            'email' => $this->notificationSender,
+            'sms' => $this->notificationSender,
+        ]));
     }
 
-    public function testSendingNotification()
+    /**
+     * @test
+     */
+    public function it_sends_single_notification(): void
     {
-        $notifier = new Notifier([
-            'email' => $this->messageSender,
-        ]);
+        $notification = new TodoReminderNotification(new Todo('Test'));
+        $recipients = new Recipients(
+            new User('John Doe', [
+                'email' => 'john@example.com',
+            ])
+        );
 
-        $notifier->notify(Recipients::fromArray([
-            new User([
-                'email' => 'test@example.com'
-            ]),
-        ]), new TestNotification());
+        $this->notifier->send($notification, $recipients);
 
-        $sentMessages = $this->messageSender->getMessages();
+        $sentNotifications = $this->notificationSender->getNotifications();
 
-        $this->assertNotEmpty($sentMessages);
+        $this->assertCount(1, $sentNotifications);
     }
 
-    public function testExceptionIsRaisedInCaseOfUnhandledChannel()
+    /**
+     * @test
+     */
+    public function it_sends_notification_to_all_supported_channels(): void
     {
-        $this->expectException(UnhandledChannelNotifierException::class);
+        $notification = new TodoExpiredNotification(new Todo('Test'));
+        $recipients = new Recipients(
+            new User('John Doe', [
+                'email' => 'john@example.com',
+            ])
+        );
 
-        $notifier = new Notifier([
-            'foobar' => $this->messageSender,
-        ]);
+        $this->notifier->send($notification, $recipients);
 
-        $notifier->notify(Recipients::fromArray([
-            new User([
-                'email' => 'test@example.com'
-            ]),
-        ]), new TestNotification());
-    }
+        $sentNotifications = $this->notificationSender->getNotifications();
 
-    public function testNotificationMessageNotSentIfRecipientDoesntAcceptRelatedChannel()
-    {
-        $notifier = new Notifier([
-            'email' => $this->messageSender,
-        ]);
-
-        $notifier->notify(Recipients::fromArray([
-            new User([
-                'phone' => '123456'
-            ]),
-        ]), new TestNotification());
-
-        $sentMessages = $this->messageSender->getMessages();
-        
-        $this->assertEmpty($sentMessages);
+        $this->assertCount(2, $sentNotifications);
     }
 }

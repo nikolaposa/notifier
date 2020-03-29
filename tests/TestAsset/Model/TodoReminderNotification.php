@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Notifier\Tests\TestAsset\Model;
 
 use Notifier\Channel\Email\EmailMessage;
-use Notifier\Channel\Sms\SmsMessage;
 use Notifier\Channel\Email\EmailNotification;
-use Notifier\Channel\Sms\SmsNotification;
 use Notifier\Recipient\Recipient;
 
-class TodoExpiredNotification implements EmailNotification, SmsNotification
+class TodoReminderNotification implements EmailNotification
 {
     /** @var Todo */
     protected $todo;
@@ -22,19 +20,13 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
 
     public function getSupportedChannels(): array
     {
-        return ['email', 'sms'];
+        return ['email'];
     }
 
     public function toEmailMessage(Recipient $recipient): EmailMessage
     {
         return (new EmailMessage())
-            ->subject('Todo expired')
-            ->body('Todo:' . $this->todo->getText() . ' has expired');
-    }
-
-    public function toSmsMessage(Recipient $recipient): SmsMessage
-    {
-        return (new SmsMessage())
-            ->text('Todo:' . $this->todo->getText() . ' has expired');
+            ->subject('Todo reminder')
+            ->body('Reminder for todo:' . $this->todo->getText());
     }
 }
