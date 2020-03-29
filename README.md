@@ -43,7 +43,7 @@ channel implementation typically consists of:
 
 1. channel-specific Notification interface,
 2. Message class,
-3. `NotificationSender` implementation responsible for the very act of sending the Notification.
+3. `Channel` implementation responsible for the very act of sending the Notification.
 
 Out of the box, this library features facilities for sending notifications via email and SMS. The highly extensible 
 design allows for implementing custom delivery channels.
@@ -59,7 +59,9 @@ with directly.
 ```php
 namespace App\Model;
 
+use Notifier\Channel\Email\EmailChannel;
 use Notifier\Channel\Email\EmailMessage;
+use Notifier\Channel\Sms\SmsChannel;
 use Notifier\Channel\Sms\SmsMessage;
 use Notifier\Notification\EmailNotification;
 use Notifier\Notification\SmsNotification;
@@ -77,7 +79,7 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
     
     public function getSupportedChannels(): array
     {
-        return ['email', 'sms'];
+        return [EmailChannel::NAME, SmsChannel::NAME];
     }
 
     public function toEmailMessage(Recipient $recipient): EmailMessage
@@ -135,13 +137,17 @@ class User implements Recipient
 
 ```php
 use Notifier\Channel\ChannelManager;
-use Notifier\Channel\Email\SimpleEmailNotificationSender;
+use Notifier\Channel\Email\EmailChannel;
+use Notifier\Channel\Email\SimpleMailer;
+use Notifier\Channel\Sms\SmsChannel;
+use Notifier\Channel\Sms\TwilioTexter;
 use Notifier\Notifier;
 use Notifier\Recipient\Recipients;
 
-$notifier = new Notifier(new ChannelManager([
-    'email' => new SimpleEmailNotificationSender(),
-]));
+$notifier = new Notifier(new ChannelManager(
+    new EmailChannel(new SimpleMailer()),
+    new SmsChannel(new TwilioTexter('auth_id', 'auth_token'))
+));
 
 $notifier->send(new TodoExpiredNotification($todo), new Recipients($user));
 ```
