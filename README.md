@@ -163,13 +163,13 @@ Released under MIT License - see the [License File](LICENSE) for details.
 
 
 [ico-version]: https://poser.pugx.org/nikolaposa/notifier/v/stable
-[ico-build]: https://travis-ci.org/nikolaposa/notifier.svg?branch=master
+[ico-build]: https://travis-ci.com/nikolaposa/notifier.svg?branch=master
 [ico-code-coverage]: https://scrutinizer-ci.com/g/nikolaposa/notifier/badges/coverage.png?b=master
 [ico-code-quality]: https://scrutinizer-ci.com/g/nikolaposa/notifier/badges/quality-score.png?b=master
 [ico-pds]: https://img.shields.io/badge/pds-skeleton-blue.svg
 
 [link-packagist]: https://packagist.org/packages/nikolaposa/notifier
-[link-build]: https://travis-ci.org/nikolaposa/notifier
+[link-build]: https://travis-ci.com/nikolaposa/notifier
 [link-code-coverage]: https://scrutinizer-ci.com/g/nikolaposa/notifier/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/nikolaposa/notifier
 [link-pds]: https://github.com/php-pds/skeleton
