@@ -6,16 +6,18 @@ namespace Notifier\Channel;
 
 class ChannelManager
 {
-    /** @var array<string,NotificationSender> */
-    protected $channelNotificationSenderMap;
+    /** @var Channel[] */
+    protected $channels;
 
-    public function __construct(array $channelNotificationSenderMap)
+    public function __construct(Channel ...$channels)
     {
-        $this->channelNotificationSenderMap = $channelNotificationSenderMap;
+        foreach ($channels as $channel) {
+            $this->channels[$channel->getName()] = $channel;
+        }
     }
 
-    public function getSender(string $channel): NotificationSender
+    public function get(string $channelName): Channel
     {
-        return $this->channelNotificationSenderMap[$channel];
+        return $this->channels[$channelName];
     }
 }

@@ -6,7 +6,6 @@ namespace Notifier;
 
 use Notifier\Channel\ChannelManager;
 use Notifier\Notification\Notification;
-use Notifier\Recipient\Recipient;
 use Notifier\Recipient\Recipients;
 
 class Notifier
@@ -25,13 +24,8 @@ class Notifier
 
         foreach ($recipients as $recipient) {
             foreach ($channels as $channel) {
-                $this->doSend($notification, $recipient, $channel);
+                $this->channelManager->get($channel)->send($notification, $recipient);
             }
         }
-    }
-
-    private function doSend(Notification $notification, Recipient $recipient, string $channel): void
-    {
-        $this->channelManager->getSender($channel)->send($notification, $recipient);
     }
 }

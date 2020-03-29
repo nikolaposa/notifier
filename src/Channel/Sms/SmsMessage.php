@@ -7,7 +7,7 @@ namespace Notifier\Channel\Sms;
 class SmsMessage
 {
     /** @var string */
-    public $from = '';
+    public $from;
 
     /** @var string */
     public $to;
@@ -18,18 +18,21 @@ class SmsMessage
     public function from(string $phoneNumber)
     {
         $this->from = $phoneNumber;
+
         return $this;
     }
 
     public function to(string $phoneNumber)
     {
         $this->to = $phoneNumber;
+
         return $this;
     }
 
     public function text(string $text)
     {
         $this->text = $text;
+
         return $this;
     }
 }

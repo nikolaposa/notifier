@@ -9,12 +9,12 @@ use Throwable;
 
 final class SendingNotificationFailed extends RuntimeException implements NotifierChannelException
 {
-    public static function dueTo(Throwable $error, string $channel): self
+    public static function dueTo(Throwable $error, string $channelName): self
     {
         return new self(
             sprintf(
                 'Failed to send notification via %s channel',
-                $channel
+                $channelName
             ),
             0,
             $error

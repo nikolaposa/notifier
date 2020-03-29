@@ -7,47 +7,56 @@ namespace Notifier\Channel\Email;
 class EmailMessage
 {
     /** @var array */
-    public $from = [];
+    public $from;
 
     /** @var array */
-    public $to = [];
+    public $to;
 
     /** @var string */
-    public $subject = '';
+    public $subject;
 
     /** @var string */
-    public $body = '';
+    public $body;
 
     /** @var string */
     public $contentType = 'text/plain';
 
-    public function from(string $email, string $name = '')
+    public function from(string $email, string $name = null)
     {
-        $this->from = [$email => $name];
+        $this->from = [$email, $name];
+
         return $this;
     }
 
-    public function to(string $email, string $name = '')
+    public function to(string $email, string $name = null)
     {
-        $this->to[]= [$email => $name];
+        if (null === $this->to) {
+            $this->to = [];
+        }
+
+        $this->to[]= [$email, $name];
+
         return $this;
     }
 
     public function subject(string $subject)
     {
         $this->subject = $subject;
+
         return $this;
     }
 
     public function body(string $body)
     {
         $this->body = $body;
+
         return $this;
     }
 
     public function contentType(string $contentType)
     {
         $this->contentType = $contentType;
+
         return $this;
     }
 }
