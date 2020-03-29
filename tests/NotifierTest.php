@@ -22,7 +22,7 @@ class NotifierTest extends TestCase
     /** @var NotificationSender|TestNotificationSender */
     protected $notificationSender;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
