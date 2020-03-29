@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Notifier\Tests;
 
 use Notifier\Channel\ChannelManager;
-use Notifier\Channel\NotificationSender;
 use Notifier\Recipient\Recipients;
 use Notifier\Tests\TestAsset\Channel\TestNotificationSender;
 use Notifier\Tests\TestAsset\Model\Todo;
@@ -19,7 +18,7 @@ class NotifierTest extends TestCase
     /** @var Notifier */
     protected $notifier;
 
-    /** @var NotificationSender|TestNotificationSender */
+    /** @var TestNotificationSender */
     protected $notificationSender;
 
     protected function setUp(): void

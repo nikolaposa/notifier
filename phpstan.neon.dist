@@ -1,0 +1,12 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        - '~Method Notifier\\Channel\\[a-zA-Z0-9\\_]+Message::[a-zA-Z0-9_]*\(\) has no return typehint specified.~'
+
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon

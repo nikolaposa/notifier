@@ -28,7 +28,7 @@ final class TwilioSmsNotificationSender implements NotificationSender
     /** @var SmsMessage */
     private $message;
 
-    public function __construct($authId, $authToken, ClientInterface $httpClient = null)
+    public function __construct(string $authId, string $authToken, ClientInterface $httpClient = null)
     {
         $this->authId = $authId;
         $this->authToken = $authToken;
@@ -42,12 +42,12 @@ final class TwilioSmsNotificationSender implements NotificationSender
 
     public function send(Notification $notification, Recipient $recipient): void
     {
-        if (!$notification instanceof SmsNotification) {
+        if (!$notification instanceof SmsNotification || null === ($recipientPhoneNumber = $recipient->getRecipientContact('sms', $notification))) {
             return;
         }
 
         $this->message = $notification->toSmsMessage($recipient);
-        $this->message->to($recipient->getRecipientContact('sms', $notification));
+        $this->message->to($recipientPhoneNumber);
 
         $this->doSend($this->buildPayload());
     }

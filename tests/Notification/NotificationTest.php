@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Notifier\Tests;
+namespace Notifier\Tests\Notification;
 
-use Notifier\Notification\Notification;
 use Notifier\Recipient\Recipient;
 use Notifier\Tests\TestAsset\Model\Todo;
 use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;
@@ -13,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class NotificationTest extends TestCase
 {
-    /** @var Notification|TodoExpiredNotification */
+    /** @var TodoExpiredNotification */
     protected $notification;
 
     /** @var Recipient */

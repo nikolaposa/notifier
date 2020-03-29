@@ -19,22 +19,19 @@ final class SimpleEmailNotificationSender implements NotificationSender
     /** @var EmailMessage */
     private $message;
 
-    public function __construct($maxColumnWidth = self::DEFAULT_MAX_COLUMN_WIDTH)
+    public function __construct(int $maxColumnWidth = self::DEFAULT_MAX_COLUMN_WIDTH)
     {
-        $this->maxColumnWidth = (int) $maxColumnWidth;
+        $this->maxColumnWidth = $maxColumnWidth;
     }
 
     public function send(Notification $notification, Recipient $recipient): void
     {
-        if (!$notification instanceof EmailNotification) {
+        if (!$notification instanceof EmailNotification || null === ($recipientEmail = $recipient->getRecipientContact('email', $notification))) {
             return;
         }
 
         $this->message = $notification->toEmailMessage($recipient);
-        $this->message->to(
-            $recipient->getRecipientContact('email', $notification),
-            $recipient->getRecipientName()
-        );
+        $this->message->to($recipientEmail, $recipient->getRecipientName());
 
         $this->doSend();
     }
