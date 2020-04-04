@@ -43,7 +43,7 @@ final class SmsChannel implements Channel
         try {
             $this->texter->send($message);
         } catch (SendingMessageFailed $error) {
-            throw SendingNotificationFailed::dueTo($error, self::NAME);
+            throw SendingNotificationFailed::for(self::NAME, $notification, $recipient, $error);
         }
     }
 }

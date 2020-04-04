@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Notifier\Channel\Email;
 
+use ErrorException;
 use Notifier\Channel\Exception\SendingMessageFailed;
 
 final class SimpleMailer implements Mailer
@@ -35,7 +36,7 @@ final class SimpleMailer implements Mailer
 
         if (!$status) {
             $error = error_get_last();
-            throw new SendingMessageFailed($error['message'] ?? 'Email has not been accepted for delivery');
+            throw SendingMessageFailed::dueTo(new ErrorException($error['message'] ?? 'Email has not been accepted for delivery'));
         }
     }
 

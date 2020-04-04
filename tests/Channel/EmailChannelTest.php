@@ -80,7 +80,10 @@ class EmailChannelTest extends TestCase
 
             $this->fail('Exception should have been raised');
         } catch (SendingNotificationFailed $exception) {
-            $this->assertSame('Failed to send notification via email channel', $exception->getMessage());
+            $this->assertSame('Failed to send TodoExpiredNotification via email channel', $exception->getMessage());
+            $this->assertSame(EmailChannel::NAME, $exception->getChannelName());
+            $this->assertSame($notification, $exception->getNotification());
+            $this->assertSame($recipient, $exception->getRecipient());
             $this->assertInstanceOf(SendingMessageFailed::class, $exception->getPrevious());
         }
     }
