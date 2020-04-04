@@ -6,5 +6,4 @@ namespace Notifier\Notification;
 
 interface Notification
 {
-    public function getSupportedChannels(): array;
 }

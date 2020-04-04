@@ -28,15 +28,15 @@ In order to minimize the coupling of your domain with the infrastructure for sen
 based on on unobtrusive interfaces that should be implemented by your objects in order to plug them into the workflow of 
 the library. Those are:
 
-1. `Notification` - marks the notification object as such and provides list of channels through which Notification can 
-be sent,
+1. `Notification` - marks the object as a notification that can be used with the Notifier library,
 2. `Recipient` - represents the recipient of the notification which provides contact (i.e. email address, phone number) 
 for a certain channel; typically implemented by a User domain object.
 
-Also, for each channel through which Notification is supposed to be sent, Notification class should implement 
-channel-specific Notification interface, for example `EmailNotification`, that is used to cast the Notification to a 
-Message that represents transport-level object Notification gets converted into for sending. These channel-specific 
-Notification interfaces extend the `Notification` interface itself, so you do not need to implement it explicitly.
+For each channel through which Notification is supposed to be sent, Notification class should implement channel-specific 
+interface, making the Notification suitable for sending via a specific channel. These interfaces declare message 
+building methods, for example `EmailNotification::toEmailMessage()`, that convert the notification to a message sent by 
+that particular channel. Channel-specific Notification interfaces extend the `Notification` interface itself, so you do 
+not need to implement it explicitly.
 
 Channel component captures implementation details of how a Notification is sent via certain delivery channels. Specific 
 channel implementation typically consists of:
@@ -75,11 +75,6 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
     public function __construct(Todo $todo)
     {
         $this->todo = $todo;
-    }
-    
-    public function getSupportedChannels(): array
-    {
-        return [EmailChannel::NAME, SmsChannel::NAME];
     }
 
     public function toEmailMessage(Recipient $recipient): EmailMessage
@@ -136,7 +131,7 @@ class User implements Recipient
 **Sending Notifications**
 
 ```php
-use Notifier\Channel\ChannelManager;
+use Notifier\Channel\Channels;
 use Notifier\Channel\Email\EmailChannel;
 use Notifier\Channel\Email\SimpleMailer;
 use Notifier\Channel\Sms\SmsChannel;
@@ -144,7 +139,7 @@ use Notifier\Channel\Sms\TwilioTexter;
 use Notifier\Notifier;
 use Notifier\Recipient\Recipients;
 
-$notifier = new Notifier(new ChannelManager(
+$notifier = new Notifier(new Channels(
     new EmailChannel(new SimpleMailer()),
     new SmsChannel(new TwilioTexter('auth_id', 'auth_token'))
 ));

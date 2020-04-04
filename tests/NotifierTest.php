@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Notifier\Tests;
 
-use Notifier\Channel\ChannelManager;
+use Notifier\Channel\Channels;
 use Notifier\Channel\Email\EmailChannel;
+use Notifier\Channel\Exception\ChannelNotFound;
 use Notifier\Channel\Sms\SmsChannel;
 use Notifier\Recipient\Recipients;
 use Notifier\Tests\TestAsset\Channel\FakeMailer;
@@ -33,7 +34,7 @@ class NotifierTest extends TestCase
 
         $this->mailer = new FakeMailer();
         $this->texter = new FakeTexter();
-        $this->notifier = new Notifier(new ChannelManager(
+        $this->notifier = new Notifier(new Channels(
             new EmailChannel($this->mailer),
             new SmsChannel($this->texter)
         ));
@@ -74,5 +75,27 @@ class NotifierTest extends TestCase
         $this->notifier->sendVia(SmsChannel::NAME, $notification, $recipients);
 
         $this->assertCount(1, $this->texter->getMessages());
+    }
+
+    /**
+     * @test
+     */
+    public function it_raises_exception_if_specific_channel_was_not_found(): void
+    {
+        $notification = new TodoExpiredNotification(new Todo('Test'));
+        $recipients = new Recipients(
+            new User('John Doe', [
+                EmailChannel::NAME => 'john@example.com',
+                SmsChannel::NAME => '+123456789',
+            ])
+        );
+
+        try {
+            $this->notifier->sendVia('slack', $notification, $recipients);
+
+            $this->fail('Exception should have been raised');
+        } catch (ChannelNotFound $exception) {
+            $this->assertSame("Channel 'slack' was not found", $exception->getMessage());
+        }
     }
 }

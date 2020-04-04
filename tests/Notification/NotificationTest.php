@@ -34,16 +34,6 @@ class NotificationTest extends TestCase
     /**
      * @test
      */
-    public function it_provides_supported_channels(): void
-    {
-        $supportedChannels = $this->notification->getSupportedChannels();
-
-        $this->assertSame(['email', 'sms'], $supportedChannels);
-    }
-
-    /**
-     * @test
-     */
     public function it_builds_channel_specific_message(): void
     {
         $emailMessage = $this->notification->toEmailMessage($this->recipient);
