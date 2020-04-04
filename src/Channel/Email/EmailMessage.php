@@ -6,10 +6,14 @@ namespace Notifier\Channel\Email;
 
 class EmailMessage
 {
+    /** @var array array */
     protected $headers = [];
+
+    /** @var string */
     protected $subject = '';
+
+    /** @var string */
     protected $body = '';
-    protected $contentType = 'text/plain';
 
     public function getHeaders(): array
     {
@@ -119,11 +123,6 @@ class EmailMessage
     public function getBody(): string
     {
         return $this->body;
-    }
-
-    public function getContentType(): string
-    {
-        return $this->contentType;
     }
 
     private function createAddress(string $email, ?string $name): string

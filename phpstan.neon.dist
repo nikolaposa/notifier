@@ -6,7 +6,6 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
-        - '~Property Notifier\\Channel\\[a-zA-Z0-9\\_]+Message::\$[a-zA-Z0-9_]+ has no typehint specified.~'
         - '~Method Notifier\\Channel\\[a-zA-Z0-9\\_]+Message::[a-zA-Z0-9_]+\(\) has no return typehint specified.~'
         - '~Call to an undefined method GuzzleHttp\\ClientInterface::[a-zA-Z0-9_]+\(\).~'
 
