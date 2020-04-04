@@ -6,10 +6,10 @@ namespace Notifier\Channel\Email;
 
 class EmailMessage
 {
-    private $headers = [];
-    private $subject = '';
-    private $body = '';
-    private $contentType = 'text/plain';
+    protected $headers = [];
+    protected $subject = '';
+    protected $body = '';
+    protected $contentType = 'text/plain';
 
     public function getHeaders(): array
     {
