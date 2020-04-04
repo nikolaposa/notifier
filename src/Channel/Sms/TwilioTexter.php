@@ -43,9 +43,9 @@ final class TwilioTexter implements Texter
                 [
                     RequestOptions::AUTH => [$this->authId, $this->authToken],
                     RequestOptions::FORM_PARAMS => [
-                        'Body' => $message->text,
-                        'From' => $message->from,
-                        'To' => $message->to,
+                        'Body' => $message->getText(),
+                        'From' => $message->getFrom(),
+                        'To' => $message->getTo(),
                     ],
                 ]
             );

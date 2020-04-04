@@ -15,7 +15,7 @@ final class FakeTexter implements Texter
 
     public function send(SmsMessage $message): void
     {
-        if ('' === $message->to) {
+        if ('' === $message->getTo()) {
             throw new SendingMessageFailed('Invalid destination phone number');
         }
 

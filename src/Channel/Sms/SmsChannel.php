@@ -17,9 +17,13 @@ final class SmsChannel implements Channel
     /** @var Texter */
     private $texter;
 
-    public function __construct(Texter $texter)
+    /** @var string|null */
+    private $defaultSenderPhoneNumber;
+
+    public function __construct(Texter $texter, string $defaultSenderPhoneNumber = null)
     {
         $this->texter = $texter;
+        $this->defaultSenderPhoneNumber = $defaultSenderPhoneNumber;
     }
 
     public function getName(): string
@@ -39,6 +43,10 @@ final class SmsChannel implements Channel
 
         $message = $notification->toSmsMessage($recipient);
         $message->to($recipientPhoneNumber);
+
+        if (null === $message->getFrom() && null !== $this->defaultSenderPhoneNumber) {
+            $message->from($this->defaultSenderPhoneNumber);
+        }
 
         try {
             $this->texter->send($message);

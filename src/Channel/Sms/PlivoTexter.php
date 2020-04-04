@@ -43,9 +43,9 @@ final class PlivoTexter implements Texter
                 [
                     RequestOptions::AUTH => [$this->authId, $this->authToken],
                     RequestOptions::JSON => [
-                        'src' => $message->from,
-                        'dst' => $message->to,
-                        'text' => $message->text,
+                        'src' => $message->getFrom(),
+                        'dst' => $message->getTo(),
+                        'text' => $message->getText(),
                     ],
                 ]
             );
