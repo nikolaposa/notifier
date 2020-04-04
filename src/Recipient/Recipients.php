@@ -6,6 +6,7 @@ namespace Notifier\Recipient;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Traversable;
 
 class Recipients implements IteratorAggregate
 {
@@ -17,6 +18,9 @@ class Recipients implements IteratorAggregate
         $this->recipients = $recipients;
     }
 
+    /**
+     * @return Traversable|Recipient[]
+     */
     public function getIterator()
     {
         return new ArrayIterator($this->recipients);
