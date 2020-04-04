@@ -22,6 +22,9 @@ final class FakeTexter implements Texter
         $this->messages[] = $message;
     }
 
+    /**
+     * @return SmsMessage[]
+     */
     public function getMessages(): array
     {
         return $this->messages;

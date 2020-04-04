@@ -24,7 +24,7 @@ class SmsChannelTest extends TestCase
     protected function setUp(): void
     {
         $this->texter = new FakeTexter();
-        $this->channel = new SmsChannel($this->texter);
+        $this->channel = new SmsChannel($this->texter, '+111');
     }
 
     /**
@@ -86,5 +86,20 @@ class SmsChannelTest extends TestCase
             $this->assertSame($recipient, $exception->getRecipient());
             $this->assertInstanceOf(SendingMessageFailed::class, $exception->getPrevious());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function it_sets_default_sender_phone_number_if_from_not_set(): void
+    {
+        $notification = new TodoExpiredNotification(new Todo('Test'));
+        $recipient = new User('John Doe', [
+            SmsChannel::NAME => '+123456789',
+        ]);
+
+        $this->channel->send($notification, $recipient);
+
+        $this->assertSame('+111', $this->texter->getMessages()[0]->getFrom());
     }
 }

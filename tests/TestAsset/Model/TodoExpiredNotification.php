@@ -31,7 +31,6 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
     public function toSmsMessage(Recipient $recipient): SmsMessage
     {
         return (new SmsMessage())
-            ->from('1111')
             ->text('Todo: ' . $this->todo->getText() . ' has expired');
     }
 }
