@@ -145,7 +145,10 @@ $notifier = new Notifier(new Channels(
     new SmsChannel(new TwilioTexter('auth_id', 'auth_token'))
 ));
 
-$notifier->send(new TodoExpiredNotification($todo), new Recipients($user));
+$notifier->send(
+    new TodoExpiredNotification($todo), 
+    new Recipients($user1, $user2, $user3)
+);
 ```
 
 ## Credits
