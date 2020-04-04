@@ -6,37 +6,86 @@ namespace Notifier\Channel\Email;
 
 class EmailMessage
 {
-    /** @var array */
-    public $from;
+    private $headers = [];
+    private $subject = '';
+    private $body = '';
+    private $contentType = 'text/plain';
 
-    /** @var array */
-    public $to;
-
-    /** @var string */
-    public $subject;
-
-    /** @var string */
-    public $body;
-
-    /** @var string */
-    public $contentType = 'text/plain';
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
 
     public function from(string $email, string $name = null)
     {
-        $this->from = [$email, $name];
+        $this->headers['From'][] = $this->createAddress($email, $name);
 
         return $this;
     }
 
-    public function to(string $email, string $name = null)
+    public function getFrom(): array
     {
-        if (null === $this->to) {
-            $this->to = [];
-        }
+        return $this->headers['From'] ?? [];
+    }
 
-        $this->to[]= [$email, $name];
+    public function sender(string $email, string $name = null)
+    {
+        $this->headers['Sender'] = $this->createAddress($email, $name);
 
         return $this;
+    }
+
+    public function getSender(): string
+    {
+        return $this->headers['Sender'] ?? '';
+    }
+
+    public function replyTo(string $email, string $name = null)
+    {
+        $this->headers['Reply-To'][] = $this->createAddress($email, $name);
+
+        return $this;
+    }
+
+    public function getReplyTo(): array
+    {
+        return $this->headers['Reply-To'] ?? [];
+    }
+
+    public function to(string $email, string $name = null)
+    {
+        $this->headers['To'][] = $this->createAddress($email, $name);
+
+        return $this;
+    }
+
+    public function getTo(): array
+    {
+        return $this->headers['To'] ?? [];
+    }
+
+    public function cc(string $email, string $name = null)
+    {
+        $this->headers['Cc'][] = $this->createAddress($email, $name);
+
+        return $this;
+    }
+
+    public function getCc(): array
+    {
+        return $this->headers['Cc'] ?? [];
+    }
+
+    public function bcc(string $email, string $name = null)
+    {
+        $this->headers['Bcc'][] = $this->createAddress($email, $name);
+
+        return $this;
+    }
+
+    public function getBcc(): array
+    {
+        return $this->headers['Bcc'] ?? [];
     }
 
     public function subject(string $subject)
@@ -46,17 +95,39 @@ class EmailMessage
         return $this;
     }
 
-    public function body(string $body)
+    public function getSubject(): string
     {
-        $this->body = $body;
+        return $this->subject;
+    }
+
+    public function textBody(string $textBody)
+    {
+        $this->body = $textBody;
 
         return $this;
     }
 
-    public function contentType(string $contentType)
+    public function htmlBody(string $htmlBody)
     {
-        $this->contentType = $contentType;
+        $this->body = $htmlBody;
+        $this->headers['MIME-Version'] = '1.0';
+        $this->headers['Content-type'] = 'text/html; charset=utf-8';
 
         return $this;
+    }
+
+    public function getBody(): string
+    {
+        return $this->body;
+    }
+
+    public function getContentType(): string
+    {
+        return $this->contentType;
+    }
+
+    private function createAddress(string $email, ?string $name): string
+    {
+        return (null !== $name) ? $name . ' <' . $email . '>' : $email;
     }
 }

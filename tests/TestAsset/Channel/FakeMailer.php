@@ -15,9 +15,14 @@ final class FakeMailer implements Mailer
 
     public function send(EmailMessage $message): void
     {
-        foreach ($message->to as $to) {
-            if (!filter_var($to[0], FILTER_VALIDATE_EMAIL)) {
-                throw new SendingMessageFailed('Invalid destination email address: ' . $to[0]);
+        foreach ($message->getTo() as $to) {
+            $email = $to;
+            if (preg_match('/^(?<name>[^<]*)<(?<email>.*)>[^>]*$/', $to, $matches)) {
+                $email = $matches['email'];
+            }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new SendingMessageFailed('Invalid destination email address: ' . $email);
             }
         }
 

@@ -26,13 +26,13 @@ class SimpleMailerTest extends TestCase
         $this->sentEmail = [];
     }
 
-    public function fakeMail(string $to, string $subject, string $message, string $additionalHeaders): bool
+    public function fakeMail(string $to, string $subject, string $message, string $headers): bool
     {
         $this->sentEmail = [
             'to' => $to,
             'subject' => $subject,
             'message' => $message,
-            'additional_headers' => $additionalHeaders,
+            'headers' => $headers,
         ];
 
         return true;
@@ -44,18 +44,27 @@ class SimpleMailerTest extends TestCase
     public function it_sends_email_message(): void
     {
         $message = (new EmailMessage())
-            ->from('noreply@test.com')
+            ->from('testing@example.com')
+            ->sender('admin@example.com')
+            ->replyTo('admin@example.com')
             ->to('john@example.com', 'John')
             ->to('jane@example.com', 'Jane')
+            ->cc('archive@example.com')
+            ->bcc('check@example.com')
             ->subject('Hey')
-            ->body('Testing');
+            ->textBody('Testing');
 
         $this->mailer->send($message);
 
         $this->assertNotEmpty($this->sentEmail);
-        $this->assertSame('John <john@example.com>,Jane <jane@example.com>', $this->sentEmail['to']);
+        $this->assertSame('John <john@example.com>, Jane <jane@example.com>', $this->sentEmail['to']);
         $this->assertSame('Hey', $this->sentEmail['subject']);
         $this->assertSame('Testing', $this->sentEmail['message']);
-        $this->assertSame("Content-type: text/plain; charset=utf-8\r\nFrom: noreply@test.com\r\n", $this->sentEmail['additional_headers']);
+        $this->assertStringContainsString('From: testing@example.com', $this->sentEmail['headers']);
+        $this->assertStringContainsString('Sender: admin@example.com', $this->sentEmail['headers']);
+        $this->assertStringContainsString('Reply-To: admin@example.com', $this->sentEmail['headers']);
+        $this->assertStringContainsString('To: John <john@example.com>, Jane <jane@example.com>', $this->sentEmail['headers']);
+        $this->assertStringContainsString('Cc: archive@example.com', $this->sentEmail['headers']);
+        $this->assertStringContainsString('Bcc: check@example.com', $this->sentEmail['headers']);
     }
 }

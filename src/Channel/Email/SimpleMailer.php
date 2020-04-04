@@ -31,7 +31,7 @@ final class SimpleMailer implements Mailer
             $this->buildTo(),
             $this->buildSubject(),
             $this->buildMessage(),
-            $this->buildMailHeaders()
+            $this->buildHeaders()
         );
 
         if (!$status) {
@@ -42,39 +42,29 @@ final class SimpleMailer implements Mailer
 
     private function buildTo(): string
     {
-        $toList = [];
-
-        foreach ($this->message->to as $to) {
-            [$email, $name] = $to;
-
-            $toList[] = (null !== $name) ? $name . ' <' . $email . '>' : $email;
-        }
-
-        return implode(',', $toList);
+        return implode(', ', $this->message->getTo());
     }
 
     private function buildSubject(): string
     {
-        return $this->message->subject;
+        return $this->message->getSubject();
     }
 
     private function buildMessage(): string
     {
-        return wordwrap($this->message->body, self::MESSAGE_LINE_CHARACTERS_LIMIT);
+        return wordwrap($this->message->getBody(), self::MESSAGE_LINE_CHARACTERS_LIMIT);
     }
 
-    private function buildMailHeaders(): string
+    private function buildHeaders(): string
     {
-        $headers = 'Content-type: ' . $this->message->contentType . '; charset=utf-8' . "\r\n";
+        $headers = array_map(function (string $name, $value) {
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
 
-        if ($this->message->contentType === 'text/html') {
-            $headers .= "MIME-Version: 1.0\r\n";
-        }
+            return "$name: $value";
+        }, array_keys($this->message->getHeaders()), $this->message->getHeaders());
 
-        if (null !== $this->message->from) {
-            $headers .= 'From: ' . $this->message->from[0] . "\r\n";
-        }
-
-        return $headers;
+        return implode("\r\n", $headers);
     }
 }

@@ -38,6 +38,6 @@ class NotificationTest extends TestCase
     {
         $emailMessage = $this->notification->toEmailMessage($this->recipient);
 
-        $this->assertSame('Todo: <strong>Test</strong> has expired', $emailMessage->body);
+        $this->assertSame('Todo: <strong>Test</strong> has expired', $emailMessage->getBody());
     }
 }
