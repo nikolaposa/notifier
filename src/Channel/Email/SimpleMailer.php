@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Notifier\Channel\Email;
 
 use ErrorException;
-use Notifier\Channel\Exception\SendingMessageFailed;
+use Notifier\Exception\SendingMessageFailed;
 
 final class SimpleMailer implements Mailer
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Notifier\Channel\Sms;
 
-use Notifier\Channel\Exception\SendingMessageFailed;
+use Notifier\Exception\SendingMessageFailed;
 
 interface Texter
 {

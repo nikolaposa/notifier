@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Notifier\Tests\TestAsset\Channel;
 
-use Notifier\Channel\Exception\SendingMessageFailed;
+use Notifier\Exception\SendingMessageFailed;
 use Notifier\Channel\Sms\SmsMessage;
 use Notifier\Channel\Sms\Texter;
 

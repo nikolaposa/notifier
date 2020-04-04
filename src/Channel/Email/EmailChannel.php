@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Notifier\Channel\Email;
 
 use Notifier\Channel\Channel;
-use Notifier\Channel\Exception\SendingMessageFailed;
-use Notifier\Channel\Exception\SendingNotificationFailed;
+use Notifier\Exception\SendingMessageFailed;
+use Notifier\Exception\SendingNotificationFailed;
 use Notifier\Notification\Notification;
 use Notifier\Recipient\Recipient;
 

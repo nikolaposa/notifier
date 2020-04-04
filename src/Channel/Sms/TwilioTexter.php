@@ -8,7 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
-use Notifier\Channel\Exception\SendingMessageFailed;
+use Notifier\Exception\SendingMessageFailed;
 
 final class TwilioTexter implements Texter
 {

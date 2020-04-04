@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Notifier\Tests\Channel;
 
 use Notifier\Channel\Email\EmailChannel;
-use Notifier\Channel\Exception\SendingMessageFailed;
-use Notifier\Channel\Exception\SendingNotificationFailed;
+use Notifier\Exception\SendingMessageFailed;
+use Notifier\Exception\SendingNotificationFailed;
 use Notifier\Tests\TestAsset\Channel\FakeMailer;
 use Notifier\Tests\TestAsset\Model\Todo;
 use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;

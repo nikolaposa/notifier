@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Notifier\Channel\Exception;
+namespace Notifier\Exception;
 
 use RuntimeException;
 use Throwable;
 
-final class SendingMessageFailed extends RuntimeException implements NotifierChannelException
+final class SendingMessageFailed extends RuntimeException implements NotifierException
 {
     public static function dueTo(Throwable $error): self
     {

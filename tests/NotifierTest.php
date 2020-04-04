@@ -6,7 +6,7 @@ namespace Notifier\Tests;
 
 use Notifier\Channel\Channels;
 use Notifier\Channel\Email\EmailChannel;
-use Notifier\Channel\Exception\ChannelNotFound;
+use Notifier\Exception\ChannelNotFound;
 use Notifier\Channel\Sms\SmsChannel;
 use Notifier\Recipient\Recipients;
 use Notifier\Tests\TestAsset\Channel\FakeMailer;

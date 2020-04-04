@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Notifier\Channel\Exception;
+namespace Notifier\Exception;
 
 use LogicException;
 
-final class ChannelNotFound extends LogicException implements NotifierChannelException
+final class ChannelNotFound extends LogicException implements NotifierException
 {
     public static function byName(string $channelName): self
     {

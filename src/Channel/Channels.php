@@ -6,7 +6,7 @@ namespace Notifier\Channel;
 
 use ArrayIterator;
 use IteratorAggregate;
-use Notifier\Channel\Exception\ChannelNotFound;
+use Notifier\Exception\ChannelNotFound;
 use Traversable;
 
 class Channels implements IteratorAggregate

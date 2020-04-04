@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Notifier\Channel\Exception;
+namespace Notifier\Exception;
 
 use Notifier\Notification\Notification;
 use Notifier\Recipient\Recipient;
@@ -10,7 +10,7 @@ use ReflectionClass;
 use RuntimeException;
 use Throwable;
 
-final class SendingNotificationFailed extends RuntimeException implements NotifierChannelException
+final class SendingNotificationFailed extends RuntimeException implements NotifierException
 {
     /** @var string */
     private $channelName;

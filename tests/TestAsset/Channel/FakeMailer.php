@@ -6,7 +6,7 @@ namespace Notifier\Tests\TestAsset\Channel;
 
 use Notifier\Channel\Email\EmailMessage;
 use Notifier\Channel\Email\Mailer;
-use Notifier\Channel\Exception\SendingMessageFailed;
+use Notifier\Exception\SendingMessageFailed;
 
 final class FakeMailer implements Mailer
 {
