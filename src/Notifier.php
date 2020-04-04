@@ -23,9 +23,18 @@ class Notifier
         $channels = $notification->getSupportedChannels();
 
         foreach ($recipients as $recipient) {
-            foreach ($channels as $channel) {
-                $this->channelManager->get($channel)->send($notification, $recipient);
+            foreach ($channels as $channelName) {
+                $this->channelManager->get($channelName)->send($notification, $recipient);
             }
+        }
+    }
+
+    public function sendVia(string $channelName, Notification $notification, Recipients $recipients): void
+    {
+        $channel = $this->channelManager->get($channelName);
+
+        foreach ($recipients as $recipient) {
+            $channel->send($notification, $recipient);
         }
     }
 }

@@ -57,4 +57,22 @@ class NotifierTest extends TestCase
         $this->assertCount(1, $this->mailer->getMessages());
         $this->assertCount(1, $this->texter->getMessages());
     }
+
+    /**
+     * @test
+     */
+    public function it_sends_notification_via_specific_channel(): void
+    {
+        $notification = new TodoExpiredNotification(new Todo('Test'));
+        $recipients = new Recipients(
+            new User('John Doe', [
+                EmailChannel::NAME => 'john@example.com',
+                SmsChannel::NAME => '+123456789',
+            ])
+        );
+
+        $this->notifier->sendVia(SmsChannel::NAME, $notification, $recipients);
+
+        $this->assertCount(1, $this->texter->getMessages());
+    }
 }
