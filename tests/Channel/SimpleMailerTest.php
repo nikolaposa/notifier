@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Notifier\Tests\Channel;
 
+use ErrorException;
 use Notifier\Channel\Email\EmailMessage;
 use Notifier\Channel\Email\SimpleMailer;
+use Notifier\Exception\SendingMessageFailed;
 use PHPUnit\Framework\TestCase;
 
 class SimpleMailerTest extends TestCase
@@ -16,6 +18,9 @@ class SimpleMailerTest extends TestCase
     /** @var array */
     protected $sentEmail;
 
+    /** @var string */
+    protected $error;
+
     protected function setUp(): void
     {
         $this->mailer = new SimpleMailer([$this, 'fakeMail']);
@@ -24,10 +29,17 @@ class SimpleMailerTest extends TestCase
     protected function tearDown(): void
     {
         $this->sentEmail = [];
+        $this->error = null;
     }
 
     public function fakeMail(string $to, string $subject, string $message, string $headers): bool
     {
+        if (null !== $this->error) {
+            @ trigger_error($this->error);
+
+            return false;
+        }
+
         $this->sentEmail = [
             'to' => $to,
             'subject' => $subject,
@@ -66,5 +78,27 @@ class SimpleMailerTest extends TestCase
         $this->assertStringContainsString('To: John <john@example.com>, Jane <jane@example.com>', $this->sentEmail['headers']);
         $this->assertStringContainsString('Cc: archive@example.com', $this->sentEmail['headers']);
         $this->assertStringContainsString('Bcc: check@example.com', $this->sentEmail['headers']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_raises_exception_if_it_fails_to_send_message(): void
+    {
+        $message = (new EmailMessage())
+            ->from('testing@example.com')
+            ->to('invalid_email')
+            ->subject('Test')
+            ->textBody('Testing');
+        $this->error = 'Failed to connect to mail server';
+
+        try {
+            $this->mailer->send($message);
+
+            $this->fail('Exception should have been raised');
+        } catch (SendingMessageFailed $exception) {
+            $this->assertInstanceOf(ErrorException::class, $exception->getPrevious());
+            $this->assertSame($this->error, $exception->getPrevious()->getMessage());
+        }
     }
 }
