@@ -116,7 +116,7 @@ class User implements Recipient
         $this->contacts = $contacts;
     }
     
-    public funtion getName(): string
+    public function getName(): string
     {
         return $this->name;
     }
