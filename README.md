@@ -59,12 +59,10 @@ with directly.
 ```php
 namespace App\Model;
 
-use Notifier\Channel\Email\EmailChannel;
 use Notifier\Channel\Email\EmailMessage;
-use Notifier\Channel\Sms\SmsChannel;
 use Notifier\Channel\Sms\SmsMessage;
-use Notifier\Notification\EmailNotification;
-use Notifier\Notification\SmsNotification;
+use Notifier\Channel\Email\EmailNotification;
+use Notifier\Channel\Sms\SmsNotification;
 use Notifier\Recipient\Recipient;
 
 class TodoExpiredNotification implements EmailNotification, SmsNotification
@@ -97,6 +95,8 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
 
 ```php
 namespace App\Model;
+
+use Notifier\Recipient\Recipient;
 
 class User implements Recipient
 {
