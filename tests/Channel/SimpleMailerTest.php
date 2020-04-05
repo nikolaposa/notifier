@@ -18,7 +18,7 @@ class SimpleMailerTest extends TestCase
     /** @var array */
     protected $sentEmail;
 
-    /** @var string */
+    /** @var string|null */
     protected $error;
 
     protected function setUp(): void
