@@ -7,6 +7,7 @@ namespace Notifier\Tests\Channel;
 use Notifier\Exception\SendingMessageFailed;
 use Notifier\Exception\SendingNotificationFailed;
 use Notifier\Channel\Sms\SmsChannel;
+use Notifier\Notification\Notification;
 use Notifier\Tests\TestAsset\Channel\FakeTexter;
 use Notifier\Tests\TestAsset\Model\Todo;
 use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;
@@ -48,6 +49,22 @@ class SmsChannelTest extends TestCase
         $this->channel->send($notification, $recipient);
 
         $this->assertCount(1, $this->texter->getMessages());
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_send_if_notification_does_not_support_email_channel(): void
+    {
+        $notification = new class implements Notification {
+        };
+        $recipient = new User('John Doe', [
+            SmsChannel::NAME => '+123456789',
+        ]);
+
+        $this->channel->send($notification, $recipient);
+
+        $this->assertCount(0, $this->texter->getMessages());
     }
 
     /**

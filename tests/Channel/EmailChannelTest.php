@@ -7,6 +7,7 @@ namespace Notifier\Tests\Channel;
 use Notifier\Channel\Email\EmailChannel;
 use Notifier\Exception\SendingMessageFailed;
 use Notifier\Exception\SendingNotificationFailed;
+use Notifier\Notification\Notification;
 use Notifier\Tests\TestAsset\Channel\FakeMailer;
 use Notifier\Tests\TestAsset\Model\Todo;
 use Notifier\Tests\TestAsset\Model\TodoExpiredNotification;
@@ -51,6 +52,22 @@ class EmailChannelTest extends TestCase
         $message = $this->mailer->getMessages()[0];
         $this->assertSame('John Doe <john@example.com>', $message->getTo()[0]);
         $this->assertSame('noreply@example.com', $message->getFrom()[0]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_send_if_notification_does_not_support_email_channel(): void
+    {
+        $notification = new class implements Notification {
+        };
+        $recipient = new User('John Doe', [
+            EmailChannel::NAME => 'john@example.com',
+        ]);
+
+        $this->channel->send($notification, $recipient);
+
+        $this->assertCount(0, $this->mailer->getMessages());
     }
 
     /**
