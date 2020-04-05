@@ -7,7 +7,6 @@ All notable changes to this project will be documented in this file.
 - PHPUnit 7.2 is now the minimum required version
 - Introduce `Channel` sub-component that deals with notification delivery channels (email, sms, and similar)
 - Replace `AbstractNotification` class with channel-specific Notification interfaces
-- Rename `NotificationRecipientInterface` to `Recipient\Recipient`
 
 ## 3.0.1 - 2017-01-01
 ### Improved
