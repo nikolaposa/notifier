@@ -81,7 +81,8 @@ class TodoExpiredNotification implements EmailNotification, SmsNotification
             ->from('noreply@example.com')
             ->subject('Todo expired')
             ->htmlBody(
-                'Dear ' . $recipient->getRecipientName() . ', <br><br>'
+                'Dear ' . $recipient->getRecipientName() . ','
+                . '<br><br>'
                 . 'Your todo: <b>' . $this->todo->getText() . '</b> has expired.'
             ');
     }
