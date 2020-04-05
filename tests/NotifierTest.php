@@ -30,8 +30,6 @@ class NotifierTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->mailer = new FakeMailer();
         $this->texter = new FakeTexter();
         $this->notifier = new Notifier(new Channels(

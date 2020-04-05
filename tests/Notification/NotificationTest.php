@@ -22,8 +22,6 @@ class NotificationTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->notification = new TodoExpiredNotification(new Todo('Test'));
         $this->recipient = new User('John Doe', [
             EmailChannel::NAME => 'john@example.com',
