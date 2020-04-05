@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][link-unreleased]
+## 4.0.0 - 2020-04-05
 
 ### Changed
 - PHPUnit 7.2 is now the minimum required version
