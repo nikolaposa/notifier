@@ -29,6 +29,9 @@ final class FakeMailer implements Mailer
         $this->messages[] = $message;
     }
 
+    /**
+     * @return EmailMessage[]
+     */
     public function getMessages(): array
     {
         return $this->messages;

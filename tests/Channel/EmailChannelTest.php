@@ -48,6 +48,9 @@ class EmailChannelTest extends TestCase
         $this->channel->send($notification, $recipient);
 
         $this->assertCount(1, $this->mailer->getMessages());
+        $message = $this->mailer->getMessages()[0];
+        $this->assertSame('John Doe <john@example.com>', $message->getTo()[0]);
+        $this->assertSame('noreply@example.com', $message->getFrom()[0]);
     }
 
     /**
