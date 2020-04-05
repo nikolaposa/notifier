@@ -19,10 +19,10 @@ composer require nikolaposa/notifier
 
 ## Theory of operation
 
-Notifications are informative messages that are sent through different channels (i.e. web, SMS, mobile push) to notify 
-users of something that has happened in the application. Notification is a higher-level abstraction, a concept that 
-encapsulates a subject to be notified to the recipient, regardless of delivery channels through which that information 
-can be communicated. From an architectural standpoint, notification is a domain concern.
+Notifications are informative messages that are sent through different channels (i.e. email, SMS, mobile push) to notify 
+users about certain events in the application. Notification is a higher-level abstraction, a concept that encapsulates a 
+subject to be notified to the recipient, regardless of delivery channels through which that information can be 
+communicated. From an architectural standpoint, notification is a domain concern.
 
 In order to minimize the coupling of your domain with the infrastructure for sending notifications, Notifier library was 
 based on on unobtrusive interfaces that should be implemented by your objects in order to plug them into the workflow of 
