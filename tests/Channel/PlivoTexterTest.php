@@ -57,9 +57,13 @@ class PlivoTexterTest extends TestCase
     /**
      * @test
      */
-    public function it_raises_exception_if_sending_message_fails(): void
+    public function it_raises_exception_if_it_fails_to_send_message(): void
     {
-        $this->mockHandler->append(new ServerException('An error has occurred', $this->createMock(ServerRequest::class)));
+        $this->mockHandler->append(new ServerException(
+            'An error has occurred',
+            $this->createMock(ServerRequest::class),
+            new Response(500)
+        ));
 
         $message = (new SmsMessage())
             ->from('1111')
