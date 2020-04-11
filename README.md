@@ -42,7 +42,7 @@ Channel component captures implementation details of how a Notification is sent 
 channel implementation typically consists of:
 
 1. channel-specific Notification interface,
-2. Message class,
+2. Message class - transport-level message Notificaton gets converted into,
 3. `Channel` implementation responsible for the very act of sending the Notification.
 
 Out of the box, this library features facilities for sending notifications via email and SMS. The highly extensible 
